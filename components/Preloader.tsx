@@ -3,19 +3,15 @@ import { motion, AnimatePresence } from "framer-motion";
 
 const greetings = [
   { text: "Hello" },
-  { text: "नमस्ते" },
+  { text: "ਸਤ ਸ੍ਰੀ ਅਕਾਲ" },
+  { text: "ہیلو" },
   { text: "Bonjour" },
-  { text: "Hola" },
+  { text: "হ্যালো" },
   { text: "Ciao" },
-  { text: "Hallo" },
-  { text: "Olá" },
-  { text: "Привет" },
+  { text: "வணக்கம்" },
   { text: "こんにちは" },
-  { text: "안녕하세요" },
   { text: "你好" },
-  { text: "مرحبا" },
-  { text: "Sawubona" },
-  { text: "Jambo" },
+  { text: "नमस्ते" },
 ];
 
 export const Preloader = ({ onComplete }: { onComplete?: () => void }) => {
