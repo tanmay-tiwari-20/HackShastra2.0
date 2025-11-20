@@ -1,14 +1,33 @@
+"use client";
 import Navbar from "@/components/Navbar";
+import { Preloader } from "@/components/Preloader";
+import { CrowdCanvas } from "@/components/ui/skiper-ui/skiper39";
+import { useState } from "react";
 
+const Page = () => {
+  const [showPreloader, setShowPreloader] = useState(true);
 
-
-
-const page = () => {
   return (
-    <div className="">
+    <div className="relative">
+      {showPreloader && (
+        <Preloader onComplete={() => setShowPreloader(false)} />
+      )}
+
+      <div
+        className={
+          showPreloader
+            ? "opacity-0"
+            : "opacity-100 transition-opacity duration-500"
+        }
+      >
         <Navbar />
+      </div>
     </div>
   );
 };
 
-export default page;
+export default Page;
+
+{
+  /* <CrowdCanvas src="all-peeps.png" rows={15} cols={7} /> */
+}

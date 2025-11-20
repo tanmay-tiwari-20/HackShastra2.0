@@ -1,11 +1,12 @@
 "use client";
 
-import React, { useLayoutEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import Image, { StaticImageData } from "next/image";
 import Link from "next/link";
 import { gsap } from "gsap";
 import { GoArrowUpRight } from "react-icons/go";
 import { ThemeToggleButton } from "./ui/skiper-ui/skiper26";
+import { useIsomorphicLayoutEffect } from "@/app/hooks/useIsomorphicLayoutEffect";
 
 type CardNavLink = {
   label: string;
@@ -48,7 +49,12 @@ const CardNav: React.FC<CardNavProps> = ({
   const cardsRef = useRef<HTMLDivElement[]>([]);
   const tlRef = useRef<gsap.core.Timeline | null>(null);
 
+  // ─────────────────────────────────────────
+  // FIX 1: Prevent layout calculations on server
+  // ─────────────────────────────────────────
   const calculateHeight = () => {
+    if (typeof window === "undefined") return 260;
+
     const navEl = navRef.current;
     if (!navEl) return 260;
 
@@ -79,6 +85,9 @@ const CardNav: React.FC<CardNavProps> = ({
     return 260;
   };
 
+  // ─────────────────────────────────────────
+  // Create GSAP timeline
+  // ─────────────────────────────────────────
   const createTimeline = () => {
     const navEl = navRef.current;
     if (!navEl) return null;
@@ -98,17 +107,23 @@ const CardNav: React.FC<CardNavProps> = ({
     return tl;
   };
 
-  useLayoutEffect(() => {
-    const tl = createTimeline();
-    tlRef.current = tl;
+  // ─────────────────────────────────────────
+  // FIX 2: useIsomorphicLayoutEffect + gsap.context
+  // Prevent hydration mismatch
+  // ─────────────────────────────────────────
+  useIsomorphicLayoutEffect(() => {
+    let ctx = gsap.context(() => {
+      const tl = createTimeline();
+      tlRef.current = tl;
+    }, navRef);
 
-    return () => {
-      tl?.kill();
-      tlRef.current = null;
-    };
+    return () => ctx.revert();
   }, [ease, items]);
 
-  useLayoutEffect(() => {
+  // ─────────────────────────────────────────
+  // FIX 3: Safe resize handler
+  // ─────────────────────────────────────────
+  useIsomorphicLayoutEffect(() => {
     const handleResize = () => {
       if (!tlRef.current) return;
 
@@ -116,12 +131,12 @@ const CardNav: React.FC<CardNavProps> = ({
         const newHeight = calculateHeight();
         gsap.set(navRef.current, { height: newHeight });
 
-        tlRef.current.kill();
+        tlRef.current?.kill();
         const newTl = createTimeline();
         newTl?.progress(1);
         tlRef.current = newTl;
       } else {
-        tlRef.current.kill();
+        tlRef.current?.kill();
         tlRef.current = createTimeline();
       }
     };
@@ -130,6 +145,9 @@ const CardNav: React.FC<CardNavProps> = ({
     return () => window.removeEventListener("resize", handleResize);
   }, [isExpanded]);
 
+  // ─────────────────────────────────────────
+  // Menu Toggle
+  // ─────────────────────────────────────────
   const toggleMenu = () => {
     const tl = tlRef.current;
     if (!tl) return;
@@ -149,15 +167,18 @@ const CardNav: React.FC<CardNavProps> = ({
     if (el) cardsRef.current[i] = el;
   };
 
+  // ─────────────────────────────────────────
+  // Render
+  // ─────────────────────────────────────────
   return (
-    <div
+    <section
       className={`card-nav-container absolute left-1/2 -translate-x-1/2 w-[90%] max-w-[800px] top-[1.2em] md:top-[2em] z-50 ${className}`}
     >
       <nav
         ref={navRef}
         className={`card-nav ${
           isExpanded ? "open" : ""
-        } block h-[60px] rounded-xl shadow-md relative overflow-hidden`}
+        } block h-[60px] rounded-3xl shadow-md relative overflow-hidden`}
         style={{ backgroundColor: baseColor }}
       >
         {/* TOP BAR */}
@@ -171,18 +192,18 @@ const CardNav: React.FC<CardNavProps> = ({
             style={{ color: menuColor }}
           >
             <span
-              className={`h-[2px] bg-current transition-all w-7 ${
+              className={`h-0.5 bg-current transition-all w-7 ${
                 isHamburgerOpen ? "translate-y-1 rotate-45" : ""
               }`}
             />
             <span
-              className={`h-[2px] bg-current transition-all w-7 ${
+              className={`h-0.5 bg-current transition-all w-7 ${
                 isHamburgerOpen ? "-translate-y-1 -rotate-45" : ""
               }`}
             />
           </div>
 
-          {/* LOGO CENTERED */}
+          {/* Logo */}
           <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none">
             <div className="relative h-8 sm:h-9 md:h-11 lg:h-14 w-[130px] sm:w-[150px] md:w-[180px] lg:w-[220px]">
               <Image
@@ -201,7 +222,7 @@ const CardNav: React.FC<CardNavProps> = ({
           </div>
         </div>
 
-        {/* CONTENT CARDS */}
+        {/* CARDS */}
         <div
           className={`card-nav-content absolute left-0 right-0 top-[60px] bottom-0 p-2 flex flex-col gap-2 ${
             isExpanded
@@ -213,7 +234,7 @@ const CardNav: React.FC<CardNavProps> = ({
             <div
               key={item.label}
               ref={setCardRef(idx)}
-              className="nav-card flex flex-col gap-2 p-4 rounded-lg flex-1"
+              className="nav-card flex flex-col gap-2 p-4 rounded-2xl flex-1"
               style={{ backgroundColor: item.bgColor, color: item.textColor }}
             >
               <div className="text-lg md:text-xl">{item.label}</div>
@@ -234,7 +255,7 @@ const CardNav: React.FC<CardNavProps> = ({
           ))}
         </div>
       </nav>
-    </div>
+    </section>
   );
 };
 

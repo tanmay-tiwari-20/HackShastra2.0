@@ -1,22 +1,21 @@
 "use client";
 
 import { useTheme } from "next-themes";
-import { useEffect, useState, useMemo } from "react";
+import { useMemo } from "react";
 import CardNav from "./CardNav";
 
 import logoDark from "@/public/logodark.svg";
 import logoLight from "@/public/logolight.svg";
 
 const Navbar = () => {
-  const { theme } = useTheme();
+  const { theme, resolvedTheme } = useTheme();
 
-  // Hooks in stable order: useState -> useEffect -> useMemo (always called)
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
+  // Use resolvedTheme (best for SSR safety)
+  const activeTheme = theme === "system" ? resolvedTheme : theme;
 
-  // compute dynamic values (still hooks-first order)
-  const currentLogo = theme === "dark" ? logoDark : logoLight;
-  const bgColor = theme === "dark" ? "#F90101" : "#0DA5F0";
+  const currentLogo = activeTheme === "dark" ? logoDark : logoLight;
+
+  const bgColor = activeTheme === "dark" ? "#F90101" : "#0DA5F0";
 
   const items = useMemo(
     () => [
@@ -25,28 +24,28 @@ const Navbar = () => {
         bgColor,
         textColor: "#fff",
         links: [
-          { label: "Company", href: "/company", ariaLabel: "About Company" },
-          { label: "Careers", href: "/careers", ariaLabel: "About Careers" },
+          { label: "Events", href: "/events", ariaLabel: "Events" },
           { label: "Team", href: "/team", ariaLabel: "Team" },
+          { label: "Gallery", href: "/careers", ariaLabel: "About Careers" },
         ],
       },
       {
-        label: "Projects",
+        label: "Chapters",
         bgColor,
         textColor: "#fff",
         links: [
           {
-            label: "Featured",
+            label: "HackShastra IPEC",
             href: "/featured",
             ariaLabel: "Featured Projects",
           },
           {
-            label: "Case Studies",
+            label: "HackShastra Khalsa College",
             href: "/case-studies",
             ariaLabel: "Case Studies",
           },
           {
-            label: "Case Studies",
+            label: "Open HackShastra Chapter",
             href: "/case-studies",
             ariaLabel: "Case Studies",
           },
@@ -59,13 +58,13 @@ const Navbar = () => {
         links: [
           { label: "Email", href: "/contact", ariaLabel: "Email Us" },
           {
-            label: "Twitter",
-            href: "https://twitter.com",
-            ariaLabel: "Twitter",
+            label: "Instagram",
+            href: "https://instagram.com/hackshastra",
+            ariaLabel: "Instagram",
           },
           {
             label: "LinkedIn",
-            href: "https://linkedin.com",
+            href: "https://linkedin.com/company/hackshastraa",
             ariaLabel: "LinkedIn",
           },
         ],
@@ -74,8 +73,8 @@ const Navbar = () => {
     [bgColor]
   );
 
-  // Prevent rendering on server/hydration mismatch
-  if (!mounted) return null;
+  // Return null only until theme is available
+  if (!activeTheme) return null;
 
   return (
     <CardNav
