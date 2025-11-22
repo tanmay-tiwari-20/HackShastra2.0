@@ -1,90 +1,54 @@
 "use client";
-
 import { useTheme } from "next-themes";
-import { useMemo } from "react";
-import CardNav from "./CardNav";
-
-import logoDark from "@/public/logodark.svg";
-import logoLight from "@/public/logolight.svg";
+import { useEffect, useState } from "react";
+import StaggeredMenu from "./StaggeredMenu";
+import { ThemeToggleButton } from "./ui/skiper-ui/skiper26";
 
 const Navbar = () => {
-  const { theme, resolvedTheme } = useTheme();
+  const { theme } = useTheme();
+  const [mounted, setMounted] = useState(false);
 
-  // Use resolvedTheme (best for SSR safety)
-  const activeTheme = theme === "system" ? resolvedTheme : theme;
+  useEffect(() => {
+    Promise.resolve().then(() => setMounted(true));
+  }, []);
 
-  const currentLogo = activeTheme === "dark" ? logoDark : logoLight;
+  if (!mounted) return null;
 
-  const bgColor = activeTheme === "dark" ? "#F90101" : "#0DA5F0";
+  const logo = theme === "light" ? "/logo2.svg" : "/logo1.svg";
 
-  const items = useMemo(
-    () => [
-      {
-        label: "About",
-        bgColor,
-        textColor: "#fff",
-        links: [
-          { label: "Events", href: "/events", ariaLabel: "Events" },
-          { label: "Team", href: "/team", ariaLabel: "Team" },
-          { label: "Gallery", href: "/careers", ariaLabel: "About Careers" },
-        ],
-      },
-      {
-        label: "Chapters",
-        bgColor,
-        textColor: "#fff",
-        links: [
-          {
-            label: "HackShastra IPEC",
-            href: "/featured",
-            ariaLabel: "Featured Projects",
-          },
-          {
-            label: "HackShastra Khalsa College",
-            href: "/case-studies",
-            ariaLabel: "Case Studies",
-          },
-          {
-            label: "Open HackShastra Chapter",
-            href: "/case-studies",
-            ariaLabel: "Case Studies",
-          },
-        ],
-      },
-      {
-        label: "Contact",
-        bgColor,
-        textColor: "#fff",
-        links: [
-          { label: "Email", href: "/contact", ariaLabel: "Email Us" },
-          {
-            label: "Instagram",
-            href: "https://instagram.com/hackshastra",
-            ariaLabel: "Instagram",
-          },
-          {
-            label: "LinkedIn",
-            href: "https://linkedin.com/company/hackshastraa",
-            ariaLabel: "LinkedIn",
-          },
-        ],
-      },
-    ],
-    [bgColor]
-  );
+  const menuItems = [
+    { label: "Home", ariaLabel: "Go to home page", link: "/" },
+    { label: "About", ariaLabel: "Learn about us", link: "/about" },
+    { label: "Events", ariaLabel: "View our events", link: "/events" },
+    { label: "Contact", ariaLabel: "Get in touch", link: "/contact" },
+  ];
 
-  // Return null only until theme is available
-  if (!activeTheme) return null;
+  const socialItems = [
+    { label: "Instagram", link: "https://instagram.com/hackshastra" },
+    { label: "LinkedIn", link: "https://linkedin.com/company/hackshastraa" },
+    { label: "Email", link: "mailto:collab@hackshastra.in" },
+  ];
 
   return (
-    <CardNav
-      logo={currentLogo}
-      logoAlt="HackShastra Logo"
-      items={items}
-      baseColor="#fff"
-      menuColor="#000"
-      ease="power3.out"
-    />
+    <nav className="fixed top-0 left-0 w-full h-20 flex items-center bg-transparent px-4 sm:px-6 z-50">
+      <div className="w-full">
+        <StaggeredMenu
+          position="right"
+          items={menuItems}
+          socialItems={socialItems}
+          displaySocials
+          displayItemNumbering
+          menuButtonColor={theme === "light" ? "#000" : "#fff"}
+          openMenuButtonColor={theme === "light" ? "#000" : "#fff"}
+          changeMenuColorOnOpen
+          colors={["#F90101", "#0DA5F0"]}
+          logoUrl={logo}
+          accentColor="#F90101"
+          isFixed={true}
+          headerActions={<ThemeToggleButton variant="circle" start="center" />}
+        />
+      </div>
+    </nav>
   );
 };
 

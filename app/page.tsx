@@ -1,7 +1,8 @@
 "use client";
+import Hero from "@/components/Hero";
 import Navbar from "@/components/Navbar";
 import { Preloader } from "@/components/Preloader";
-import { CrowdCanvas } from "@/components/ui/skiper-ui/skiper39";
+// import { CrowdCanvas } from "@/components/ui/skiper-ui/skiper39";
 import { useState } from "react";
 
 const Page = () => {
@@ -21,6 +22,7 @@ const Page = () => {
         }
       >
         <Navbar />
+        <Hero />
       </div>
     </div>
   );

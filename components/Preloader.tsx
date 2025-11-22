@@ -46,7 +46,7 @@ export const Preloader = ({ onComplete }: { onComplete?: () => void }) => {
           transition={{ duration: 0.6 }}
           className="absolute"
         >
-          <h1 className="text-black dark:text-white text-7xl md:text-9xl font-bold">
+          <h1 className="text-black dark:text-white text-6xl md:text-9xl font-bold">
             {greetings[index].text}
           </h1>
         </motion.div>
