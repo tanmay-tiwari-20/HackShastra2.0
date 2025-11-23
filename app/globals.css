@@ -1,6 +1,10 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+*{
+  user-select: none;
+}
+
 @font-face {
   font-family: "HelveticaLocal";
   src: url("/fonts/Helvetica.ttf") format("truetype");

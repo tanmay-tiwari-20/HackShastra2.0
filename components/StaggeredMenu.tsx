@@ -536,7 +536,7 @@ const StaggeredMenu: React.FC<StaggeredMenuProps> = ({
                     key={it.label + idx}
                   >
                     <a
-                      className="sm-panel-item relative dark:text-white text-black font-semibold text-[4rem] cursor-pointer leading-none tracking-[-2px] uppercase transition-[background,color] duration-150 ease-linear inline-block no-underline pr-[1.4em] hover:text-[#0DA5F0] dark:hover:text-[#F90101]"
+                      className="sm-panel-item relative dark:text-white text-black font-semibold text-[3.5rem] cursor-pointer leading-none tracking-[-2px] transition-[background,color] duration-150 ease-linear inline-block no-underline pr-[1.4em] hover:text-[#0DA5F0] dark:hover:text-[#F90101]"
                       href={it.link}
                       aria-label={it.ariaLabel}
                       data-index={idx + 1}

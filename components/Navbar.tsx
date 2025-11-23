@@ -30,7 +30,9 @@ const Navbar = () => {
   ];
 
   return (
-    <nav className="fixed top-0 left-0 w-full h-20 flex items-center bg-transparent px-4 sm:px-6 z-50">
+    <nav
+      className={`fixed top-0 left-0 w-full h-20 flex items-center px-4 sm:px-6 z-50 transition-transform duration-500`}
+    >
       <div className="w-full">
         <StaggeredMenu
           position="right"

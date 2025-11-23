@@ -1,7 +1,9 @@
 "use client";
+import AboutSection from "@/components/AboutSection";
 import Hero from "@/components/Hero";
 import Navbar from "@/components/Navbar";
 import { Preloader } from "@/components/Preloader";
+import UpcomingEvent from "@/components/UpcomingEvent";
 // import { CrowdCanvas } from "@/components/ui/skiper-ui/skiper39";
 import { useState } from "react";
 
@@ -22,6 +24,8 @@ const Page = () => {
       >
         <Navbar />
         <Hero />
+        <UpcomingEvent />
+        <AboutSection />
       </div>
     </div>
   );
