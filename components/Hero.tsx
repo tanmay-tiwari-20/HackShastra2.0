@@ -10,7 +10,7 @@ const Hero = () => {
   const logo = resolvedTheme === "dark" ? "/logo1.svg" : "/logo2.svg";
 
   return (
-    <section className="text-center mt-32 px-4">
+    <section className="text-center mt-40 px-4">
       {/* LOGO */}
       <div className="mx-auto w-24 sm:w-32 md:w-40">
         <Image

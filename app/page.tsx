@@ -13,7 +13,6 @@ const Page = () => {
       {showPreloader && (
         <Preloader onComplete={() => setShowPreloader(false)} />
       )}
-
       <div
         className={
           showPreloader
