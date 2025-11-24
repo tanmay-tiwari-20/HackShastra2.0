@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useTheme } from "next-themes";
@@ -43,22 +43,18 @@ const STATS: Stat[] = [
 
 export default function SplitStatsWall() {
   const { resolvedTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
 
-  const sectionRef = useRef<HTMLElement | null>(null);
-  const leftRef = useRef<HTMLElement | null>(null);
-  const rightRef = useRef<HTMLElement | null>(null);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  // All hooks must be called BEFORE any return
+  const sectionRef = useRef<HTMLDivElement | null>(null);
+  const leftRef = useRef<HTMLDivElement | null>(null);
+  const rightRef = useRef<HTMLDivElement | null>(null);
 
   const isDark = resolvedTheme === "dark";
   const secondaryColor = isDark ? "#FA0001" : "#0DA5F0";
   const secondaryRGB = isDark ? "250,0,1" : "13,165,240";
 
   useEffect(() => {
-    if (!mounted) return;
+    if (!resolvedTheme) return;
 
     const ctx = gsap.context(() => {
       gsap.from(".left-animate", {
@@ -87,9 +83,10 @@ export default function SplitStatsWall() {
     }, sectionRef);
 
     return () => ctx.revert();
-  }, [mounted, isDark]);
+  }, [resolvedTheme, isDark]);
 
-  if (!mounted) return null;
+  // Safe: hooks already executed
+  if (!resolvedTheme) return null;
 
   return (
     <section
@@ -119,8 +116,8 @@ export default function SplitStatsWall() {
               </h1>
 
               <p className="left-animate text-base sm:text-lg md:text-xl opacity-70 font-medium leading-relaxed">
-                From building communities to hosting energetic hackathons,
-                these numbers define our journey.
+                From building communities to hosting energetic hackathons, these
+                numbers define our journey.
               </p>
             </div>
           </div>
@@ -148,8 +145,7 @@ export default function SplitStatsWall() {
                   <p
                     className="text-3xl sm:text-4xl md:text-5xl font-bold mt-1"
                     style={{
-                      WebkitBackgroundClip: "text",
-                      color: secondaryColor, 
+                      color: secondaryColor,
                     }}
                   >
                     {stat.value}
