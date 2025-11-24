@@ -3,6 +3,7 @@ import AboutSection from "@/components/AboutSection";
 import Hero from "@/components/Hero";
 import Navbar from "@/components/Navbar";
 import { Preloader } from "@/components/Preloader";
+import SplitStatsWall from "@/components/SplitStatsWall";
 import UpcomingEvent from "@/components/UpcomingEvent";
 // import { CrowdCanvas } from "@/components/ui/skiper-ui/skiper39";
 import { useState } from "react";
@@ -26,6 +27,7 @@ const Page = () => {
         <Hero />
         <UpcomingEvent />
         <AboutSection />
+        <SplitStatsWall />
       </div>
     </div>
   );
