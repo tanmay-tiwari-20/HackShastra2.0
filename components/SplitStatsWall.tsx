@@ -41,7 +41,7 @@ const STATS: Stat[] = [
   },
 ];
 
-export default function ImpactStats() {
+export default function SplitStatsWall() {
   const { resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
