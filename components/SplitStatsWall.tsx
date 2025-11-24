@@ -44,11 +44,9 @@ const STATS: Stat[] = [
 export default function SplitStatsWall() {
   const { resolvedTheme } = useTheme();
 
-  // All hooks must be called BEFORE any return
-  const sectionRef = useRef<HTMLDivElement | null>(null);
-  const leftRef = useRef<HTMLDivElement | null>(null);
-  const rightRef = useRef<HTMLDivElement | null>(null);
-
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const leftRef = useRef<HTMLDivElement>(null);
+  const rightRef = useRef<HTMLDivElement>(null);
   const isDark = resolvedTheme === "dark";
   const secondaryColor = isDark ? "#FA0001" : "#0DA5F0";
   const secondaryRGB = isDark ? "250,0,1" : "13,165,240";
