@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Image from "next/image";
+import { useTheme } from "next-themes";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -12,8 +13,14 @@ const UpcomingEvent: React.FC = () => {
   const sectionRef = useRef<HTMLDivElement>(null);
   const textRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLDivElement>(null);
+  const { resolvedTheme } = useTheme();
+
+  const isDark = resolvedTheme === "dark";
+  const secondaryColor = isDark ? "#FA0001" : "#0DA5F0"; // SAME AS PREVIOUS SECTION
 
   useEffect(() => {
+    if (!resolvedTheme) return;
+
     const ctx = gsap.context(() => {
       // Text stagger animation
       gsap.from(".animate-text", {
@@ -28,7 +35,7 @@ const UpcomingEvent: React.FC = () => {
         },
       });
 
-      // Image scale and glow animation
+      // Image scale + opacity
       gsap.from(imageRef.current, {
         scale: 0.85,
         opacity: 0,
@@ -42,7 +49,7 @@ const UpcomingEvent: React.FC = () => {
     }, sectionRef);
 
     return () => ctx.revert();
-  }, []);
+  }, [resolvedTheme]);
 
   const eventDetails = [
     { label: "Date", value: "31 January – 1 February" },
@@ -58,13 +65,14 @@ const UpcomingEvent: React.FC = () => {
     >
       <div className="max-w-7xl mx-auto w-full">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-14 xl:gap-20 items-center">
-          {/* RIGHT POSTER / VISUAL — now FIRST on mobile */}
+          {/* RIGHT — IMAGE */}
           <div
             ref={imageRef}
             className="relative flex justify-center lg:justify-end w-full order-1 lg:order-2"
           >
-            <div className="relative w-full max-w-sm sm:max-w-md md:max-w-lg aspect-3/4 rounded-3xl overflow-hidden bg-foreground/5 border border-foreground/10 shadow-2xl">
-              {/* PRESENTS PNG AS POSTER */}
+            <div
+              className="relative w-full max-w-sm sm:max-w-md md:max-w-lg aspect-3/4 rounded-3xl overflow-hidden shadow-2xl"
+            >
               <Image
                 height={10000}
                 width={10000}
@@ -75,16 +83,23 @@ const UpcomingEvent: React.FC = () => {
             </div>
           </div>
 
-          {/* LEFT CONTENT — now SECOND on mobile */}
+          {/* LEFT CONTENT */}
           <div ref={textRef} className="space-y-8 order-2 lg:order-1">
-            {/* Tag */}
+            {/* TAG */}
             <div className="animate-text">
-              <span className="px-4 py-2 bg-foreground/5 border border-foreground/10 rounded-full text-xs font-semibold tracking-widest uppercase">
+              <span
+                className="px-4 py-2 rounded-full text-xs font-semibold tracking-widest uppercase"
+                style={{
+                  backgroundColor: `${secondaryColor}15`,
+                  border: `1px solid ${secondaryColor}40`,
+                  color: secondaryColor,
+                }}
+              >
                 Upcoming Event
               </span>
             </div>
 
-            {/* Title & Subtitle */}
+            {/* TITLE */}
             <div className="space-y-4">
               <h1 className="animate-text text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold tracking-tight leading-[1.1]">
                 SnowHackIPEC
@@ -94,11 +109,19 @@ const UpcomingEvent: React.FC = () => {
               </p>
             </div>
 
-            {/* Event Details */}
+            {/* EVENT DETAILS */}
             <div className="animate-text space-y-4 pt-2 sm:pt-4">
               {eventDetails.map((detail, idx) => (
                 <div key={idx} className="flex items-start space-x-4 group">
-                  <div className="w-1.5 h-1.5 bg-foreground rounded-full mt-2.5 group-hover:scale-150 transition-all duration-300" />
+                  {/* Colored Dot */}
+                  <div
+                    className="w-1.5 h-1.5 rounded-full mt-2.5 transition-all duration-300"
+                    style={{
+                      backgroundColor: secondaryColor,
+                      boxShadow: `0 0 8px ${secondaryColor}60`,
+                    }}
+                  />
+
                   <div>
                     <span className="text-xs sm:text-sm opacity-50 font-medium uppercase tracking-wider">
                       {detail.label}
@@ -111,22 +134,32 @@ const UpcomingEvent: React.FC = () => {
               ))}
             </div>
 
-            {/* Buttons */}
+            {/* BUTTONS */}
             <div className="animate-text flex flex-wrap gap-4 pt-4 sm:pt-6">
+              {/* Primary */}
               <motion.button
                 whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.97 }}
                 transition={{ type: "spring", stiffness: 300, damping: 15 }}
-                className="px-6 sm:px-8 py-3 sm:py-4 bg-foreground text-background rounded-4xl font-semibold shadow-lg hover:shadow-xl transition-shadow duration-300"
+                className="px-6 sm:px-8 py-3 sm:py-4 rounded-4xl font-semibold shadow-lg hover:shadow-xl transition-shadow duration-300"
+                style={{
+                  backgroundColor: secondaryColor,
+                  color: "#fff",
+                }}
               >
                 Register Now
               </motion.button>
 
+              {/* Secondary */}
               <motion.button
                 whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.97 }}
                 transition={{ type: "spring", stiffness: 300, damping: 15 }}
-                className="px-6 sm:px-8 py-3 sm:py-4 border-2 border-foreground/20 rounded-4xl font-semibold hover:border-foreground/40 transition-all duration-300"
+                className="px-6 sm:px-8 py-3 sm:py-4 rounded-4xl font-semibold transition-all duration-300"
+                style={{
+                  border: `2px solid ${secondaryColor}40`,
+                  color: secondaryColor,
+                }}
               >
                 Know More
               </motion.button>
