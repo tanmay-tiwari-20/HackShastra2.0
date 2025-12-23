@@ -122,7 +122,7 @@ export default function AboutSection() {
             ref={titleRef}
             className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 dark:text-white mb-4 tracking-tight"
           >
-            Why HackShastra?
+            Why <span className="text-[#0DA5F0] dark:text-[#FA0001]">HackShastra</span>?
           </h2>
           <p
             ref={subtitleRef}
@@ -145,15 +145,15 @@ export default function AboutSection() {
               whileHover={{ scale: 1.03, y: -8 }}
               transition={{ duration: 0.3, ease: "easeOut" }}
             >
-              <div className="relative h-full p-8 rounded-2xl border border-gray-200 dark:border-white/10 bg-white/80 dark:bg-zinc-900/50 backdrop-blur-sm overflow-hidden transition-all duration-300 group-hover:border-blue-400 dark:group-hover:border-red-500/40 group-hover:shadow-2xl group-hover:shadow-blue-500/20 dark:group-hover:shadow-red-500/10">
+              <div className="relative h-full p-8 rounded-2xl border border-gray-200 dark:border-white/10 bg-white/80 dark:bg-zinc-900/50 backdrop-blur-sm overflow-hidden transition-all duration-300 group-hover:border-blue-400 dark:group-hover:border-[#FA0001]/40 group-hover:shadow-2xl group-hover:shadow-[#0DA5F0]/20 dark:group-hover:shadow-[#FA0001]/10">
                 {/* Hover glow effect */}
                 <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <div className="absolute top-0 left-0 w-full h-px bg-linear-to-r from-transparent via-blue-400 dark:via-red-500/50 to-transparent" />
-                  <div className="absolute bottom-0 left-0 w-full h-px bg-linear-to-r from-transparent via-blue-400 dark:via-red-500/50 to-transparent" />
+                  <div className="absolute top-0 left-0 w-full h-px bg-linear-to-r from-transparent via-blue-400 dark:via-[#FA0001]/50 to-transparent" />
+                  <div className="absolute bottom-0 left-0 w-full h-px bg-linear-to-r from-transparent via-blue-400 dark:via-[#FA0001]/50 to-transparent" />
                 </div>
 
                 {/* Icon */}
-                <div className="mb-6 text-blue-600 dark:text-red-600 group-hover:text-blue-500 dark:group-hover:text-red-500">
+                <div className="mb-6 text-blue-600 dark:text-red-600 group-hover:text-[#0DA5F0] dark:group-hover:text-[#FA0001]">
                   {feature.icon}
                 </div>
 
@@ -166,7 +166,7 @@ export default function AboutSection() {
                 </p>
 
                 {/* Corner accent */}
-                <div className="absolute bottom-0 right-0 w-24 h-24 bg-linear-to-tl from-blue-400/10 dark:from-red-500/5 to-transparent rounded-tl-full opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                <div className="absolute bottom-0 right-0 w-24 h-24 bg-linear-to-tl from-blue-400/10 dark:from-[#FA0001]/5 to-transparent rounded-tl-full opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               </div>
             </motion.div>
           ))}

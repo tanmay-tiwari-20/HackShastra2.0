@@ -41,7 +41,7 @@ const STATS: Stat[] = [
   },
 ];
 
-// SVG ICONS FOR EACH STAT
+// SVG ICONS
 const ICONS: Record<string, JSX.Element> = {
   "Social Media Reach": (
     <svg
@@ -54,7 +54,6 @@ const ICONS: Record<string, JSX.Element> = {
       <path d="M18 2H6a2 2 0 00-2 2v16l4-4h10a2 2 0 002-2V4a2 2 0 00-2-2z" />
     </svg>
   ),
-
   "College Chapters": (
     <svg
       className="w-6 h-6"
@@ -67,7 +66,6 @@ const ICONS: Record<string, JSX.Element> = {
       <path d="M21 10v6l-9 4-9-4v-6" />
     </svg>
   ),
-
   "Successful Events": (
     <svg
       className="w-6 h-6"
@@ -80,7 +78,6 @@ const ICONS: Record<string, JSX.Element> = {
       <circle cx="12" cy="12" r="9" />
     </svg>
   ),
-
   "Community Partners": (
     <svg
       className="w-6 h-6"
@@ -93,7 +90,6 @@ const ICONS: Record<string, JSX.Element> = {
       <path d="M5.5 21a6.5 6.5 0 0113 0" />
     </svg>
   ),
-
   "Brand Partnerships": (
     <svg
       className="w-6 h-6"
@@ -109,6 +105,24 @@ const ICONS: Record<string, JSX.Element> = {
   ),
 };
 
+const parseStatValue = (value: string) => {
+  const isK = value.toLowerCase().includes("k");
+  const isPlus = value.includes("+");
+  const number = parseFloat(value.replace(/[^\d.]/g, ""));
+  return {
+    raw: isK ? number * 1000 : number,
+    isK,
+    isPlus,
+  };
+};
+
+const formatStatValue = (val: number, isK: boolean, isPlus: boolean) => {
+  const display = isK
+    ? `${Math.round(val / 1000)}k`
+    : Math.round(val).toString();
+  return isPlus ? `${display}+` : display;
+};
+
 export default function SplitStatsWall() {
   const { resolvedTheme } = useTheme();
   const isDark = resolvedTheme === "dark";
@@ -116,12 +130,21 @@ export default function SplitStatsWall() {
 
   const sectionRef = useRef<HTMLDivElement>(null);
   const leftRef = useRef<HTMLDivElement>(null);
+  const statRefs = useRef<HTMLParagraphElement[]>([]);
+
+  statRefs.current = [];
+
+  const addToStatRefs = (el: HTMLParagraphElement | null) => {
+    if (el && !statRefs.current.includes(el)) {
+      statRefs.current.push(el);
+    }
+  };
 
   useEffect(() => {
     if (!resolvedTheme) return;
 
     const ctx = gsap.context(() => {
-      // LEFT text + image animation
+      // LEFT CONTENT
       gsap.from(".left-animate", {
         y: 60,
         opacity: 0,
@@ -134,13 +157,38 @@ export default function SplitStatsWall() {
         },
       });
 
-      // EACH STAT CARD ANIMATION
-      gsap.utils.toArray(".stat-item").forEach((card: any) => {
+      // STAT CARDS + COUNT UP
+      gsap.utils.toArray(".stat-item").forEach((card: any, index: number) => {
+        const valueEl = statRefs.current[index];
+        if (!valueEl) return;
+
+        const { raw, isK, isPlus } = parseStatValue(STATS[index].value);
+        const counter = { val: 0 };
+
         gsap.from(card, {
           y: 40,
           opacity: 0,
           duration: 0.9,
           ease: "power3.out",
+          scrollTrigger: {
+            trigger: card,
+            start: "top 85%",
+            once: true,
+            onEnter: () => {
+              gsap.to(counter, {
+                val: raw,
+                duration: 1.6,
+                ease: "power3.out",
+                onUpdate: () => {
+                  valueEl.textContent = formatStatValue(
+                    counter.val,
+                    isK,
+                    isPlus
+                  );
+                },
+              });
+            },
+          },
         });
       });
     }, sectionRef);
@@ -152,10 +200,9 @@ export default function SplitStatsWall() {
 
   return (
     <section ref={sectionRef} className="w-full py-14 px-6 md:px-10 lg:px-20">
-      <div className="max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-2 gap-16">
-        {/* LEFT SECTION */}
-        <div ref={leftRef} className="space-y-10 order-1">
-          {/* TAG */}
+      <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16">
+        {/* LEFT */}
+        <div ref={leftRef} className="space-y-10">
           <div className="left-animate">
             <span
               className="px-4 py-2 rounded-full text-xs font-semibold tracking-widest uppercase"
@@ -169,22 +216,19 @@ export default function SplitStatsWall() {
             </span>
           </div>
 
-          {/* TITLE */}
           <div className="space-y-4 max-w-xl">
-            <h1 className="left-animate text-4xl sm:text-5xl md:text-6xl font-bold leading-[1.1] tracking-tight">
+            <h1 className="left-animate text-4xl sm:text-5xl md:text-6xl font-bold">
               HackShastra in Numbers
             </h1>
-
-            <p className="left-animate text-lg opacity-70 font-medium leading-relaxed">
+            <p className="left-animate text-lg opacity-70">
               From building communities to hosting energetic hackathons, these
               numbers define our journey.
             </p>
           </div>
 
-          {/* IMAGE */}
           <div className="left-animate">
             <div
-              className="p-0.5 rounded-2xl w-full max-w-md"
+              className="p-0.5 rounded-2xl max-w-md"
               style={{
                 background: `linear-gradient(135deg, ${secondaryColor}, transparent 60%)`,
               }}
@@ -194,40 +238,34 @@ export default function SplitStatsWall() {
                 alt="HackShastra Reach"
                 width={10000}
                 height={10000}
-                className="w-full rounded-2xl shadow-lg object-cover"
+                className="rounded-2xl object-cover"
                 priority
               />
             </div>
           </div>
         </div>
 
-        {/* RIGHT — GRID OF STATS */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 order-2">
+        {/* RIGHT */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
           {STATS.map((stat, index) => (
             <div
               key={index}
-              className="stat-item p-6 rounded-xl border bg-white dark:bg-[#0e0e0e] shadow-sm hover:shadow-md transition-all duration-300"
+              className="stat-item p-6 rounded-xl border bg-white dark:bg-[#0e0e0e] shadow-sm"
               style={{ borderColor: `${secondaryColor}40` }}
             >
-              <div className="flex items-start gap-4">
-                {/* ICON */}
-                <div className="text-[18px]" style={{ color: secondaryColor }}>
-                  {ICONS[stat.label]}
-                </div>
-
-                {/* TEXT CONTENT */}
+              <div className="flex gap-4">
+                <div style={{ color: secondaryColor }}>{ICONS[stat.label]}</div>
                 <div>
-                  <span className="text-xs opacity-60 uppercase font-semibold tracking-wider">
+                  <span className="text-xs opacity-60 uppercase font-semibold">
                     {stat.label}
                   </span>
-
                   <p
+                    ref={addToStatRefs}
                     className="text-3xl sm:text-4xl font-bold mt-1"
                     style={{ color: secondaryColor }}
                   >
-                    {stat.value}
+                    0
                   </p>
-
                   <p className="text-sm opacity-60 mt-1">{stat.description}</p>
                 </div>
               </div>

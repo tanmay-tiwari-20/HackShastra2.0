@@ -70,16 +70,20 @@ const UpcomingEvent: React.FC = () => {
             ref={imageRef}
             className="relative flex justify-center lg:justify-end w-full order-1 lg:order-2"
           >
-            <div
-              className="relative w-full max-w-sm sm:max-w-md md:max-w-lg aspect-3/4 rounded-3xl overflow-hidden shadow-2xl"
-            >
-              <Image
-                height={10000}
-                width={10000}
-                src="/images/Presents.png"
-                alt="Poster"
-                className="w-full h-full object-cover"
-              />
+            <div className="relative w-full max-w-sm sm:max-w-md md:max-w-lg aspect-3/4 rounded-3xl overflow-hidden shadow-2xl">
+              <a
+                href="https://unstop.com/hackathons/snowhackipec-hackshastra-1613746"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Image
+                  height={10000}
+                  width={10000}
+                  src="/images/Presents.png"
+                  alt="Poster"
+                  className="w-full h-full object-cover"
+                />
+              </a>
             </div>
           </div>
 
@@ -137,7 +141,8 @@ const UpcomingEvent: React.FC = () => {
             {/* BUTTONS */}
             <div className="animate-text flex flex-wrap gap-4 pt-4 sm:pt-6">
               {/* Primary */}
-              <motion.button
+              <motion.a
+                href="https://unstop.com/hackathons/snowhackipec-hackshastra-1613746"
                 whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.97 }}
                 transition={{ type: "spring", stiffness: 300, damping: 15 }}
@@ -148,10 +153,11 @@ const UpcomingEvent: React.FC = () => {
                 }}
               >
                 Register Now
-              </motion.button>
+              </motion.a>
 
               {/* Secondary */}
-              <motion.button
+              <motion.a
+                href="/events"
                 whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.97 }}
                 transition={{ type: "spring", stiffness: 300, damping: 15 }}
@@ -162,7 +168,7 @@ const UpcomingEvent: React.FC = () => {
                 }}
               >
                 Know More
-              </motion.button>
+              </motion.a>
             </div>
           </div>
         </div>

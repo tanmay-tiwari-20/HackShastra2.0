@@ -53,13 +53,13 @@ const Hero = () => {
 
       {/* BUTTON */}
       <a
-        href="https://unstop.com/p/hackshastra-hackshastra-1544473"
+        href="https://unstop.com/hackathons/snowhackipec-hackshastra-1613746"
         target="_blank"
         className="
           group inline-flex items-center mt-6 gap-2
           px-5 md:px-6 py-2 md:py-3 
-         dark:bg-red-600 dark:hover:bg-red-700 
-          bg-blue-600 hover:bg-blue-700
+         dark:bg-[#FA0001] dark:hover:bg-[#FA0001]/90 
+          bg-[#0DA5F0] hover:bg-[#0DA5F0]/90
           transition rounded-full text-white font-semibold 
           text-base md:text-lg shadow-lg 
           hover:scale-105 duration-300
