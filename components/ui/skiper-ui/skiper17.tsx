@@ -94,7 +94,7 @@ const StickyCard002 = ({
     <section
       ref={containerRef}
       className={cn(
-        "relative w-full min-h-[100svh] flex items-center justify-center",
+        "relative w-full min-h-svh flex items-center justify-center",
         className
       )}
     >
@@ -104,7 +104,7 @@ const StickyCard002 = ({
             `
             relative 
             w-full 
-            aspect-[3/4]
+            aspect-3/4
             max-w-[clamp(280px,85vw,520px)]
             sm:max-w-[clamp(320px,70vw,600px)]
             lg:max-w-[clamp(380px,45vw,720px)]
