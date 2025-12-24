@@ -81,7 +81,7 @@ const UpcomingEvent: React.FC = () => {
                 <Image
                   height={10000}
                   width={10000}
-                  src="/images/Poster.png"
+                  src="/images/poster.png"
                   alt="Poster"
                   className="w-full h-full object-cover"
                   priority
