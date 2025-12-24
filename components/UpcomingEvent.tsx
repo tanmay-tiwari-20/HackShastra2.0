@@ -70,11 +70,13 @@ const UpcomingEvent: React.FC = () => {
             ref={imageRef}
             className="relative flex justify-center lg:justify-end w-full order-1 lg:order-2"
           >
-            <div className="relative w-full max-w-sm sm:max-w-md md:max-w-lg aspect-3/4 rounded-3xl overflow-hidden shadow-2xl">
+            <div className="relative w-full max-w-sm sm:max-w-md md:max-w-lg aspect-3/4 rounded-3xl overflow-hidden shadow-2xl hover:scale-105 transition-transform duration-500">
               <a
                 href="https://unstop.com/hackathons/snowhackipec-hackshastra-1613746"
                 target="_blank"
                 rel="noopener noreferrer"
+                className="block w-full h-full"
+                aria-label="Open SnowHackIPEC on Unstop"
               >
                 <Image
                   height={10000}
@@ -82,6 +84,7 @@ const UpcomingEvent: React.FC = () => {
                   src="/images/Presents.png"
                   alt="Poster"
                   className="w-full h-full object-cover"
+                  priority
                 />
               </a>
             </div>

@@ -5,12 +5,10 @@ const greetings = [
   { text: "Hello" },
   { text: "ਸਤ ਸ੍ਰੀ ਅਕਾਲ" },
   { text: "ہیلو" },
-  { text: "Bonjour" },
   { text: "হ্যালো" },
   { text: "Ciao" },
   { text: "வணக்கம்" },
   { text: "こんにちは" },
-  { text: "你好" },
   { text: "नमस्ते" },
 ];
 

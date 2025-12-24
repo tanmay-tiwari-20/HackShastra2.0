@@ -5,6 +5,10 @@
   user-select: none;
 }
 
+html, body {
+  overflow-x: hidden;
+}
+
 @font-face {
   font-family: "HelveticaLocal";
   src: url("/fonts/Helvetica.ttf") format("truetype");
