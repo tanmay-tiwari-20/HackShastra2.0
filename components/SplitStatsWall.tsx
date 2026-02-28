@@ -234,7 +234,7 @@ export default function SplitStatsWall() {
               }}
             >
               <Image
-                src="/images/reach.JPG"
+                src="/images/reach.webp"
                 alt="HackShastra Reach"
                 width={10000}
                 height={10000}

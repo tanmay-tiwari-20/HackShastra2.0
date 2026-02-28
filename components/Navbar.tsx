@@ -1,10 +1,11 @@
 "use client";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
 import StaggeredMenu from "./StaggeredMenu";
 import { ThemeToggleButton } from "./ui/skiper-ui/skiper26";
 
-const Navbar = () => {
+const Navbar = ({ isReady = false }: { isReady?: boolean }) => {
   const { theme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
@@ -20,6 +21,7 @@ const Navbar = () => {
     { label: "Home", ariaLabel: "Go to home page", link: "/" },
     { label: "About", ariaLabel: "Learn about us", link: "/about" },
     { label: "Events", ariaLabel: "View our events", link: "/events" },
+    { label: "Gallery", ariaLabel: "Gallery of our events", link: "/gallery" },
     { label: "Contact", ariaLabel: "Get in touch", link: "/contact" },
   ];
 
@@ -30,8 +32,11 @@ const Navbar = () => {
   ];
 
   return (
-    <nav
-      className={`fixed top-0 left-0 w-full h-20 flex items-center px-4 sm:px-6 z-50 transition-transform duration-500`}
+    <motion.nav
+      initial={{ y: -100, opacity: 0 }}
+      animate={isReady ? { y: 0, opacity: 1 } : { y: -100, opacity: 0 }}
+      transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: 0.1 }}
+      className="fixed top-0 left-0 w-full h-20 flex items-center px-4 sm:px-6 z-50"
     >
       <div className="w-full">
         <StaggeredMenu
@@ -50,7 +55,7 @@ const Navbar = () => {
           headerActions={<ThemeToggleButton variant="circle" start="center" />}
         />
       </div>
-    </nav>
+    </motion.nav>
   );
 };
 

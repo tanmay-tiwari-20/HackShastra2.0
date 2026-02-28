@@ -33,61 +33,52 @@ const Skiper28 = () => {
   `;
 
   return (
-    <ReactLenis root>
-      {/* OUTER WRAPPER — prevents horizontal overflow */}
-      <section
-        ref={targetRef}
-        className="relative h-[140vh] w-full overflow-hidden"
+    <section
+      ref={targetRef}
+      className="relative h-[140vh] w-full overflow-hidden"
+    >
+      <div
+        className="sticky top-0 flex h-screen items-center justify-center overflow-hidden"
+        style={{
+          perspective: "800px",
+          transformStyle: "preserve-3d",
+        }}
       >
-        {/* STICKY SCENE */}
-        <div
-          className="sticky top-0 flex h-screen items-center justify-center overflow-hidden"
+        <motion.div
           style={{
-            perspective: "800px",
+            transform,
+            opacity,
             transformStyle: "preserve-3d",
           }}
+          className="relative px-6 text-center"
         >
-          <motion.div
+          <div
+            className="pointer-events-none absolute inset-0 translate-y-4 font-extrabold tracking-tight text-black/10 dark:text-gray-300/10 blur-sm"
             style={{
-              transform,
-              opacity,
-              transformStyle: "preserve-3d",
+              transform: "translateZ(-50px)",
+              fontSize: "clamp(2rem, 7vw, 4.5rem)",
             }}
-            className="relative px-6 text-center"
           >
-            {/* BACK DEPTH LAYER */}
-            <div
-              className="pointer-events-none absolute inset-0 translate-y-4 font-extrabold tracking-tight text-black/10 dark:text-gray-300/10 blur-sm"
-              style={{
-                transform: "translateZ(-50px)",
-                fontSize: "clamp(2rem, 7vw, 4.5rem)",
-              }}
-            >
-              HackShastra Events Be Like....
-            </div>
-
-            {/* MAIN TEXT */}
-            <h1
-              className="font-geist font-extrabold tracking-tight text-transparent bg-clip-text 
+            HackShastra Events Be Like....
+          </div>
+          <h1
+            className="font-geist font-extrabold tracking-tight text-transparent bg-clip-text 
     animate-gradient
     bg-size-[200%_200%]
     bg-linear-to-r 
     dark:from-[#ff2e2e] dark:via-[#990000] dark:to-[#ff2e2e]
     from-[#0DA5F0] via-[#0055AA] to-[#0DA5F0]"
-              style={{
-                fontSize: "clamp(2.2rem, 7.5vw, 5rem)",
-                lineHeight: 1.05,
-              }}
-            >
-              HackShastra Events Be Like....
-            </h1>
-
-            {/* FADE — SAFE (no negative positioning) */}
-            <div className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-linear-to-b " />
-          </motion.div>
-        </div>
-      </section>
-    </ReactLenis>
+            style={{
+              fontSize: "clamp(2.2rem, 7.5vw, 5rem)",
+              lineHeight: 1.05,
+            }}
+          >
+            HackShastra Events Be Like....
+          </h1>
+          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-linear-to-b " />
+        </motion.div>
+      </div>
+    </section>
   );
 };
 

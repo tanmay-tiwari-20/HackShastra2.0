@@ -9,15 +9,27 @@ import Theme from "@/components/Theme";
 import { Skiper28 } from "@/components/ui/skiper-ui/skiper28";
 import { CrowdCanvas } from "@/components/ui/skiper-ui/skiper39";
 import UpcomingEvent from "@/components/UpcomingEvent";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const Page = () => {
   const [showPreloader, setShowPreloader] = useState(true);
 
+  useEffect(() => {
+    const hasSeenPreloader = sessionStorage.getItem("hasSeenPreloader");
+    if (hasSeenPreloader) {
+      setShowPreloader(false);
+    }
+  }, []);
+
+  const handlePreloaderComplete = () => {
+    sessionStorage.setItem("hasSeenPreloader", "true");
+    setShowPreloader(false);
+  };
+
   return (
     <div className="relative">
       {showPreloader && (
-        <Preloader onComplete={() => setShowPreloader(false)} />
+        <Preloader onComplete={handlePreloaderComplete} />
       )}
       <div
         className={
@@ -26,8 +38,8 @@ const Page = () => {
             : "opacity-100 transition-opacity duration-500"
         }
       >
-        <Navbar />
-        <Hero />
+        <Navbar isReady={!showPreloader} />
+        <Hero isReady={!showPreloader} />
         <UpcomingEvent />
         <Theme />
         <SplitStatsWall />

@@ -4,7 +4,7 @@ import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useRef } from "react";
-import Image from "next/image";
+
 import { cn } from "@/lib/utils";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -40,17 +40,32 @@ const StickyCard002 = ({
       const isMobile = window.innerWidth < 640;
 
       gsap.defaults({
-        ease: "none",
+        ease: "power2.inOut",
         force3D: true,
       });
 
       images.forEach((img, i) => {
-        gsap.set(img, {
-          yPercent: i === 0 ? 0 : 100,
-          scale: 1,
-          rotateZ: 0,
-          willChange: "transform",
-        });
+        if (i === 0) {
+          gsap.set(img, {
+            yPercent: 0,
+            xPercent: 0,
+            rotateZ: 0,
+            scale: 1,
+            transformOrigin: "bottom center",
+            willChange: "transform",
+            zIndex: total - i,
+          });
+        } else {
+          gsap.set(img, {
+            yPercent: 120,    // start below
+            xPercent: 50,     // start to the right 
+            rotateZ: 25,      // start rotated
+            scale: 1,
+            transformOrigin: "bottom center",
+            willChange: "transform",
+            zIndex: total - i,
+          });
+        }
       });
 
       const tl = gsap.timeline({
@@ -59,27 +74,38 @@ const StickyCard002 = ({
           start: "top top",
           end: `+=${window.innerHeight * (total - 1)}`,
           pin: true,
-          scrub: true,
+          scrub: 1,
           anticipatePin: 1,
           invalidateOnRefresh: true,
         },
       });
 
-      for (let i = 0; i < total - 1; i++) {
-        tl.to(
-          images[i],
-          {
-            scale: isMobile ? 0.96 : 0.9,
-            rotateZ: isMobile ? 1 : 2,
-          },
-          i
-        ).to(
-          images[i + 1],
-          {
-            yPercent: 0,
-          },
-          i
-        );
+      for (let k = 1; k < total; k++) {
+        const stepTl = gsap.timeline();
+
+        for (let i = 0; i <= k; i++) {
+          const offset = i - k / 2;
+          // Calculate values for a hand-of-cards fan effect
+          const rotateZ = offset * (isMobile ? 6 : 10);
+          const xPercent = offset * (isMobile ? 12 : 20);
+          const yPercent = Math.abs(offset) * 5;
+          const scale = 1 - Math.abs(offset) * 0.02; // Optional depth styling
+
+          stepTl.to(
+            images[i],
+            {
+              yPercent,
+              xPercent,
+              rotateZ,
+              scale,
+              duration: 1,
+              ease: "none",
+            },
+            0 // All cards in the hand animate simultaneously for the step
+          );
+        }
+
+        tl.add(stepTl, k - 1);
       }
 
       return () => {
@@ -98,18 +124,16 @@ const StickyCard002 = ({
         className
       )}
     >
-      <div className="relative w-full flex items-center justify-center overflow-hidden px-4 sm:px-6">
+      <div className="relative w-full flex items-center justify-center overflow-visible px-4 sm:px-6">
         <div
           className={cn(
             `
             relative 
             w-full 
-            aspect-3/4
             max-w-[clamp(280px,85vw,520px)]
             sm:max-w-[clamp(320px,70vw,600px)]
             lg:max-w-[clamp(380px,45vw,720px)]
             rounded-3xl 
-            overflow-hidden
             `,
             containerClassName
           )}
@@ -121,20 +145,22 @@ const StickyCard002 = ({
                 if (el) imageRefs.current[i] = el;
               }}
               className={cn(
-                "absolute inset-0 flex items-center justify-center will-change-transform",
+                i === 0 ? "relative" : "absolute inset-0 h-full",
+                "w-full flex items-center justify-center will-change-transform shadow-2xl rounded-3xl",
                 imageClassName
               )}
             >
-              <Image
+              <img
                 src={card.image}
                 alt={card.alt || ""}
-                fill
-                priority={i === 0}
                 draggable={false}
                 className="
+                  w-full
+                  h-auto
                   object-contain
                   select-none
                   backface-hidden
+                  rounded-3xl
                 "
               />
             </div>

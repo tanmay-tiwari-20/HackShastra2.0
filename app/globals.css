@@ -1,11 +1,12 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
-*{
+* {
   user-select: none;
 }
 
-html, body {
+html,
+body {
   overflow-x: hidden;
 }
 
