@@ -227,7 +227,7 @@ const GalleryPage = () => {
                 <div
                     className={`absolute bottom-8 left-1/2 -translate-x-1/2 pointer-events-none z-40 text-sm tracking-widest uppercase transition-opacity duration-300 ${selectedImage ? 'opacity-0' : 'opacity-100'}`}
                 >
-                    <div className="bg-black/10 dark:bg-black/40 backdrop-blur-sm px-6 py-2 rounded-full border border-black/10 dark:border-white/10 text-black/70 dark:text-white/70 font-medium">
+                    <div className="bg-black/10 dark:bg-black/40 backdrop-blur-sm px-6 py-2 rounded-full border border-black/10 dark:border-white/10 text-black/70 dark:text-white/70 font-medium text-center">
                         Drag or Scroll to explore
                     </div>
                 </div>
