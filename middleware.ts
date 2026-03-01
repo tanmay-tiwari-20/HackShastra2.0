@@ -22,7 +22,7 @@ export function middleware(request: NextRequest) {
   }
 
   // Allow home & tbd
-  if (pathname === "/" || pathname === "/tbd") {
+  if (pathname === "/" || pathname === "/about" || pathname === "/events" || pathname === "/gallery" || pathname === "/contact" || pathname === "/tbd") {
     return NextResponse.next();
   }
 

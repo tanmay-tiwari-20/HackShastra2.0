@@ -4,7 +4,7 @@ const nextConfig: NextConfig = {
   turbopack: {
     root: __dirname,
   },
-  output: "export",
+  // output: "export",
   assetPrefix: "./",
   images: {
     unoptimized: true,
