@@ -1,5 +1,5 @@
 "use client";
-import React, { useRef, useEffect, useState, useCallback } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import {
     motion,
     useMotionValue,
@@ -70,6 +70,7 @@ const GalleryPage = () => {
     // We wrap between -GRID_WIDTH/2 and GRID_WIDTH/2 to keep the 3x3 tiles centered beautifully.
     const wrappedX = useTransform(smoothX, (v) => wrap(-GRID_WIDTH / 2, GRID_WIDTH / 2, v));
     const wrappedY = useTransform(smoothY, (v) => wrap(-GRID_HEIGHT / 2, GRID_HEIGHT / 2, v));
+    const wrappedYFast = useTransform(smoothY, (v) => wrap(-GRID_HEIGHT / 2, GRID_HEIGHT / 2, v * 1.3));
 
     const [selectedImage, setSelectedImage] = useState<{ url: string; id: string } | null>(null);
     const [scale, setScale] = useState(1);
@@ -121,56 +122,6 @@ const GalleryPage = () => {
         }
     );
 
-    // Generate the core tile content. We interleave the local images.
-    const CoreTile = useCallback(({ isCenter }: { isCenter: boolean }) => {
-        let counter = 0;
-        const items = [];
-
-        for (let r = 0; r < ROWS; r++) {
-            for (let c = 0; c < COLUMNS; c++) {
-                const staggerOffset = c % 2 !== 0 ? IMAGE_HEIGHT / 2 : 0;
-                const top = r * (IMAGE_HEIGHT + GAP) + staggerOffset;
-                const left = c * (IMAGE_WIDTH + GAP);
-                const imgIndex = counter % GALLERY_IMAGES.length;
-                const url = GALLERY_IMAGES[imgIndex];
-                const id = `img-${r}-${c}`;
-
-                items.push(
-                    <motion.div
-                        layoutId={isCenter ? `container-${id}` : undefined}
-                        key={id}
-                        className="absolute overflow-hidden rounded-2xl group cursor-pointer shadow-lg"
-                        style={{
-                            top,
-                            left,
-                            width: IMAGE_WIDTH,
-                            height: IMAGE_HEIGHT,
-                        }}
-                        whileHover={isCenter ? { scale: 0.98 } : undefined}
-                        transition={{ duration: 0.4, ease: "easeOut" }}
-                        onClick={() => setSelectedImage({ url, id })}
-                    >
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <motion.img
-                            layoutId={isCenter ? `image-${id}` : undefined}
-                            src={url}
-                            alt={`Gallery Image ${counter}`}
-                            decoding="async"
-                            loading={isCenter ? "eager" : "lazy"}
-                            className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105 pointer-events-none"
-                        />
-                    </motion.div>
-                );
-                counter++;
-            }
-        }
-        return (
-            <div className="relative" style={{ width: GRID_WIDTH, height: GRID_HEIGHT }}>
-                {items}
-            </div>
-        );
-    }, [setSelectedImage]); // setSelectedImage is a stable function from useState, but good practice to include if it's used in useCallback dependencies.
-
     return (
         <LayoutGroup>
             {/* Theme-aware background */}
@@ -187,7 +138,7 @@ const GalleryPage = () => {
                     className={`absolute inset-0 w-full h-full touch-none select-none ${selectedImage ? 'pointer-events-none blur-sm' : 'cursor-grab active:cursor-grabbing'} transition-[filter] duration-500`}
                 >
                     <motion.div
-                        style={{ x: wrappedX, y: wrappedY }}
+                        style={{ x: wrappedX }}
                         className="w-full h-full absolute top-1/2 left-1/2 will-change-transform"
                     >
                         <div
@@ -197,27 +148,98 @@ const GalleryPage = () => {
                                 transformOrigin: "center center"
                             }}
                         >
-                            {/* Render a 3x3 grid of Tiles */}
-                            {[-1, 0, 1].map((rowMultiplier) => (
-                                [-1, 0, 1].map((colMultiplier) => {
-                                    const isCenter = rowMultiplier === 0 && colMultiplier === 0;
+                            {/* Render a horizontal array of 3 macro-columns for infinite X scrolling */}
+                            {[-1, 0, 1].map((colMultiplier) => (
+                                <div
+                                    key={`col-group-${colMultiplier}`}
+                                    className="absolute"
+                                    style={{
+                                        left: colMultiplier * GRID_WIDTH - GRID_WIDTH / 2,
+                                        top: 0,
+                                        width: GRID_WIDTH,
+                                    }}
+                                >
+                                    {/* Render 5 individual columns to support parallax */}
+                                    {[0, 1, 2, 3, 4].map((c) => {
+                                        const isFast = c % 2 !== 0;
+                                        const columnWrappedY = isFast ? wrappedYFast : wrappedY;
+                                        const staggerOffset = isFast ? IMAGE_HEIGHT / 2 : 0;
 
-                                    return (
-                                        <div
-                                            key={`${rowMultiplier}-${colMultiplier}`}
-                                            className="absolute"
-                                            style={{
-                                                top: rowMultiplier * GRID_HEIGHT - GRID_HEIGHT / 2,
-                                                left: colMultiplier * GRID_WIDTH - GRID_WIDTH / 2,
-                                                width: GRID_WIDTH,
-                                                height: GRID_HEIGHT,
-                                                opacity: isCenter ? 1 : 0.99
-                                            }}
-                                        >
-                                            <CoreTile isCenter={isCenter} />
-                                        </div>
-                                    );
-                                })
+                                        return (
+                                            <motion.div
+                                                key={`col-${c}`}
+                                                style={{
+                                                    y: columnWrappedY,
+                                                    left: c * (IMAGE_WIDTH + GAP),
+                                                    width: IMAGE_WIDTH,
+                                                }}
+                                                className="absolute top-0 will-change-transform"
+                                            >
+                                                {/* Render a vertical array of 3 macro-rows for infinite Y scrolling */}
+                                                {[-1, 0, 1].map((rowMultiplier) => (
+                                                    <div
+                                                        key={`row-group-${rowMultiplier}`}
+                                                        className="absolute"
+                                                        style={{
+                                                            top: rowMultiplier * GRID_HEIGHT - GRID_HEIGHT / 2,
+                                                            left: 0,
+                                                            width: IMAGE_WIDTH,
+                                                            height: GRID_HEIGHT,
+                                                        }}
+                                                    >
+                                                        {/* Render 4 images per column */}
+                                                        {[0, 1, 2, 3].map((r) => {
+                                                            const top = r * (IMAGE_HEIGHT + GAP) + staggerOffset;
+                                                            const isCenterMacro = colMultiplier === 0 && rowMultiplier === 0;
+
+                                                            const imgIndex = ((r * COLUMNS) + c) % GALLERY_IMAGES.length;
+                                                            const url = GALLERY_IMAGES[imgIndex];
+                                                            const id = `img-${r}-${c}`;
+
+                                                            return isCenterMacro ? (
+                                                                <motion.div
+                                                                    layoutId={`container-${id}`}
+                                                                    key={`img-motion-${r}`}
+                                                                    className="absolute overflow-hidden rounded-2xl group cursor-pointer shadow-lg hover:z-10"
+                                                                    style={{ top, left: 0, width: IMAGE_WIDTH, height: IMAGE_HEIGHT }}
+                                                                    whileHover={{ scale: 0.98 }}
+                                                                    transition={{ duration: 0.4, ease: "easeOut" }}
+                                                                    onClick={() => setSelectedImage({ url, id })}
+                                                                >
+                                                                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                                                                    <motion.img
+                                                                        layoutId={`image-${id}`}
+                                                                        src={url}
+                                                                        alt={`Gallery Image ${imgIndex}`}
+                                                                        decoding="async"
+                                                                        loading="eager"
+                                                                        className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105 pointer-events-none"
+                                                                    />
+                                                                </motion.div>
+                                                            ) : (
+                                                                <div
+                                                                    key={`img-div-${r}`}
+                                                                    className="absolute overflow-hidden rounded-2xl group cursor-pointer shadow-lg hover:z-10 transition-transform duration-400 ease-out hover:scale-[0.98]"
+                                                                    style={{ top, left: 0, width: IMAGE_WIDTH, height: IMAGE_HEIGHT }}
+                                                                    onClick={() => setSelectedImage({ url, id })}
+                                                                >
+                                                                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                                                                    <img
+                                                                        src={url}
+                                                                        alt={`Gallery Image ${imgIndex}`}
+                                                                        decoding="async"
+                                                                        loading="lazy"
+                                                                        className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105 pointer-events-none"
+                                                                    />
+                                                                </div>
+                                                            );
+                                                        })}
+                                                    </div>
+                                                ))}
+                                            </motion.div>
+                                        );
+                                    })}
+                                </div>
                             ))}
                         </div>
                     </motion.div>

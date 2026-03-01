@@ -22,17 +22,17 @@ const STATS: Stat[] = [
   {
     label: "College Chapters",
     value: "4",
-    description: "Growing communities across NCR",
+    description: "Growing communities across India",
   },
   {
     label: "Successful Events",
-    value: "3",
+    value: "4",
     description: "Major hackathons & tech events",
   },
   {
     label: "Community Partners",
     value: "67",
-    description: "Student clubs across Delhi NCR",
+    description: "Student clubs across India",
   },
   {
     label: "Brand Partnerships",
@@ -236,8 +236,8 @@ export default function SplitStatsWall() {
               <Image
                 src="/images/reach.webp"
                 alt="HackShastra Reach"
-                width={10000}
-                height={10000}
+                width={1000}
+                height={1000}
                 className="rounded-2xl object-cover"
                 priority
               />
