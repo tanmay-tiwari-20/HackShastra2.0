@@ -234,7 +234,7 @@ export default function SplitStatsWall() {
               }}
             >
               <Image
-                src="/images/reach.webp"
+                src="https://res.cloudinary.com/dunacoujw/image/upload/v1772402430/12_ubduyk.webp"
                 alt="HackShastra Reach"
                 width={1000}
                 height={1000}

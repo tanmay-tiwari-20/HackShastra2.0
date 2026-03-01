@@ -53,17 +53,17 @@ const StickyCard002 = ({
             scale: 1,
             transformOrigin: "bottom center",
             willChange: "transform",
-            zIndex: total - i,
+            zIndex: i,
           });
         } else {
           gsap.set(img, {
             yPercent: 120,    // start below
-            xPercent: 50,     // start to the right 
-            rotateZ: 25,      // start rotated
+            xPercent: isMobile ? 0 : 50,     // start center on mobile, right on desktop
+            rotateZ: isMobile ? (i % 2 === 0 ? 10 : -10) : 25,      // alternate rotation on mobile
             scale: 1,
             transformOrigin: "bottom center",
             willChange: "transform",
-            zIndex: total - i,
+            zIndex: i,
           });
         }
       });
@@ -85,11 +85,26 @@ const StickyCard002 = ({
 
         for (let i = 0; i <= k; i++) {
           const offset = i - k / 2;
-          // Calculate values for a hand-of-cards fan effect
-          const rotateZ = offset * (isMobile ? 6 : 10);
-          const xPercent = offset * (isMobile ? 12 : 20);
-          const yPercent = Math.abs(offset) * 5;
-          const scale = 1 - Math.abs(offset) * 0.02; // Optional depth styling
+
+          let rotateZ, xPercent, yPercent, scale;
+
+          if (isMobile) {
+            // Predetermined pseudo-random values to scatter cards naturally
+            const rotOffsets = [0, -6, 5, -8, 4, -7, 6, -5];
+            const xOffsets = [0, 8, -6, 7, -8, 5, -7, 6];
+
+            // Stack vertically, slightly randomized
+            rotateZ = rotOffsets[i % rotOffsets.length] + offset * 2;
+            xPercent = xOffsets[i % xOffsets.length] + offset * 3;
+            yPercent = offset * 20; // Fan vertically instead of sideways
+            scale = 1 - Math.abs(offset) * 0.015;
+          } else {
+            // Calculate values for a hand-of-cards fan effect
+            rotateZ = offset * 10;
+            xPercent = offset * 20;
+            yPercent = Math.abs(offset) * 5;
+            scale = 1 - Math.abs(offset) * 0.02; // Optional depth styling
+          }
 
           stepTl.to(
             images[i],
