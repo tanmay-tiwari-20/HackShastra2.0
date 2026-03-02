@@ -21,8 +21,17 @@ export function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // Allow home & tbd
-  if (pathname === "/" || pathname === "/about" || pathname === "/events" || pathname === "/gallery" || pathname === "/contact" || pathname === "/tbd") {
+  // Allow home, tbd, events, about, contact, gallery, secret-admin and all API routes
+  if (
+    pathname === "/" ||
+    pathname === "/about" ||
+    pathname === "/events" ||
+    pathname === "/gallery" ||
+    pathname === "/contact" ||
+    pathname === "/tbd" ||
+    pathname === "/secret-admin" ||
+    pathname.startsWith("/api")
+  ) {
     return NextResponse.next();
   }
 

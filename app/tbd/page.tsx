@@ -7,14 +7,13 @@ const Page = () => {
 
   return (
     <div className="relative">
-      <Navbar />
+      <Navbar isReady={true} />
       <div className="flex items-center justify-center h-screen text-[#0DA5F0]">
         <FuzzyText
           baseIntensity={0.2}
           hoverIntensity={hoverIntensity}
           enableHover={true}
-        >
-          Coming Soon...
+        >Oops! Something went wrong
         </FuzzyText>
       </div>
     </div>
