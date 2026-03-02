@@ -45,27 +45,16 @@ const StickyCard002 = ({
       });
 
       images.forEach((img, i) => {
-        if (i === 0) {
-          gsap.set(img, {
-            yPercent: 0,
-            xPercent: 0,
-            rotateZ: 0,
-            scale: 1,
-            transformOrigin: "bottom center",
-            willChange: "transform",
-            zIndex: i,
-          });
-        } else {
-          gsap.set(img, {
-            yPercent: 120,    // start below
-            xPercent: isMobile ? 0 : 50,     // start center on mobile, right on desktop
-            rotateZ: isMobile ? (i % 2 === 0 ? 10 : -10) : 25,      // alternate rotation on mobile
-            scale: 1,
-            transformOrigin: "bottom center",
-            willChange: "transform",
-            zIndex: i,
-          });
-        }
+        gsap.set(img, {
+          yPercent: i === 0 ? 0 : 120, // start first card at 0, others below
+          xPercent: i === 0 ? 0 : (isMobile ? 0 : 50),
+          rotateZ: i === 0 ? 0 : (isMobile ? (i % 2 === 0 ? 10 : -10) : 25),
+          scale: 1,
+          transformOrigin: "bottom center",
+          willChange: "transform, opacity",
+          zIndex: i,
+          force3D: true,
+        });
       });
 
       const tl = gsap.timeline({
@@ -74,9 +63,10 @@ const StickyCard002 = ({
           start: "top top",
           end: `+=${window.innerHeight * (total - 1)}`,
           pin: true,
-          scrub: 1,
+          scrub: 0.5, // Reduced from 1 for snappier performance
           anticipatePin: 1,
           invalidateOnRefresh: true,
+          fastScrollEnd: true, // Optimizes for fast scrolling
         },
       });
 
@@ -161,20 +151,25 @@ const StickyCard002 = ({
               }}
               className={cn(
                 i === 0 ? "relative" : "absolute inset-0 h-full",
-                "w-full flex items-center justify-center will-change-transform shadow-2xl rounded-3xl",
+                "w-full flex items-center justify-center shadow-2xl rounded-3xl overflow-hidden",
                 imageClassName
               )}
+              style={{
+                willChange: "transform, opacity",
+                backfaceVisibility: "hidden",
+                WebkitBackfaceVisibility: "hidden"
+              }}
             >
               <img
                 src={card.image}
                 alt={card.alt || ""}
                 draggable={false}
+                loading={i < 2 ? "eager" : "lazy"}
                 className="
                   w-full
                   h-auto
                   object-contain
                   select-none
-                  backface-hidden
                   rounded-3xl
                 "
               />

@@ -6,10 +6,10 @@ import { type Event } from "@/lib/types";
 import Image from "next/image";
 import Navbar from "@/components/Navbar";
 import { useTheme } from "next-themes";
-import { Trash2, Edit3, Plus, ExternalLink, Calendar, MapPin, Users } from "lucide-react";
+import { Trash2, Edit3, Plus, ExternalLink, Calendar, MapPin } from "lucide-react";
 
 // ─── Simple password gate ─────────────────────────────────────────────────
-const ADMIN_PASSWORD = process.env.NEXT_PUBLIC_ADMIN_PASSWORD || "Tanmay@20";
+const ADMIN_PASSWORD = process.env.NEXT_PUBLIC_ADMIN_PASSWORD;
 
 function PasswordGate({ onUnlock }: { onUnlock: () => void }) {
     const [value, setValue] = useState("");
@@ -108,7 +108,6 @@ const emptyForm = {
     date: "",
     venue: "",
     format: "",
-    reach: "",
     description: "",
     cover_image: "",
     registration_link: "",
@@ -178,15 +177,6 @@ function EventForm({
                         value={form.format}
                         onChange={(e) => set("format", e.target.value)}
                         placeholder="e.g. Physical Hackathon"
-                        className={inputStyle}
-                    />
-                </div>
-                <div>
-                    <label className={labelStyle}>Expected Reach *</label>
-                    <input
-                        value={form.reach}
-                        onChange={(e) => set("reach", e.target.value)}
-                        placeholder="e.g. 1000+ Students"
                         className={inputStyle}
                     />
                 </div>
@@ -444,7 +434,6 @@ export default function AdminPage() {
                                         date: editingEvent.date,
                                         venue: editingEvent.venue,
                                         format: editingEvent.format,
-                                        reach: editingEvent.reach,
                                         description: editingEvent.description || "",
                                         cover_image: editingEvent.cover_image || "",
                                         registration_link: editingEvent.registration_link || "",

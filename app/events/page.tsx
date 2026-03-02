@@ -8,10 +8,11 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Navbar from "@/components/Navbar";
 import { type Event } from "@/lib/types";
 import Image from "next/image";
+import { Calendar, MapPin, Zap, Users, ArrowRight } from "lucide-react";
 
 gsap.registerPlugin(ScrollTrigger);
 
-// ─── Upcoming Event Card ────────────────────────────────────────────────────
+// ─── Upcoming Event Card (Spotlight) ────────────────────────────────────────
 function UpcomingEventBanner({ event }: { event: Event }) {
     const { resolvedTheme } = useTheme();
     const accent = resolvedTheme === "dark" ? "#FA0001" : "#0DA5F0";
@@ -21,11 +22,20 @@ function UpcomingEventBanner({ event }: { event: Event }) {
         const el = ref.current;
         if (!el) return;
         const ctx = gsap.context(() => {
-            gsap.from(".upcoming-item", {
-                y: 40,
+            gsap.from(".upcoming-chars span", {
+                y: 50,
                 opacity: 0,
+                rotateX: -90,
                 duration: 0.8,
-                stagger: 0.12,
+                stagger: 0.03,
+                ease: "back.out(1.7)",
+                scrollTrigger: { trigger: el, start: "top 80%" },
+            });
+            gsap.from(".upcoming-content", {
+                x: -30,
+                opacity: 0,
+                duration: 1,
+                delay: 0.5,
                 ease: "power3.out",
                 scrollTrigger: { trigger: el, start: "top 80%" },
             });
@@ -37,63 +47,79 @@ function UpcomingEventBanner({ event }: { event: Event }) {
     const daysLeft = Math.ceil((eventDate.getTime() - Date.now()) / (1000 * 60 * 60 * 24));
 
     return (
-        <div ref={ref} className="relative w-full max-w-6xl mx-auto px-4 py-20">
-            <div className="upcoming-item flex items-center gap-3 mb-10">
-                <span className="h-px flex-1 max-w-[60px]" style={{ background: accent }} />
-                <span className="text-xs uppercase tracking-[0.3em] font-semibold" style={{ color: accent }}>Upcoming Event</span>
-            </div>
+        <div ref={ref} className="relative w-full max-w-7xl mx-auto px-4 py-32">
+            <div className="absolute top-0 left-1/4 w-96 h-96 rounded-full blur-[140px] opacity-10 pointer-events-none" style={{ background: accent }} />
 
-            <div className="upcoming-item grid grid-cols-1 lg:grid-cols-5 gap-0 border dark:border-white/10 border-black/10 overflow-hidden">
-                <div className="lg:col-span-3 p-8 lg:p-12 flex flex-col justify-between">
-                    <div>
-                        {daysLeft > 0 && (
-                            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold mb-6" style={{ background: `${accent}15`, color: accent, border: `1px solid ${accent}30` }}>
-                                <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: accent }} />
-                                {daysLeft} days to go
-                            </div>
-                        )}
-                        <h2 className="text-4xl lg:text-5xl font-bold tracking-tight dark:text-white text-black mb-4 leading-[1.1]">{event.title}</h2>
-                        {event.description && <p className="text-base dark:text-white/60 text-black/60 leading-relaxed mb-8 max-w-lg">{event.description}</p>}
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                <div className="lg:col-span-7 order-2 lg:order-1 space-y-8 upcoming-content">
+                    <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full border dark:border-white/10 border-black/10 bg-white/5 backdrop-blur-md">
+                        <span className="relative flex h-2 w-2">
+                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style={{ background: accent }}></span>
+                            <span className="relative inline-flex rounded-full h-2 w-2" style={{ background: accent }}></span>
+                        </span>
+                        <span className="text-[10px] uppercase tracking-[0.3em] font-black" style={{ color: accent }}>Spotlight · Upcoming</span>
                     </div>
 
-                    <div>
-                        <div className="grid grid-cols-3 gap-4 mt-6">
-                            {[
-                                { label: "Date", value: eventDate.toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" }) },
-                                { label: "Venue", value: event.venue },
-                                { label: "Format", value: event.format },
-                            ].map((item) => (
-                                <div key={item.label} className="flex flex-col gap-1">
-                                    <span className="text-xs uppercase tracking-widest dark:text-white/40 text-black/40">{item.label}</span>
-                                    <span className="text-sm font-semibold dark:text-white text-black">{item.value}</span>
-                                </div>
-                            ))}
-                        </div>
+                    <h2 className="text-5xl lg:text-7xl font-black tracking-tighter dark:text-white text-black leading-[0.9] flex flex-wrap upcoming-chars">
+                        {event.title.split("").map((char, i) => (
+                            <span key={i} className="inline-block">{char === " " ? "\u00A0" : char}</span>
+                        ))}
+                    </h2>
 
-                        <div className="flex gap-4 mt-8">
-                            <motion.a
-                                href={event.registration_link || "#"}
-                                target={event.registration_link ? "_blank" : "_self"}
-                                rel={event.registration_link ? "noopener noreferrer" : ""}
-                                whileHover={{ scale: 1.03 }}
-                                whileTap={{ scale: 0.97 }}
-                                transition={{ type: "spring", stiffness: 300, damping: 15 }}
-                                className="px-6 sm:px-8 py-3 sm:py-4 rounded-4xl font-semibold shadow-lg hover:shadow-xl transition-shadow duration-300"
-                                style={{
-                                    backgroundColor: accent,
-                                    color: "#fff",
-                                }}
-                            >
-                                Register Now
-                            </motion.a>
-                        </div>
+                    <p className="text-lg dark:text-white/50 text-black/50 leading-relaxed max-w-xl font-medium">
+                        {event.description || "Get ready for an extraordinary experience at our flagship event. Join the community and innovate with the best."}
+                    </p>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4">
+                        {[
+                            { label: "Date", value: eventDate.toLocaleDateString("en-IN", { day: "numeric", month: "short" }), icon: Calendar },
+                            { label: "Venue", value: event.venue.split(",")[0], icon: MapPin },
+                            { label: "Format", value: event.format, icon: Zap },
+                        ].map((item) => (
+                            <div key={item.label} className="group relative flex flex-col gap-2 p-5 rounded-2xl dark:bg-white/[0.03] bg-black/[0.03] border dark:border-white/10 border-black/10 transition-all duration-500 hover:scale-[1.02]" style={{ borderColor: accent + '30' }}>
+                                <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" style={{ background: `radial-gradient(circle at center, ${accent}15, transparent)` }} />
+                                <div className="flex items-center gap-2">
+                                    <div className="p-2 rounded-lg bg-white/5 backdrop-blur-sm border border-white/10 shadow-lg group-hover:shadow-[0_0_15px_-5px_rgba(0,0,0,0.1)] transition-all duration-500" style={{ boxShadow: `0 0 20px ${accent}20` }}>
+                                        <item.icon className="w-3.5 h-3.5" style={{ color: accent }} />
+                                    </div>
+                                    <span className="text-[10px] uppercase tracking-[0.2em] font-black opacity-40">{item.label}</span>
+                                </div>
+                                <span className="text-sm font-black dark:text-white text-black truncate z-10">{item.value}</span>
+                            </div>
+                        ))}
+                    </div>
+
+                    <div className="flex flex-wrap gap-4 pt-6">
+                        <motion.a
+                            href={event.registration_link || "#"}
+                            target={event.registration_link ? "_blank" : "_self"}
+                            rel={event.registration_link ? "noopener noreferrer" : ""}
+                            whileHover={{ scale: 1.05, y: -2 }}
+                            whileTap={{ scale: 0.95 }}
+                            className="px-10 py-5 rounded-full font-black text-xs uppercase tracking-widest shadow-2xl transition-all"
+                            style={{ backgroundColor: accent, color: "#fff" }}
+                        >
+                            Claim Your Slot
+                        </motion.a>
                     </div>
                 </div>
 
-                <div className="lg:col-span-2 relative min-h-[260px] lg:min-h-0 overflow-hidden" style={{ borderLeft: `1px solid ${accent}20` }}>
-                    <Image src={event.cover_image || "/images/poster.png"} alt={event.title} fill className="object-cover" />
-                    <div className="absolute inset-0" style={{ background: `linear-gradient(135deg, ${accent}20 0%, transparent 60%)` }} />
-                    <div className="absolute top-4 right-4 backdrop-blur-md bg-black/40 border border-white/10 rounded px-3 py-1.5 text-white text-xs font-semibold">{event.reach} reach</div>
+                <div className="lg:col-span-5 order-1 lg:order-2">
+                    <div className="relative aspect-[4/5] rounded-[2.5rem] overflow-hidden group shadow-2xl border dark:border-white/10 border-black/10">
+                        <Image
+                            src={event.cover_image || "/images/poster.png"}
+                            alt={event.title}
+                            fill
+                            className="object-cover transition-transform duration-1000 group-hover:scale-110"
+                            priority
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60" />
+                        <div className="absolute bottom-10 left-10">
+                            <div className="text-white font-black text-4xl tracking-tighter">
+                                {eventDate.getDate()}<span className="text-xl uppercase ml-1 opacity-50" style={{ color: accent }}>{eventDate.toLocaleString('default', { month: 'short' })}</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -103,49 +129,109 @@ function UpcomingEventBanner({ event }: { event: Event }) {
 // ─── Timeline Item ─────────────────────────────────────────────────────────
 function TimelineItem({ event, index, accent }: { event: Event; index: number; accent: string }) {
     const ref = useRef<HTMLDivElement>(null);
+    const dateRef = useRef<HTMLDivElement>(null);
     const isEven = index % 2 === 0;
 
     useEffect(() => {
         const el = ref.current;
-        if (!el) return;
+        const dEl = dateRef.current;
+        if (!el || !dEl) return;
         const ctx = gsap.context(() => {
             gsap.from(el, {
-                x: isEven ? -60 : 60,
+                x: isEven ? -40 : 40,
                 opacity: 0,
-                duration: 0.9,
-                ease: "power3.out",
-                scrollTrigger: { trigger: el, start: "top 82%" },
+                duration: 1,
+                ease: "power2.out",
+                scrollTrigger: { trigger: el, start: "top 90%" },
+            });
+            gsap.from(dEl, {
+                x: isEven ? 40 : -40,
+                opacity: 0,
+                duration: 1,
+                delay: 0.2,
+                ease: "power2.out",
+                scrollTrigger: { trigger: el, start: "top 90%" },
             });
         }, el);
         return () => ctx.revert();
     }, [isEven]);
 
+    const eventDate = new Date(event.date);
+
     return (
-        <div className={`relative flex items-start gap-0 w-full mb-0 ${isEven ? "flex-row" : "flex-row-reverse"}`}>
-            <div ref={ref} className={`w-[calc(50%-28px)] group cursor-default ${isEven ? "pr-8 text-right" : "pl-8 text-left"}`}>
-                <motion.div whileHover={{ y: -4 }} className="dark:bg-zinc-900/80 bg-white/80 backdrop-blur-sm border dark:border-white/8 border-black/8 overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300">
-                    <div className="relative w-full h-48 overflow-hidden">
-                        <Image src={event.cover_image || "/images/poster.png"} alt={event.title} fill className="object-cover transition-transform duration-700 group-hover:scale-105" />
-                        <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" style={{ background: `linear-gradient(to top, ${accent}30, transparent)` }} />
+        <div className={`relative flex items-center justify-center w-full min-h-[450px] py-16 ${isEven ? "md:flex-row" : "md:flex-row-reverse"} flex-col`}>
+            {/* CARD */}
+            <div ref={ref} className="w-full md:w-1/2 flex items-center justify-center px-4 md:px-16">
+                <motion.div
+                    whileHover={{ y: -8 }}
+                    className="relative w-full max-w-lg rounded-[2rem] overflow-hidden group border dark:border-white/10 border-black/10 dark:bg-zinc-900/50 bg-white/50 backdrop-blur-xl shadow-2xl transition-all duration-500"
+                >
+                    <div className="relative w-full aspect-[16/9] overflow-hidden">
+                        <Image
+                            src={event.cover_image || "/images/poster.png"}
+                            alt={event.title}
+                            fill
+                            className="object-cover transition-transform duration-1000 group-hover:scale-105 opacity-90 group-hover:opacity-100"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
                     </div>
-                    <div className="p-5">
-                        <div className={`flex items-center gap-2 mb-3 ${isEven ? "justify-end" : "justify-start"}`}>
-                            <span className="text-xs font-bold uppercase tracking-widest px-2.5 py-1" style={{ color: accent, background: `${accent}12`, border: `1px solid ${accent}25` }}>
-                                {new Date(event.date).toLocaleDateString("en-IN", { month: "short", year: "numeric" })}
-                            </span>
+
+                    <div className="p-8 space-y-4">
+                        <div className="flex items-center justify-between">
+                            <h3 className="text-2xl font-black dark:text-white text-black tracking-tighter leading-none">{event.title}</h3>
+                            <div className="md:hidden text-[10px] font-black uppercase tracking-widest opacity-40">{eventDate.toLocaleDateString("en-IN", { month: "short", year: "numeric" })}</div>
                         </div>
-                        <h3 className="text-lg font-bold dark:text-white text-black mb-3 leading-snug">{event.title}</h3>
-                        <div className={`flex flex-wrap gap-x-4 gap-y-1.5 text-xs dark:text-white/50 text-black/50 ${isEven ? "justify-end" : "justify-start"}`}>
-                            <span className="flex items-center gap-1">{event.venue}</span>
-                            <span className="flex items-center gap-1">{event.format}</span>
+
+                        {event.description && (
+                            <p className="text-sm dark:text-white/40 text-black/40 line-clamp-2 leading-relaxed font-medium">
+                                {event.description}
+                            </p>
+                        )}
+
+                        <div className="flex flex-wrap gap-6 pt-6 border-t dark:border-white/5 border-black/5">
+                            <div className="flex items-center gap-3 transition-all duration-300 hover:translate-x-1">
+                                <div className="p-2.5 rounded-xl bg-white/5 backdrop-blur-md border border-white/10 shadow-lg" style={{ boxShadow: `0 0 20px ${accent}15` }}>
+                                    <MapPin className="w-3.5 h-3.5" style={{ color: accent }} />
+                                </div>
+                                <div className="flex flex-col">
+                                    <span className="text-[10px] dark:text-white/40 text-black/40 font-black uppercase tracking-widest">Venue</span>
+                                    <span className="text-xs dark:text-white/80 text-black/80 font-black tracking-tight">{event.venue.split(",")[0]}</span>
+                                </div>
+                            </div>
+                            <div className="flex items-center gap-3 transition-all duration-300 hover:translate-x-1">
+                                <div className="p-2.5 rounded-xl bg-white/5 backdrop-blur-md border border-white/10 shadow-lg" style={{ boxShadow: `0 0 20px ${accent}15` }}>
+                                    <Zap className="w-3.5 h-3.5" style={{ color: accent }} />
+                                </div>
+                                <div className="flex flex-col">
+                                    <span className="text-[10px] dark:text-white/40 text-black/40 font-black uppercase tracking-widest">Format</span>
+                                    <span className="text-xs dark:text-white/80 text-black/80 font-black tracking-tight">{event.format}</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </motion.div>
             </div>
-            <div className="flex flex-col items-center" style={{ width: 56, flexShrink: 0 }}>
-                <div className="w-4 h-4 rounded-full z-10 mt-6 border-2 dark:border-zinc-900 border-white shadow-lg" style={{ background: accent, boxShadow: `0 0 0 2px ${accent}40` }} />
+
+            {/* NODE */}
+            <div className="absolute left-1/2 -translate-x-1/2 flex flex-col items-center justify-center z-20 pointer-events-none hidden md:flex">
+                <div className="w-5 h-5 rounded-full border-[5px] dark:border-[oklch(0.145_0_0)] border-white shadow-2xl transition-all duration-500 z-10" style={{ backgroundColor: accent, boxShadow: `0 0 30px ${accent}80` }} />
+                <div className="absolute w-12 h-12 rounded-full opacity-20 animate-pulse" style={{ background: accent }} />
             </div>
-            <div className="w-[calc(50%-28px)]" />
+
+            {/* DATE SIDE */}
+            <div ref={dateRef} className={`hidden md:flex md:w-1/2 items-center ${isEven ? "justify-start pl-16" : "justify-end pr-16"}`}>
+                <div className={`space-y-1 ${isEven ? "text-left" : "text-right"}`}>
+                    <div className="text-5xl font-black dark:text-white text-black tracking-tighter leading-none transition-colors duration-500 group-hover:text-current">
+                        {eventDate.getDate()}
+                    </div>
+                    <div className="text-3xl font-extrabold uppercase tracking-[0.2em]" style={{ color: accent }}>
+                        {eventDate.toLocaleString('default', { month: 'long' })}
+                    </div>
+                    <div className="text-xl font-black uppercase tracking-[0.2em] dark:text-white text-black">
+                        {eventDate.getFullYear()}
+                    </div>
+                </div>
+            </div>
         </div>
     );
 }
@@ -153,20 +239,39 @@ function TimelineItem({ event, index, accent }: { event: Event; index: number; a
 // ─── Timeline Section ───────────────────────────────────────────────────────
 function EventTimeline({ events, accent }: { events: Event[]; accent: string }) {
     const containerRef = useRef<HTMLDivElement>(null);
-    const { scrollYProgress } = useScroll({ target: containerRef, offset: ["start 60%", "end 60%"] });
+    const { scrollYProgress } = useScroll({ target: containerRef, offset: ["start 20%", "end end"] });
     const lineHeight = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
 
     return (
-        <div ref={containerRef} className="relative w-full max-w-6xl mx-auto px-4 pb-32">
-            <div className="text-center mb-20">
-                <div className="flex items-center justify-center gap-3 mb-4"><span className="h-px w-12" style={{ background: accent }} /><span className="text-xs uppercase tracking-[0.3em] font-semibold" style={{ color: accent }}>Event Timeline</span><span className="h-px w-12" style={{ background: accent }} /></div>
-                <h2 className="text-4xl lg:text-5xl font-bold dark:text-white text-black tracking-tight">Our Journey So Far</h2>
-                <p className="mt-3 text-base dark:text-white/50 text-black/50 max-w-md mx-auto">Every event that shaped HackShastra into what it is today.</p>
+        <div ref={containerRef} className="relative w-full max-w-7xl mx-auto px-4 pb-40 lg:mt-20">
+            <div className="text-center mb-32 space-y-4">
+                <div className="inline-flex items-center justify-center gap-4">
+                    <span className="h-px w-8 opacity-20" style={{ background: accent }} />
+                    <span className="text-xs uppercase tracking-[0.4em] font-black opacity-40">Archive · History</span>
+                    <span className="h-px w-8 opacity-20" style={{ background: accent }} />
+                </div>
+                <h2 className="text-5xl lg:text-7xl font-black dark:text-white text-black tracking-tighter uppercase">The <span style={{ color: accent }}>Journey</span></h2>
+                <p className="text-base dark:text-white/40 text-black/40 max-w-md mx-auto font-medium">Tracking the evolution of our technical frontier through every milestone.</p>
             </div>
-            <div className="absolute left-1/2 -translate-x-1/2 top-[200px] bottom-0 w-px bg-black/8 dark:bg-white/8">
-                <motion.div className="w-full origin-top" style={{ height: lineHeight, background: accent, opacity: 0.5 }} />
+
+            {/* CENTRAL LINE */}
+            <div className="absolute left-1/2 -translate-x-1/2 top-[300px] bottom-0 w-[2px] bg-black/[0.05] dark:bg-white/[0.05] hidden md:block">
+                <motion.div
+                    className="w-full origin-top relative rounded-full"
+                    style={{
+                        height: lineHeight,
+                        background: accent,
+                    }}
+                >
+                    {/* SHARP PROGRESS NODE */}
+                    <div
+                        className="absolute bottom-0 left-1/2 -translate-x-1/2 w-4 h-4 rounded-full border-4 dark:border-[oklch(0.145_0_0)] border-white shadow-xl"
+                        style={{ backgroundColor: accent }}
+                    />
+                </motion.div>
             </div>
-            <div className="relative flex flex-col gap-12">
+
+            <div className="relative flex flex-col">
                 {events.map((event, i) => <TimelineItem key={event._id} event={event} index={i} accent={accent} />)}
             </div>
         </div>
@@ -207,14 +312,41 @@ export default function EventsPage() {
     }, []);
 
     return (
-        <main className="min-h-screen dark:bg-[oklch(0.145_0_0)] bg-white overflow-x-hidden">
+        <main className="min-h-screen dark:bg-[oklch(0.145_0_0)] bg-white transition-colors duration-500 overflow-x-hidden">
             <Navbar isReady={true} />
-            <div ref={heroRef} className="relative w-full max-w-6xl mx-auto px-4 pt-36 pb-16 overflow-hidden">
-                <div className="absolute top-20 left-1/2 -translate-x-1/2 w-[600px] h-[300px] rounded-full blur-[120px] opacity-10 pointer-events-none" style={{ background: accent }} />
-                <div className="overflow-hidden mb-2"><div className="hero-line text-xs uppercase tracking-[0.35em] font-semibold" style={{ color: accent }}>HackShastra · Events</div></div>
-                <div className="overflow-hidden"><h1 className="hero-line text-6xl lg:text-8xl font-black tracking-tighter dark:text-white text-black leading-[0.95]">Where Ideas</h1></div>
-                <div className="overflow-hidden"><h1 className="hero-line text-6xl lg:text-8xl font-black tracking-tighter leading-[0.95] pb-2" style={{ color: accent }}>Come Alive</h1></div>
-                <div className="overflow-hidden mt-5"><p className="hero-line text-base dark:text-white/50 text-black/50 max-w-md leading-relaxed">Every hackathon, workshop, and community gathering that has defined our story.</p></div>
+
+            {/* HERO SECTION */}
+            <div ref={heroRef} className="relative w-full max-w-7xl mx-auto px-4 pt-48 pb-20">
+                <div className="absolute top-40 right-10 w-[500px] h-[500px] rounded-full blur-[160px] opacity-[0.03] pointer-events-none" style={{ background: accent }} />
+
+                <div className="space-y-6">
+                    <div className="overflow-hidden">
+                        <div className="hero-line inline-flex items-center gap-4 text-[10px] uppercase tracking-[0.5em] font-black opacity-50 dark:text-white text-black">
+                            <span className="w-8 h-px bg-current opacity-20" /> Technical Records
+                        </div>
+                    </div>
+
+                    <h1 className="hero-line text-[clamp(3.5rem,10vw,9.5rem)] font-black tracking-tighter dark:text-white text-black leading-[0.85] uppercase">
+                        The <span className="text-[#0DA5F0] dark:text-[#FA0001]">Collective</span> <br /> History
+                    </h1>
+
+                    <div className="overflow-hidden max-w-xl">
+                        <p className="hero-line text-lg md:text-xl dark:text-white/40 text-black/40 font-medium leading-relaxed mt-4">
+                            Chronicling every technological leap, midnight code, and breakthrough that defines the HackShastra lineage.
+                        </p>
+                    </div>
+                </div>
+
+                {/* SCROLL INDICATOR */}
+                <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 0.5 }}
+                    transition={{ delay: 2, duration: 1 }}
+                    className="absolute bottom-0 right-4 hidden md:flex flex-col items-center gap-4"
+                >
+                    <div className="text-[10px] uppercase font-black tracking-[0.3em] rotate-90 origin-right translate-x-1 whitespace-nowrap">Dive Into Records</div>
+                    <div className="w-px h-24 bg-current" />
+                </motion.div>
             </div>
 
             <AnimatePresence>

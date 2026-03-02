@@ -4,7 +4,6 @@ export interface Event {
   date: string;
   venue: string;
   format: string;
-  reach: string;
   cover_image?: string;
   registration_link?: string;
   is_upcoming: boolean;

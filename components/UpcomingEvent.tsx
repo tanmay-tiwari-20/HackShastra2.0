@@ -88,7 +88,6 @@ const UpcomingEvent: React.FC = () => {
       { label: "Date", value: formattedDate },
       { label: "Venue", value: event.venue },
       { label: "Format", value: event.format },
-      { label: "Reach", value: event.reach },
     ]
     : [
       { label: "Date", value: "31 January – 1 February" },
