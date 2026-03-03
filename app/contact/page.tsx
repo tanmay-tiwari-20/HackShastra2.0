@@ -303,10 +303,6 @@ const ContactPage = () => {
 
                   <div className="relative bg-white dark:bg-[#0c0c0c] rounded-[3.5rem] p-1 md:p-1.5 border border-black/10 dark:border-white/10 shadow-2xl overflow-hidden backdrop-blur-3xl">
                     <div className="p-8 md:p-12 space-y-10 relative">
-                      <div className="absolute top-0 right-0 p-12 opacity-5 pointer-events-none">
-                        <Sparkles size={140} />
-                      </div>
-
                       <div className="flex justify-between items-end border-b border-black/5 dark:border-white/5 pb-8">
                         <div className="space-y-1">
                           <span className="text-[9px] font-black uppercase tracking-[0.5em] text-[#0DA5F0] dark:text-[#F90101]">
