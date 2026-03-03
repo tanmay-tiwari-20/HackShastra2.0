@@ -26,7 +26,7 @@ const Theme: React.FC = () => {
           trigger: sectionRef.current,
           start: "top 75%",
         },
-      }
+      },
     );
 
     /* Cards stagger animation */
@@ -43,7 +43,7 @@ const Theme: React.FC = () => {
           trigger: sectionRef.current,
           start: "top 70%",
         },
-      }
+      },
     );
   }, []);
 

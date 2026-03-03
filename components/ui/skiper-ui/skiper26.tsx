@@ -13,7 +13,7 @@ const Skiper26 = () => {
   const [blur, setBlur] = useState<boolean>(false);
   const [gifType, setGifType] = useState<"1" | "2" | "3" | "custom">("1");
   const [gifUrl, setGifUrl] = useState<string>(
-    "https://media.giphy.com/media/KBbr4hHl9DSahKvInO/giphy.gif?cid=790b76112m5eeeydoe7et0cr3j3ekb1erunxozyshuhxx2vl&ep=v1_stickers_search&rid=giphy.gif&ct=s"
+    "https://media.giphy.com/media/KBbr4hHl9DSahKvInO/giphy.gif?cid=790b76112m5eeeydoe7et0cr3j3ekb1erunxozyshuhxx2vl&ep=v1_stickers_search&rid=giphy.gif&ct=s",
   );
 
   return (
@@ -90,7 +90,7 @@ const Options = ({
                 "cursor-pointer px-1 text-sm transition-opacity",
                 variant === "circle"
                   ? "opacity-100"
-                  : "hover:bg-foreground/10 opacity-50 hover:opacity-100"
+                  : "hover:bg-foreground/10 opacity-50 hover:opacity-100",
               )}
             >
               circle
@@ -101,7 +101,7 @@ const Options = ({
                 "cursor-pointer px-1 text-sm transition-opacity",
                 variant === "rectangle"
                   ? "opacity-100"
-                  : "hover:bg-foreground/10 opacity-50 hover:opacity-100"
+                  : "hover:bg-foreground/10 opacity-50 hover:opacity-100",
               )}
             >
               rectangle
@@ -112,7 +112,7 @@ const Options = ({
                 "cursor-pointer px-1 text-sm transition-opacity",
                 variant === "gif"
                   ? "opacity-100"
-                  : "hover:bg-foreground/10 opacity-50 hover:opacity-100"
+                  : "hover:bg-foreground/10 opacity-50 hover:opacity-100",
               )}
             >
               gif
@@ -123,7 +123,7 @@ const Options = ({
                 "cursor-pointer px-1 text-sm transition-opacity",
                 variant === "polygon"
                   ? "opacity-100"
-                  : "hover:bg-foreground/10 opacity-50 hover:opacity-100"
+                  : "hover:bg-foreground/10 opacity-50 hover:opacity-100",
               )}
             >
               polygon
@@ -134,7 +134,7 @@ const Options = ({
                 "cursor-pointer px-1 text-sm transition-opacity",
                 variant === "circle-blur"
                   ? "opacity-100"
-                  : "hover:bg-foreground/10 opacity-50 hover:opacity-100"
+                  : "hover:bg-foreground/10 opacity-50 hover:opacity-100",
               )}
             >
               circle-blur
@@ -151,7 +151,7 @@ const Options = ({
                 "cursor-pointer px-1 text-sm transition-opacity",
                 !blur
                   ? "opacity-100"
-                  : "hover:bg-foreground/10 opacity-50 hover:opacity-100"
+                  : "hover:bg-foreground/10 opacity-50 hover:opacity-100",
               )}
             >
               off
@@ -162,7 +162,7 @@ const Options = ({
                 "cursor-pointer px-1 text-sm transition-opacity",
                 blur
                   ? "opacity-100"
-                  : "hover:bg-foreground/10 opacity-50 hover:opacity-100"
+                  : "hover:bg-foreground/10 opacity-50 hover:opacity-100",
               )}
             >
               on
@@ -175,161 +175,161 @@ const Options = ({
           variant === "rectangle" ||
           variant === "polygon" ||
           variant === "circle-blur") && (
-            <div className="mt-1 flex justify-between py-1">
-              <p className="w-20 whitespace-nowrap text-sm opacity-50">start :</p>
-              <div className="flex flex-wrap items-center justify-end gap-1">
-                {/* Show center option only for circle and circle-blur */}
-                {(variant === "circle" || variant === "circle-blur") && (
+          <div className="mt-1 flex justify-between py-1">
+            <p className="w-20 whitespace-nowrap text-sm opacity-50">start :</p>
+            <div className="flex flex-wrap items-center justify-end gap-1">
+              {/* Show center option only for circle and circle-blur */}
+              {(variant === "circle" || variant === "circle-blur") && (
+                <button
+                  onClick={() => setStart("center")}
+                  className={cn(
+                    "cursor-pointer px-1 text-sm transition-opacity",
+                    start === "center"
+                      ? "opacity-100"
+                      : "hover:bg-foreground/10 opacity-50 hover:opacity-100",
+                  )}
+                >
+                  center
+                </button>
+              )}
+
+              {/* Show directional options for rectangle */}
+              {variant === "rectangle" && (
+                <>
                   <button
-                    onClick={() => setStart("center")}
+                    onClick={() => setStart("bottom-up")}
                     className={cn(
                       "cursor-pointer px-1 text-sm transition-opacity",
-                      start === "center"
+                      start === "bottom-up"
                         ? "opacity-100"
-                        : "hover:bg-foreground/10 opacity-50 hover:opacity-100"
+                        : "hover:bg-foreground/10 opacity-50 hover:opacity-100",
                     )}
                   >
-                    center
+                    bottom-up
                   </button>
-                )}
+                  <button
+                    onClick={() => setStart("top-down")}
+                    className={cn(
+                      "cursor-pointer px-1 text-sm transition-opacity",
+                      start === "top-down"
+                        ? "opacity-100"
+                        : "hover:bg-foreground/10 opacity-50 hover:opacity-100",
+                    )}
+                  >
+                    top-down
+                  </button>
+                  <button
+                    onClick={() => setStart("left-right")}
+                    className={cn(
+                      "cursor-pointer px-1 text-sm transition-opacity",
+                      start === "left-right"
+                        ? "opacity-100"
+                        : "hover:bg-foreground/10 opacity-50 hover:opacity-100",
+                    )}
+                  >
+                    left-right
+                  </button>
+                  <button
+                    onClick={() => setStart("right-left")}
+                    className={cn(
+                      "cursor-pointer px-1 text-sm transition-opacity",
+                      start === "right-left"
+                        ? "opacity-100"
+                        : "hover:bg-foreground/10 opacity-50 hover:opacity-100",
+                    )}
+                  >
+                    right-left
+                  </button>
+                </>
+              )}
 
-                {/* Show directional options for rectangle */}
-                {variant === "rectangle" && (
-                  <>
-                    <button
-                      onClick={() => setStart("bottom-up")}
-                      className={cn(
-                        "cursor-pointer px-1 text-sm transition-opacity",
-                        start === "bottom-up"
-                          ? "opacity-100"
-                          : "hover:bg-foreground/10 opacity-50 hover:opacity-100"
-                      )}
-                    >
-                      bottom-up
-                    </button>
-                    <button
-                      onClick={() => setStart("top-down")}
-                      className={cn(
-                        "cursor-pointer px-1 text-sm transition-opacity",
-                        start === "top-down"
-                          ? "opacity-100"
-                          : "hover:bg-foreground/10 opacity-50 hover:opacity-100"
-                      )}
-                    >
-                      top-down
-                    </button>
-                    <button
-                      onClick={() => setStart("left-right")}
-                      className={cn(
-                        "cursor-pointer px-1 text-sm transition-opacity",
-                        start === "left-right"
-                          ? "opacity-100"
-                          : "hover:bg-foreground/10 opacity-50 hover:opacity-100"
-                      )}
-                    >
-                      left-right
-                    </button>
-                    <button
-                      onClick={() => setStart("right-left")}
-                      className={cn(
-                        "cursor-pointer px-1 text-sm transition-opacity",
-                        start === "right-left"
-                          ? "opacity-100"
-                          : "hover:bg-foreground/10 opacity-50 hover:opacity-100"
-                      )}
-                    >
-                      right-left
-                    </button>
-                  </>
-                )}
-
-                {/* Show corner options for circle, polygon, and circle-blur variants */}
-                {(variant === "circle" ||
-                  variant === "polygon" ||
-                  variant === "circle-blur") && (
+              {/* Show corner options for circle, polygon, and circle-blur variants */}
+              {(variant === "circle" ||
+                variant === "polygon" ||
+                variant === "circle-blur") && (
+                <>
+                  <button
+                    onClick={() => setStart("top-left")}
+                    className={cn(
+                      "cursor-pointer px-1 text-sm transition-opacity",
+                      start === "top-left"
+                        ? "opacity-100"
+                        : "hover:bg-foreground/10 opacity-50 hover:opacity-100",
+                    )}
+                  >
+                    top-left
+                  </button>
+                  <button
+                    onClick={() => setStart("top-right")}
+                    className={cn(
+                      "cursor-pointer px-1 text-sm transition-opacity",
+                      start === "top-right"
+                        ? "opacity-100"
+                        : "hover:bg-foreground/10 opacity-50 hover:opacity-100",
+                    )}
+                  >
+                    top-right
+                  </button>
+                  {/* Only show bottom corners for circle, not polygon */}
+                  {variant !== "polygon" && (
                     <>
                       <button
-                        onClick={() => setStart("top-left")}
+                        onClick={() => setStart("bottom-left")}
                         className={cn(
                           "cursor-pointer px-1 text-sm transition-opacity",
-                          start === "top-left"
+                          start === "bottom-left"
                             ? "opacity-100"
-                            : "hover:bg-foreground/10 opacity-50 hover:opacity-100"
+                            : "hover:bg-foreground/10 opacity-50 hover:opacity-100",
                         )}
                       >
-                        top-left
+                        bottom-left
                       </button>
                       <button
-                        onClick={() => setStart("top-right")}
+                        onClick={() => setStart("bottom-right")}
                         className={cn(
                           "cursor-pointer px-1 text-sm transition-opacity",
-                          start === "top-right"
+                          start === "bottom-right"
                             ? "opacity-100"
-                            : "hover:bg-foreground/10 opacity-50 hover:opacity-100"
+                            : "hover:bg-foreground/10 opacity-50 hover:opacity-100",
                         )}
                       >
-                        top-right
+                        bottom-right
                       </button>
-                      {/* Only show bottom corners for circle, not polygon */}
-                      {variant !== "polygon" && (
-                        <>
-                          <button
-                            onClick={() => setStart("bottom-left")}
-                            className={cn(
-                              "cursor-pointer px-1 text-sm transition-opacity",
-                              start === "bottom-left"
-                                ? "opacity-100"
-                                : "hover:bg-foreground/10 opacity-50 hover:opacity-100"
-                            )}
-                          >
-                            bottom-left
-                          </button>
-                          <button
-                            onClick={() => setStart("bottom-right")}
-                            className={cn(
-                              "cursor-pointer px-1 text-sm transition-opacity",
-                              start === "bottom-right"
-                                ? "opacity-100"
-                                : "hover:bg-foreground/10 opacity-50 hover:opacity-100"
-                            )}
-                          >
-                            bottom-right
-                          </button>
-                        </>
-                      )}
                     </>
                   )}
+                </>
+              )}
 
-                {/* Show center options for circle and circle-blur */}
-                {(variant === "circle" || variant === "circle-blur") && (
-                  <>
-                    <button
-                      onClick={() => setStart("top-center")}
-                      className={cn(
-                        "cursor-pointer px-1 text-sm transition-opacity",
-                        start === "top-center"
-                          ? "opacity-100"
-                          : "hover:bg-foreground/10 opacity-50 hover:opacity-100"
-                      )}
-                    >
-                      top-center
-                    </button>
-                    <button
-                      onClick={() => setStart("bottom-center")}
-                      className={cn(
-                        "cursor-pointer px-1 text-sm transition-opacity",
-                        start === "bottom-center"
-                          ? "opacity-100"
-                          : "hover:bg-foreground/10 opacity-50 hover:opacity-100"
-                      )}
-                    >
-                      bottom-center
-                    </button>
-                  </>
-                )}
-              </div>
+              {/* Show center options for circle and circle-blur */}
+              {(variant === "circle" || variant === "circle-blur") && (
+                <>
+                  <button
+                    onClick={() => setStart("top-center")}
+                    className={cn(
+                      "cursor-pointer px-1 text-sm transition-opacity",
+                      start === "top-center"
+                        ? "opacity-100"
+                        : "hover:bg-foreground/10 opacity-50 hover:opacity-100",
+                    )}
+                  >
+                    top-center
+                  </button>
+                  <button
+                    onClick={() => setStart("bottom-center")}
+                    className={cn(
+                      "cursor-pointer px-1 text-sm transition-opacity",
+                      start === "bottom-center"
+                        ? "opacity-100"
+                        : "hover:bg-foreground/10 opacity-50 hover:opacity-100",
+                    )}
+                  >
+                    bottom-center
+                  </button>
+                </>
+              )}
             </div>
-          )}
+          </div>
+        )}
 
         {/* Show gif type options only for gif variant */}
         {variant === "gif" && (
@@ -340,14 +340,14 @@ const Options = ({
                 onClick={() => {
                   setGifType("1");
                   setGifUrl(
-                    "https://media.giphy.com/media/KBbr4hHl9DSahKvInO/giphy.gif?cid=790b76112m5eeeydoe7et0cr3j3ekb1erunxozyshuhxx2vl&ep=v1_stickers_search&rid=giphy.gif&ct=s"
+                    "https://media.giphy.com/media/KBbr4hHl9DSahKvInO/giphy.gif?cid=790b76112m5eeeydoe7et0cr3j3ekb1erunxozyshuhxx2vl&ep=v1_stickers_search&rid=giphy.gif&ct=s",
                   );
                 }}
                 className={cn(
                   "cursor-pointer px-1 text-sm transition-opacity",
                   gifType === "1"
                     ? "opacity-100"
-                    : "hover:bg-foreground/10 opacity-50 hover:opacity-100"
+                    : "hover:bg-foreground/10 opacity-50 hover:opacity-100",
                 )}
               >
                 1
@@ -356,14 +356,14 @@ const Options = ({
                 onClick={() => {
                   setGifType("2");
                   setGifUrl(
-                    "https://media.giphy.com/media/5PncuvcXbBuIZcSiQo/giphy.gif?cid=ecf05e47j7vdjtytp3fu84rslaivdun4zvfhej6wlvl6qqsz&ep=v1_stickers_search&rid=giphy.gif&ct=s"
+                    "https://media.giphy.com/media/5PncuvcXbBuIZcSiQo/giphy.gif?cid=ecf05e47j7vdjtytp3fu84rslaivdun4zvfhej6wlvl6qqsz&ep=v1_stickers_search&rid=giphy.gif&ct=s",
                   );
                 }}
                 className={cn(
                   "cursor-pointer px-1 text-sm transition-opacity",
                   gifType === "2"
                     ? "opacity-100"
-                    : "hover:bg-foreground/10 opacity-50 hover:opacity-100"
+                    : "hover:bg-foreground/10 opacity-50 hover:opacity-100",
                 )}
               >
                 2
@@ -372,14 +372,14 @@ const Options = ({
                 onClick={() => {
                   setGifType("3");
                   setGifUrl(
-                    "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExZ3JwcXdzcHd5MW92NWprZXVpcTBtNXM5cG9obWh0N3I4NzFpaDE3byZlcD12MV9zdGlja2Vyc19zZWFyY2gmY3Q9cw/WgsVx6C4N8tjy/giphy.gif"
+                    "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExZ3JwcXdzcHd5MW92NWprZXVpcTBtNXM5cG9obWh0N3I4NzFpaDE3byZlcD12MV9zdGlja2Vyc19zZWFyY2gmY3Q9cw/WgsVx6C4N8tjy/giphy.gif",
                   );
                 }}
                 className={cn(
                   "cursor-pointer px-1 text-sm transition-opacity",
                   gifType === "3"
                     ? "opacity-100"
-                    : "hover:bg-foreground/10 opacity-50 hover:opacity-100"
+                    : "hover:bg-foreground/10 opacity-50 hover:opacity-100",
                 )}
               >
                 3
@@ -390,7 +390,7 @@ const Options = ({
                   "cursor-pointer px-1 text-sm transition-opacity",
                   gifType === "custom"
                     ? "opacity-100"
-                    : "hover:bg-foreground/10 opacity-50 hover:opacity-100"
+                    : "hover:bg-foreground/10 opacity-50 hover:opacity-100",
                 )}
               >
                 custom
@@ -563,7 +563,7 @@ export const ThemeToggleButton = ({
     <div
       className={cn(
         "size-9 md:size-10 cursor-pointer rounded-full bg-black p-0 transition-all duration-300 active:scale-95",
-        className
+        className,
       )}
       onClick={toggleTheme}
       aria-label="Toggle theme"
@@ -573,7 +573,7 @@ export const ThemeToggleButton = ({
         type="button"
         className={cn(
           "size-9 md:size-10 cursor-pointer rounded-full p-0 transition-all duration-300 active:scale-95",
-          className
+          className,
         )}
         onClick={toggleTheme}
         aria-label="Toggle theme"
@@ -726,7 +726,7 @@ export const createAnimation = (
   variant: AnimationVariant,
   start: AnimationStart = "center",
   blur = false,
-  url?: string
+  url?: string,
 ): Animation => {
   const svg = generateSVG(variant, start);
   const transformOrigin = getTransformOrigin(start);

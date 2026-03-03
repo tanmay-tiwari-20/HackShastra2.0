@@ -19,7 +19,9 @@ const Hero = ({ isReady = false }: { isReady?: boolean }) => {
       <motion.div
         className="mx-auto w-24 sm:w-32 md:w-40"
         initial={{ opacity: 0, scale: 0.6 }}
-        animate={isReady ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.6 }}
+        animate={
+          isReady ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.6 }
+        }
         transition={{ duration: 0.7, ease, delay: 0.2 }}
       >
         <Image

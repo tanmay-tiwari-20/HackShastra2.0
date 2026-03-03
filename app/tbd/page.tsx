@@ -13,7 +13,8 @@ const Page = () => {
           baseIntensity={0.2}
           hoverIntensity={hoverIntensity}
           enableHover={true}
-        >Oops! Something went wrong
+        >
+          Oops! Something went wrong
         </FuzzyText>
       </div>
     </div>

@@ -47,8 +47,8 @@ const StickyCard002 = ({
       images.forEach((img, i) => {
         gsap.set(img, {
           yPercent: i === 0 ? 0 : 120, // start first card at 0, others below
-          xPercent: i === 0 ? 0 : (isMobile ? 0 : 50),
-          rotateZ: i === 0 ? 0 : (isMobile ? (i % 2 === 0 ? 10 : -10) : 25),
+          xPercent: i === 0 ? 0 : isMobile ? 0 : 50,
+          rotateZ: i === 0 ? 0 : isMobile ? (i % 2 === 0 ? 10 : -10) : 25,
           scale: 1,
           transformOrigin: "bottom center",
           willChange: "transform, opacity",
@@ -106,7 +106,7 @@ const StickyCard002 = ({
               duration: 1,
               ease: "none",
             },
-            0 // All cards in the hand animate simultaneously for the step
+            0, // All cards in the hand animate simultaneously for the step
           );
         }
 
@@ -118,7 +118,7 @@ const StickyCard002 = ({
         ScrollTrigger.getAll().forEach((t) => t.kill());
       };
     },
-    { scope: containerRef }
+    { scope: containerRef },
   );
 
   return (
@@ -126,7 +126,7 @@ const StickyCard002 = ({
       ref={containerRef}
       className={cn(
         "relative w-full min-h-svh flex items-center justify-center",
-        className
+        className,
       )}
     >
       <div className="relative w-full flex items-center justify-center overflow-visible px-4 sm:px-6">
@@ -140,7 +140,7 @@ const StickyCard002 = ({
             lg:max-w-[clamp(380px,45vw,720px)]
             rounded-3xl 
             `,
-            containerClassName
+            containerClassName,
           )}
         >
           {cards.map((card, i) => (
@@ -152,12 +152,12 @@ const StickyCard002 = ({
               className={cn(
                 i === 0 ? "relative" : "absolute inset-0 h-full",
                 "w-full flex items-center justify-center shadow-2xl rounded-3xl overflow-hidden",
-                imageClassName
+                imageClassName,
               )}
               style={{
                 willChange: "transform, opacity",
                 backfaceVisibility: "hidden",
-                WebkitBackfaceVisibility: "hidden"
+                WebkitBackfaceVisibility: "hidden",
               }}
             >
               <img

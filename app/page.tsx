@@ -28,9 +28,7 @@ const Page = () => {
 
   return (
     <div className="relative">
-      {showPreloader && (
-        <Preloader onComplete={handlePreloaderComplete} />
-      )}
+      {showPreloader && <Preloader onComplete={handlePreloaderComplete} />}
       <div
         className={
           showPreloader

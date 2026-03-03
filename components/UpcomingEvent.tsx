@@ -77,24 +77,27 @@ const UpcomingEvent: React.FC = () => {
 
   const formattedDate = event
     ? new Date(event.date).toLocaleDateString("en-IN", {
-      day: "numeric",
-      month: "long",
-      year: "numeric",
-    })
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+      })
     : "";
 
   const eventDetails = event
     ? [
-      { label: "Date", value: formattedDate },
-      { label: "Venue", value: event.venue },
-      { label: "Format", value: event.format },
-    ]
+        { label: "Date", value: formattedDate },
+        { label: "Venue", value: event.venue },
+        { label: "Format", value: event.format },
+      ]
     : [
-      { label: "Date", value: "31 January – 1 February" },
-      { label: "Venue", value: "IPEC, Ghaziabad" },
-      { label: "Format", value: "24-Hour Offline Hackathon" },
-      { label: "Details", value: "Multiple tracks, cash prizes, and workshops" },
-    ];
+        { label: "Date", value: "31 January – 1 February" },
+        { label: "Venue", value: "IPEC, Ghaziabad" },
+        { label: "Format", value: "24-Hour Offline Hackathon" },
+        {
+          label: "Details",
+          value: "Multiple tracks, cash prizes, and workshops",
+        },
+      ];
 
   return (
     <section
@@ -154,7 +157,8 @@ const UpcomingEvent: React.FC = () => {
                   {event?.title || "SnowHackIPEC"}
                 </h1>
                 <p className="animate-text text-base sm:text-lg md:text-xl opacity-70 font-medium leading-relaxed">
-                  {event?.description || "IPEC's annual winter hackathon organized by HackShastra."}
+                  {event?.description ||
+                    "IPEC's annual winter hackathon organized by HackShastra."}
                 </p>
               </div>
 

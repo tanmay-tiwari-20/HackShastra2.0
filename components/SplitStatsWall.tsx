@@ -183,7 +183,7 @@ export default function SplitStatsWall() {
                   valueEl.textContent = formatStatValue(
                     counter.val,
                     isK,
-                    isPlus
+                    isPlus,
                   );
                 },
               });

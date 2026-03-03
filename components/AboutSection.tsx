@@ -122,7 +122,11 @@ export default function AboutSection() {
             ref={titleRef}
             className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 dark:text-white mb-4 tracking-tight"
           >
-            Why <span className="text-[#0DA5F0] dark:text-[#FA0001]">HackShastra</span>?
+            Why{" "}
+            <span className="text-[#0DA5F0] dark:text-[#FA0001]">
+              HackShastra
+            </span>
+            ?
           </h2>
           <p
             ref={subtitleRef}
