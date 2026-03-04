@@ -29,10 +29,10 @@ const architects = [
     image:
       "https://res.cloudinary.com/dunacoujw/image/upload/v1772568692/5_oz9vt2.png",
     socials: {
-      linkedin: "https://linkedin.com/in/jaichawla06",
-      instagram: "https://instagram.com/jai_chawla_06",
-      twitter: "https://x.com/jai_chawla_06",
-      email: "jai@hackshastra.com",
+      linkedin: "https://www.linkedin.com/in/jaichawlaa/",
+      instagram: "https://www.instagram.com/jaichawla.mp4",
+      twitter: "https://x.com/jaichawla_",
+      email: "jaichawla.mp4@gmail.com",
     },
   },
   {
@@ -55,10 +55,10 @@ const architects = [
     image:
       "https://res.cloudinary.com/dunacoujw/image/upload/v1772568691/2_ipkls5.png",
     socials: {
-      linkedin: "https://linkedin.com/in/tanmay-tiwari-20",
-      instagram: "https://instagram.com/tanmay_tiwari_20",
-      twitter: "https://x.com/tanmay_tiwari20",
-      email: "uday@hackshastra.com",
+      linkedin: "https://www.linkedin.com/in/udaydotai",
+      instagram: "https://www.instagram.com/udaysharmaaaaa",
+      twitter: "https://x.com/udaysharmatech",
+      email: "workwithudaysharma@gmail.com",
     },
   },
   {
@@ -66,12 +66,12 @@ const architects = [
     story:
       "Md Imran brought a strategic edge to HackShastra, turning a group of friends with a vision into a structured movement that empowers thousands of developers.",
     image:
-      "https://res.cloudinary.com/dunacoujw/image/upload/v1772568692/3_n954u9.png",
+      "https://res.cloudinary.com/dunacoujw/image/upload/v1772647474/cofounders_2_dqcol5.png",
     socials: {
-      linkedin: "https://linkedin.com/in/tanmay-tiwari-20",
-      instagram: "https://instagram.com/tanmay_tiwari_20",
-      twitter: "https://x.com/tanmay_tiwari20",
-      email: "imran@hackshastra.com",
+      linkedin: "https://www.linkedin.com/in/md-imran-48a443292",
+      instagram: "https://www.instagram.com/mdimran.py",
+      twitter: "https://x.com/dkpython",
+      email: "workwithmdimranpy@gmail.com",
     },
   },
 ];

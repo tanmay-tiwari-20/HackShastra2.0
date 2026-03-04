@@ -132,8 +132,8 @@ const StoryTimeline = () => {
                   <span className="text-[8px] md:text-[10px] uppercase tracking-widest opacity-80 mb-0.5 md:mb-1">
                     {m.month}
                   </span>
-                  <span className="text-sm md:text-2xl leading-none">
-                    '{m.year.slice(2)}
+                  <span className="text-xs md:text-xl font-bold leading-none">
+                    {m.year}
                   </span>
                 </div>
 
