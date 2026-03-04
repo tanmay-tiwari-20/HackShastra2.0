@@ -10,3 +10,20 @@ export interface Event {
   description?: string;
   created_at?: string;
 }
+
+export interface TeamMember {
+  _id?: string;
+  name: string;
+  role: string;
+  image?: string;
+  created_at?: string;
+}
+
+export interface Chapter {
+  _id?: string;
+  college: string;
+  city: string;
+  lead: string;
+  logo?: string;
+  created_at?: string;
+}

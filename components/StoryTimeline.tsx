@@ -11,31 +11,36 @@ const milestones = [
     title: "The Vision",
     description:
       "Born in a college dorm, HackShastra started with a simple question: Why aren't we building more? We set out to create the catalyst for a new era of engineering.",
-    year: "2023",
+    month: "NOV",
+    year: "2024",
   },
   {
     title: "First Spark",
     description:
-      "We hosted our first event with 50 hackers. The energy was synthetic, raw, and electric. We knew then that this was more than just a club.",
-    year: "2023",
-  },
-  {
-    title: "Foundations",
-    description:
-      "Architecting a permanent home for builders. We developed our core philosophy: Learn by doing, build by heart.",
-    year: "2024",
-  },
-  {
-    title: "The Forge",
-    description:
-      "Scaling the impact to 500+ builders across the region. Developing the tools and network that would support an nationwide movement.",
-    year: "2024",
-  },
-  {
-    title: "Neural Network",
-    description:
-      "Expansion into nationwide chapters. The HackShastra neural network begins to connect the brightest minds in tech.",
+      "We hosted our first tech event, a Pre-Meetup with 300+ students. The energy was raw, electric, and inspiring. This marked the true beginning of HackShastra’s community journey.",
+    month: "JUL",
     year: "2025",
+  },
+  {
+    title: "National Breakthrough",
+    description:
+      "Our first national hackathon brought together 3800+ students from across India. Builders, dreamers, and innovators united to create, compete, and collaborate.",
+    month: "SEP",
+    year: "2025",
+  },
+  {
+    title: "The Expansion",
+    description:
+      "We began expanding HackShastra beyond a single campus by launching college chapters. Our mission started spreading across institutions and communities.",
+    month: "OCT",
+    year: "2025",
+  },
+  {
+    title: "PAN India Movement",
+    description:
+      "In less than a year, HackShastra evolved into a PAN India community, connecting innovators across the country. The movement continues to grow stronger every day.",
+    month: "JAN",
+    year: "2026",
   },
 ];
 
@@ -123,8 +128,13 @@ const StoryTimeline = () => {
           {milestones.map((m, i) => (
             <div key={i} className="timeline-card w-full md:w-[500px] shrink-0">
               <div className="relative p-8 md:p-14 rounded-[2rem] md:rounded-[3.5rem] border border-black/5 dark:border-white/10 bg-white dark:bg-zinc-900/20 backdrop-blur-xl shadow-2xl shadow-black/5 dark:shadow-none">
-                <div className="absolute -top-4 -left-4 md:-top-7 md:-left-7 w-12 h-12 md:w-20 md:h-20 rounded-full bg-[#0DA5F0] dark:bg-[#FA0001] flex items-center justify-center text-white font-black text-lg md:text-2xl shadow-xl z-20">
-                  {m.year.slice(2)}
+                <div className="absolute -top-4 -left-4 md:-top-7 md:-left-7 w-14 h-14 md:w-24 md:h-24 rounded-full bg-[#0DA5F0] dark:bg-[#FA0001] flex flex-col items-center justify-center text-white font-black shadow-xl z-20">
+                  <span className="text-[8px] md:text-[10px] uppercase tracking-widest opacity-80 mb-0.5 md:mb-1">
+                    {m.month}
+                  </span>
+                  <span className="text-sm md:text-2xl leading-none">
+                    '{m.year.slice(2)}
+                  </span>
                 </div>
 
                 <span className="text-[10px] md:text-xs font-black uppercase tracking-[0.3em] opacity-20 block mb-3 md:mb-5">
@@ -154,9 +164,9 @@ const StoryTimeline = () => {
       </div>
 
       {/* Background Decorative Text - Industrial */}
-      <div className="absolute bottom-10 left-10 opacity-[0.03] dark:opacity-[0.05] pointer-events-none hidden lg:block">
-        <span className="text-[15rem] font-black tracking-tighter select-none">
-          ARCHITECTURE
+      <div className="absolute -bottom-5 left-10 opacity-[0.03] dark:opacity-[0.05] pointer-events-none hidden lg:block">
+        <span className="text-[10rem] font-black tracking-tighter select-none">
+          ARCHITECTURES
         </span>
       </div>
     </div>

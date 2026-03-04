@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { type Event } from "@/lib/types";
+import { type Event, type TeamMember, type Chapter } from "@/lib/types";
 import Image from "next/image";
 import Navbar from "@/components/Navbar";
 import { useTheme } from "next-themes";
@@ -13,9 +13,17 @@ import {
   ExternalLink,
   Calendar,
   MapPin,
+  Users,
+  Trophy,
+  Globe,
+  Camera,
+  Mail,
+  User,
+  School,
+  Map,
+  ShieldCheck,
 } from "lucide-react";
 
-// ─── Simple password gate ─────────────────────────────────────────────────
 const ADMIN_PASSWORD = process.env.NEXT_PUBLIC_ADMIN_PASSWORD;
 
 function PasswordGate({ onUnlock }: { onUnlock: () => void }) {
@@ -120,26 +128,21 @@ function Toast({
   );
 }
 
-// ─── Event Form ─────────────────────────────────────────────────────────────
-const emptyForm = {
-  title: "",
-  date: "",
-  venue: "",
-  format: "",
-  description: "",
-  cover_image: "",
-  registration_link: "",
-  is_upcoming: true,
-};
+// ─── Shared Styles ────────────────────────────────────────────────────────
+const labelStyle =
+  "block text-[10px] uppercase tracking-widest dark:text-white/40 text-black/40 mb-2 font-bold";
+const inputStyle =
+  "w-full dark:bg-white/5 bg-black/5 border dark:border-white/10 border-black/10 px-4 py-3 dark:text-white text-black text-sm outline-none focus:border-opacity-100 transition-all duration-300 rounded-lg";
 
+// ─── Event Form ─────────────────────────────────────────────────────────────
 function EventForm({
   initial,
   onSave,
   onCancel,
   saving,
 }: {
-  initial: typeof emptyForm;
-  onSave: (data: typeof emptyForm) => void;
+  initial: Partial<Event>;
+  onSave: (data: any) => void;
   onCancel: () => void;
   saving: boolean;
 }) {
@@ -147,13 +150,8 @@ function EventForm({
   const { resolvedTheme } = useTheme();
   const accent = resolvedTheme === "dark" ? "#FA0001" : "#0DA5F0";
 
-  const set = (key: string, val: string | boolean) =>
+  const set = (key: string, val: any) =>
     setForm((prev) => ({ ...prev, [key]: val }));
-
-  const labelStyle =
-    "block text-[10px] uppercase tracking-widest dark:text-white/40 text-black/40 mb-2 font-bold";
-  const inputStyle =
-    "w-full dark:bg-white/5 bg-black/5 border dark:border-white/10 border-black/10 px-4 py-3 dark:text-white text-black text-sm outline-none focus:border-opacity-100 transition-all duration-300 rounded-lg";
 
   return (
     <motion.div
@@ -233,7 +231,7 @@ function EventForm({
           />
         </div>
 
-        <div className="md:col-span-2 flex items-center justify-between p-4 dark:bg-white/5 bg-black/5">
+        <div className="md:col-span-2 flex items-center justify-between p-4 dark:bg-white/5 bg-black/5 transition-all rounded-xl">
           <div>
             <span className="text-sm font-bold block dark:text-white text-black">
               Timeline Status
@@ -275,15 +273,184 @@ function EventForm({
   );
 }
 
-// ─── Event Row ───────────────────────────────────────────────────────────────
-function EventRow({
-  event,
+// ─── Team Member Form ────────────────────────────────────────────────────────
+function TeamMemberForm({
+  initial,
+  onSave,
+  onCancel,
+  saving,
+}: {
+  initial: Partial<TeamMember>;
+  onSave: (data: any) => void;
+  onCancel: () => void;
+  saving: boolean;
+}) {
+  const [form, setForm] = useState(initial);
+  const { resolvedTheme } = useTheme();
+  const accent = resolvedTheme === "dark" ? "#FA0001" : "#0DA5F0";
+
+  const set = (key: string, val: any) =>
+    setForm((prev) => ({ ...prev, [key]: val }));
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 30 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -30 }}
+      className="dark:bg-zinc-900 bg-zinc-50 border dark:border-white/10 border-black/10 p-6 md:p-8 space-y-8 rounded-2xl"
+    >
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <label className={labelStyle}>Member Name *</label>
+          <input
+            value={form.name}
+            onChange={(e) => set("name", e.target.value)}
+            placeholder="e.g. Tanmay Tiwari"
+            className={inputStyle}
+          />
+        </div>
+        <div>
+          <label className={labelStyle}>Designation / Role *</label>
+          <input
+            value={form.role}
+            onChange={(e) => set("role", e.target.value)}
+            placeholder="e.g. Management Lead"
+            className={inputStyle}
+          />
+        </div>
+        <div className="md:col-span-2">
+          <label className={labelStyle}>Avatar URL</label>
+          <input
+            value={form.image}
+            onChange={(e) => set("image", e.target.value)}
+            placeholder="Direct link to portrait..."
+            className={inputStyle}
+          />
+        </div>
+      </div>
+
+      <div className="flex flex-col sm:flex-row gap-4">
+        <button
+          onClick={() => onSave(form)}
+          disabled={saving || !form.name || !form.role}
+          className="flex-1 text-white text-[10px] font-black uppercase tracking-[0.2em] py-4 transition-all active:scale-[0.98] disabled:opacity-20 rounded-lg"
+          style={{ backgroundColor: accent }}
+        >
+          {saving ? "Processing..." : "Commit Member"}
+        </button>
+        <button
+          onClick={onCancel}
+          className="px-8 dark:bg-white/5 bg-black/5 dark:text-white text-black text-[10px] font-black uppercase tracking-[0.2em] py-4 hover:opacity-70 transition-all rounded-lg"
+        >
+          Abort
+        </button>
+      </div>
+    </motion.div>
+  );
+}
+
+// ─── Chapter Form ────────────────────────────────────────────────────────────
+function ChapterForm({
+  initial,
+  onSave,
+  onCancel,
+  saving,
+}: {
+  initial: Partial<Chapter>;
+  onSave: (data: any) => void;
+  onCancel: () => void;
+  saving: boolean;
+}) {
+  const [form, setForm] = useState(initial);
+  const { resolvedTheme } = useTheme();
+  const accent = resolvedTheme === "dark" ? "#FA0001" : "#0DA5F0";
+
+  const set = (key: string, val: any) =>
+    setForm((prev) => ({ ...prev, [key]: val }));
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 30 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -30 }}
+      className="dark:bg-zinc-900 bg-zinc-50 border dark:border-white/10 border-black/10 p-6 md:p-8 space-y-8 rounded-2xl"
+    >
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <label className={labelStyle}>College Name *</label>
+          <input
+            value={form.college}
+            onChange={(e) => set("college", e.target.value)}
+            placeholder="e.g. IPEC"
+            className={inputStyle}
+          />
+        </div>
+        <div>
+          <label className={labelStyle}>City / Region *</label>
+          <input
+            value={form.city}
+            onChange={(e) => set("city", e.target.value)}
+            placeholder="e.g. Ghaziabad"
+            className={inputStyle}
+          />
+        </div>
+        <div>
+          <label className={labelStyle}>Chapter Lead *</label>
+          <input
+            value={form.lead}
+            onChange={(e) => set("lead", e.target.value)}
+            placeholder="e.g. Affan Khan"
+            className={inputStyle}
+          />
+        </div>
+        <div>
+          <label className={labelStyle}>Logo URL</label>
+          <input
+            value={form.logo}
+            onChange={(e) => set("logo", e.target.value)}
+            placeholder="Direct link to logo..."
+            className={inputStyle}
+          />
+        </div>
+      </div>
+
+      <div className="flex flex-col sm:flex-row gap-4">
+        <button
+          onClick={() => onSave(form)}
+          disabled={saving || !form.college || !form.lead}
+          className="flex-1 text-white text-[10px] font-black uppercase tracking-[0.2em] py-4 transition-all active:scale-[0.98] disabled:opacity-20 rounded-lg"
+          style={{ backgroundColor: accent }}
+        >
+          {saving ? "Processing..." : "Commit Chapter"}
+        </button>
+        <button
+          onClick={onCancel}
+          className="px-8 dark:bg-white/5 bg-black/5 dark:text-white text-black text-[10px] font-black uppercase tracking-[0.2em] py-4 hover:opacity-70 transition-all rounded-lg"
+        >
+          Abort
+        </button>
+      </div>
+    </motion.div>
+  );
+}
+
+// ─── Row Components ──────────────────────────────────────────────────────────
+function DataRow({
+  title,
+  subtitle,
+  image,
   onEdit,
   onDelete,
+  badge,
+  icon: Icon,
 }: {
-  event: Event;
+  title: string;
+  subtitle: string;
+  image?: string;
   onEdit: () => void;
   onDelete: () => void;
+  badge?: string;
+  icon: any;
 }) {
   const { resolvedTheme } = useTheme();
   const accent = resolvedTheme === "dark" ? "#FA0001" : "#0DA5F0";
@@ -294,79 +461,49 @@ function EventRow({
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, scale: 0.95 }}
-      className="group flex items-center gap-4 dark:bg-zinc-900 bg-white border dark:border-white/10 border-black/10 p-4 md:p-5 hover:border-opacity-100 transition-all duration-300 rounded-xl"
-      style={{ borderColor: event.is_upcoming ? accent + "30" : undefined }}
+      className="group flex items-center gap-4 dark:bg-zinc-900 bg-white border dark:border-white/10 border-black/10 p-4 hover:border-opacity-100 transition-all duration-300 rounded-xl"
     >
-      <div className="relative w-20 h-14 hidden sm:block overflow-hidden bg-black/5 dark:bg-white/5 rounded-lg">
-        {event.cover_image ? (
-          <Image
-            src={event.cover_image}
-            alt=""
-            fill
-            className="object-cover transition-transform duration-700 group-hover:scale-110"
-          />
+      <div className="relative w-14 h-14 shrink-0 overflow-hidden bg-black/5 dark:bg-white/5 rounded-full border border-black/5 dark:border-white/5">
+        {image ? (
+          <Image src={image} alt="" fill className="object-cover" />
         ) : (
           <div className="w-full h-full flex items-center justify-center opacity-20">
-            📸
+            <Icon size={20} />
           </div>
         )}
       </div>
 
       <div className="flex-1 min-w-0">
-        <div className="flex flex-wrap items-center gap-2 mb-2">
-          <h3 className="text-sm font-black dark:text-white text-black truncate max-w-[200px] sm:max-w-none tracking-tighter">
-            {event.title}
+        <div className="flex items-center gap-2 mb-1">
+          <h3 className="text-sm font-black dark:text-white text-black truncate tracking-tighter uppercase">
+            {title}
           </h3>
-          <span
-            className="text-[9px] px-2 py-0.5 font-black tracking-widest border rounded"
-            style={{
-              color: event.is_upcoming ? accent : "inherit",
-              borderColor: event.is_upcoming ? accent + "40" : "currentColor",
-              opacity: event.is_upcoming ? 1 : 0.3,
-            }}
-          >
-            {event.is_upcoming ? "Live" : "Event Data"}
-          </span>
-          {event.registration_link && (
-            <span className="text-[9px] text-emerald-500 font-black tracking-widest flex items-center gap-1">
-              <span className="w-1 h-1 rounded-full bg-emerald-500" /> Past
-              Event
+          {badge && (
+            <span
+              className="text-[8px] px-1.5 py-0.5 font-black tracking-widest border rounded uppercase"
+              style={{ color: accent, borderColor: accent + "40" }}
+            >
+              {badge}
             </span>
           )}
         </div>
-
-        <div className="flex flex-wrap gap-x-4 gap-y-1 text-[10px] dark:text-white/40 text-black/40 font-bold uppercase tracking-wider">
-          <span className="flex items-center gap-1">
-            <Calendar size={10} />{" "}
-            {new Date(event.date).toLocaleDateString("en-IN", {
-              day: "numeric",
-              month: "short",
-              year: "numeric",
-            })}
-          </span>
-          <span className="flex items-center gap-1 sm:hidden">
-            <MapPin size={10} /> {event.venue.substring(0, 15)}...
-          </span>
-          <span className="hidden sm:flex items-center gap-1">
-            <MapPin size={10} /> {event.venue}
-          </span>
-        </div>
+        <p className="text-[10px] dark:text-white/40 text-black/40 font-bold uppercase tracking-wider truncate">
+          {subtitle}
+        </p>
       </div>
 
-      <div className="flex gap-2">
+      <div className="flex gap-1.5">
         <button
           onClick={onEdit}
-          className="p-2.5 dark:bg-white/5 bg-black/5 hover:bg-black/10 dark:hover:bg-white/10 dark:text-white text-black transition-all rounded-lg"
-          title="Edit Record"
+          className="p-2 dark:bg-white/5 bg-black/5 hover:bg-black/10 dark:hover:bg-white/10 dark:text-white text-black transition-all rounded-lg"
         >
-          <Edit3 size={14} />
+          <Edit3 size={12} />
         </button>
         <button
           onClick={onDelete}
-          className="p-2.5 bg-red-500/10 hover:bg-red-500 text-red-500 hover:text-white transition-all rounded-lg"
-          title="Purge Record"
+          className="p-2 bg-red-500/10 hover:bg-red-500 text-red-500 hover:text-white transition-all rounded-lg"
         >
-          <Trash2 size={14} />
+          <Trash2 size={12} />
         </button>
       </div>
     </motion.div>
@@ -374,12 +511,19 @@ function EventRow({
 }
 
 // ─── Main Admin Page ─────────────────────────────────────────────────────────
+type Tab = "events" | "team" | "chapters";
+
 export default function AdminPage() {
   const [unlocked, setUnlocked] = useState(false);
-  const [events, setEvents] = useState<Event[]>([]);
+  const [activeTab, setActiveTab] = useState<Tab>("events");
+  const [data, setData] = useState<{
+    events: Event[];
+    team: TeamMember[];
+    chapters: Chapter[];
+  }>({ events: [], team: [], chapters: [] });
   const [loading, setLoading] = useState(false);
   const [showForm, setShowForm] = useState(false);
-  const [editingEvent, setEditingEvent] = useState<Event | null>(null);
+  const [editingItem, setEditingItem] = useState<any>(null);
   const [saving, setSaving] = useState(false);
   const [toast, setToast] = useState<{
     message: string;
@@ -397,44 +541,59 @@ export default function AdminPage() {
     setTimeout(() => setToast(null), 3000);
   };
 
-  const fetchEvents = async () => {
+  const fetchData = async () => {
     setLoading(true);
-    const res = await fetch("/api/events");
-    if (res.ok) {
-      const data = await res.json();
-      setEvents(data);
+    try {
+      const endpoints = ["events", "team", "chapters"];
+      const [eventsRes, teamRes, chaptersRes] = await Promise.all(
+        endpoints.map((e) => fetch(`/api/${e}`)),
+      );
+
+      const [events, team, chapters] = await Promise.all([
+        eventsRes.json(),
+        teamRes.json(),
+        chaptersRes.json(),
+      ]);
+
+      setData({ events, team, chapters });
+    } catch (err) {
+      showToast("System Link Failure", "error");
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   useEffect(() => {
-    if (unlocked) fetchEvents();
+    if (unlocked) fetchData();
   }, [unlocked]);
 
-  const handleSave = async (formData: typeof emptyForm) => {
+  const handleSave = async (formData: any) => {
     setSaving(true);
     try {
+      const endpoint = `/api/${activeTab}`;
       let res: Response;
-      if (editingEvent) {
-        res = await fetch(`/api/events?id=${editingEvent._id}`, {
+
+      if (editingItem) {
+        res = await fetch(`${endpoint}?id=${editingItem._id}`, {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(formData),
         });
         if (!res.ok) throw new Error((await res.json()).error);
-        showToast("Data Synced Correctly", "success");
+        showToast("Record Updated", "success");
       } else {
-        res = await fetch("/api/events", {
+        res = await fetch(endpoint, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(formData),
         });
         if (!res.ok) throw new Error((await res.json()).error);
-        showToast("Event Initialized", "success");
+        showToast("Record Initialized", "success");
       }
+
       setShowForm(false);
-      setEditingEvent(null);
-      await fetchEvents();
+      setEditingItem(null);
+      await fetchData();
     } catch (err: any) {
       showToast(err.message || "Sync Failed", "error");
     } finally {
@@ -444,10 +603,10 @@ export default function AdminPage() {
 
   const handleDelete = async (id?: string) => {
     if (!id || !confirm("PURGE RECORD? This action cannot be undone.")) return;
-    const res = await fetch(`/api/events?id=${id}`, { method: "DELETE" });
+    const res = await fetch(`/api/${activeTab}?id=${id}`, { method: "DELETE" });
     if (res.ok) {
       showToast("Record Purged", "success");
-      await fetchEvents();
+      await fetchData();
     } else {
       showToast("Purge Failed", "error");
     }
@@ -461,106 +620,193 @@ export default function AdminPage() {
       </>
     );
 
+  const tabs: { id: Tab; label: string; icon: any }[] = [
+    { id: "events", label: "Events", icon: Calendar },
+    { id: "team", label: "Core Team", icon: Users },
+    { id: "chapters", label: "Chapters", icon: School },
+  ];
+
   return (
-    <div className="min-h-screen dark:bg-[oklch(0.145_0_0)] bg-white transition-colors duration-500">
+    <div className="min-h-screen dark:bg-[oklch(0.145_0_0)] bg-white transition-colors duration-500 pb-20">
       <Navbar isReady={true} />
       <AnimatePresence>
         {toast && <Toast message={toast.message} type={toast.type} />}
       </AnimatePresence>
 
-      <div className="max-w-6xl mx-auto px-4 pt-40 pb-20">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 mb-16">
+      <div className="max-w-7xl mx-auto px-4 pt-32 md:pt-40">
+        {/* Header Section */}
+        <div className="flex flex-col md:flex-row items-center justify-between gap-8 mb-12">
           <div>
-            <div className="text-[10px] uppercase tracking-[0.4em] font-black opacity-40 mb-2 dark:text-white text-black">
-              System Terminal
+            <div className="text-[10px] uppercase tracking-[0.4em] font-black opacity-40 mb-2 dark:text-white text-black flex items-center gap-2">
+              <ShieldCheck size={12} style={{ color: accent }} />
+              Authorized Access Only
             </div>
-            <h1 className="text-5xl font-black tracking-tighter dark:text-white text-black uppercase">
-              Event <span style={{ color: accent }}>Manager</span>
+            <h1 className="text-5xl md:text-7xl font-black tracking-tighter dark:text-white text-black uppercase leading-none">
+              Control <span style={{ color: accent }}>Center</span>
             </h1>
           </div>
-          {!showForm && (
-            <button
-              onClick={() => {
-                setEditingEvent(null);
-                setShowForm(true);
-              }}
-              className="flex items-center gap-3 text-white text-[10px] font-black uppercase tracking-widest px-8 py-4 transition-all active:scale-[0.98] shadow-xl rounded-xl"
-              style={{ backgroundColor: accent }}
-            >
-              <Plus size={16} /> New Record
-            </button>
-          )}
+
+          <div className="flex bg-black/5 dark:bg-white/5 p-1.5 rounded-2xl border border-black/5 dark:border-white/5">
+            {tabs.map((tab) => {
+              const Icon = tab.icon;
+              const isActive = activeTab === tab.id;
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => {
+                    setActiveTab(tab.id);
+                    setShowForm(false);
+                    setEditingItem(null);
+                  }}
+                  className={`flex items-center gap-2 px-4 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${
+                    isActive
+                      ? "bg-white dark:bg-zinc-800 shadow-xl scale-105"
+                      : "opacity-40 hover:opacity-100"
+                  }`}
+                  style={{ color: isActive ? accent : "inherit" }}
+                >
+                  <Icon size={14} />
+                  <span className="hidden sm:inline">{tab.label}</span>
+                </button>
+              );
+            })}
+          </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
-          {/* Event List Section */}
-          <div
-            className={`${showForm ? "lg:col-span-12" : "lg:col-span-12"} space-y-4`}
-          >
-            <AnimatePresence mode="wait">
-              {showForm ? (
-                <EventForm
-                  key="form"
-                  initial={
-                    editingEvent
-                      ? {
-                          title: editingEvent.title,
-                          date: editingEvent.date,
-                          venue: editingEvent.venue,
-                          format: editingEvent.format,
-                          description: editingEvent.description || "",
-                          cover_image: editingEvent.cover_image || "",
-                          registration_link:
-                            editingEvent.registration_link || "",
-                          is_upcoming: editingEvent.is_upcoming,
-                        }
-                      : emptyForm
-                  }
-                  onSave={handleSave}
-                  onCancel={() => {
-                    setShowForm(false);
-                    setEditingEvent(null);
-                  }}
-                  saving={saving}
-                />
-              ) : (
-                <div
-                  key="list"
-                  className="grid grid-cols-1 md:grid-cols-2 gap-4"
-                >
-                  {loading ? (
-                    [1, 2, 3, 4].map((i) => (
-                      <div
-                        key={i}
-                        className="h-32 dark:bg-white/5 bg-black/5 animate-pulse"
-                      />
-                    ))
-                  ) : (
-                    <>
-                      {events.length === 0 ? (
-                        <div className="col-span-full py-20 text-center dark:text-white/20 text-black/20 font-black uppercase tracking-widest">
-                          No Records Found
-                        </div>
-                      ) : (
-                        events.map((event) => (
-                          <EventRow
-                            key={event._id}
-                            event={event}
-                            onEdit={() => {
-                              setEditingEvent(event);
-                              setShowForm(true);
-                              window.scrollTo({ top: 0, behavior: "smooth" });
-                            }}
-                            onDelete={() => handleDelete(event._id)}
-                          />
-                        ))
-                      )}
-                    </>
-                  )}
-                </div>
-              )}
-            </AnimatePresence>
+        {/* Content Section */}
+        <div className="relative">
+          <div className="flex justify-between items-center mb-8">
+            <h2 className="text-sm font-black uppercase tracking-[0.3em] dark:text-white/40 text-black/40">
+              Manage / {activeTab}
+            </h2>
+            {!showForm && (
+              <motion.button
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                onClick={() => {
+                  setEditingItem(null);
+                  setShowForm(true);
+                }}
+                className="flex items-center gap-3 text-white text-[10px] font-black uppercase tracking-widest px-8 py-4 transition-all active:scale-[0.98] shadow-xl rounded-xl"
+                style={{ backgroundColor: accent }}
+              >
+                <Plus size={16} /> New{" "}
+                {activeTab === "team"
+                  ? "Member"
+                  : activeTab === "chapters"
+                    ? "Chapter"
+                    : "Event"}
+              </motion.button>
+            )}
           </div>
+
+          <AnimatePresence mode="wait">
+            {showForm ? (
+              <div key="form">
+                {activeTab === "events" && (
+                  <EventForm
+                    initial={editingItem || { is_upcoming: true }}
+                    onSave={handleSave}
+                    onCancel={() => {
+                      setShowForm(false);
+                      setEditingItem(null);
+                    }}
+                    saving={saving}
+                  />
+                )}
+                {activeTab === "team" && (
+                  <TeamMemberForm
+                    initial={editingItem || {}}
+                    onSave={handleSave}
+                    onCancel={() => {
+                      setShowForm(false);
+                      setEditingItem(null);
+                    }}
+                    saving={saving}
+                  />
+                )}
+                {activeTab === "chapters" && (
+                  <ChapterForm
+                    initial={editingItem || {}}
+                    onSave={handleSave}
+                    onCancel={() => {
+                      setShowForm(false);
+                      setEditingItem(null);
+                    }}
+                    saving={saving}
+                  />
+                )}
+              </div>
+            ) : (
+              <div
+                key="list"
+                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
+              >
+                {loading ? (
+                  [1, 2, 3, 4, 5, 6].map((i) => (
+                    <div
+                      key={i}
+                      className="h-24 dark:bg-white/5 bg-black/5 animate-pulse rounded-xl"
+                    />
+                  ))
+                ) : (
+                  <>
+                    {activeTab === "events" &&
+                      data.events.map((e) => (
+                        <DataRow
+                          key={e._id}
+                          title={e.title}
+                          subtitle={`${e.venue} // ${new Date(e.date).toLocaleDateString()}`}
+                          image={e.cover_image}
+                          badge={e.is_upcoming ? "Live" : "Past"}
+                          icon={Calendar}
+                          onEdit={() => {
+                            setEditingItem(e);
+                            setShowForm(true);
+                          }}
+                          onDelete={() => handleDelete(e._id)}
+                        />
+                      ))}
+                    {activeTab === "team" &&
+                      data.team.map((m) => (
+                        <DataRow
+                          key={m._id}
+                          title={m.name}
+                          subtitle={m.role}
+                          image={m.image}
+                          icon={User}
+                          onEdit={() => {
+                            setEditingItem(m);
+                            setShowForm(true);
+                          }}
+                          onDelete={() => handleDelete(m._id)}
+                        />
+                      ))}
+                    {activeTab === "chapters" &&
+                      data.chapters.map((c) => (
+                        <DataRow
+                          key={c._id}
+                          title={c.college}
+                          subtitle={`${c.city} // Lead: ${c.lead}`}
+                          image={c.logo}
+                          icon={School}
+                          onEdit={() => {
+                            setEditingItem(c);
+                            setShowForm(true);
+                          }}
+                          onDelete={() => handleDelete(c._id)}
+                        />
+                      ))}
+                    {data[activeTab].length === 0 && (
+                      <div className="col-span-full py-24 text-center dark:text-white/10 text-black/10 font-black uppercase tracking-[0.5em]">
+                        Endpoint Clear // No Data
+                      </div>
+                    )}
+                  </>
+                )}
+              </div>
+            )}
+          </AnimatePresence>
         </div>
       </div>
     </div>

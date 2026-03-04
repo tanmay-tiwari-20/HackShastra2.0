@@ -1,3 +1,5 @@
+"use client";
+
 import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
@@ -28,6 +30,7 @@ const FounderCinematicCard = ({
   const imageRef = useRef<HTMLDivElement>(null);
   const textRef = useRef<HTMLDivElement>(null);
   const [copied, setCopied] = useState(false);
+  const [isHovering, setIsHovering] = useState(false);
 
   const handleCopyEmail = async () => {
     if (socials.email) {
@@ -106,10 +109,7 @@ const FounderCinematicCard = ({
       >
         <div className="relative group w-full max-w-[320px] md:max-w-md aspect-[3/4] rounded-[1.5rem] md:rounded-[2.5rem] overflow-hidden">
           <Image
-            src={
-              image ||
-              "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=1974&auto=format&fit=crop"
-            }
+            src={image}
             alt={name}
             fill
             className="object-cover transition-transform duration-1000 group-hover:scale-105"
@@ -181,9 +181,11 @@ const FounderCinematicCard = ({
             <div className="relative">
               <motion.button
                 onClick={handleCopyEmail}
+                onMouseEnter={() => setIsHovering(true)}
+                onMouseLeave={() => setIsHovering(false)}
                 whileHover={{ y: -5, scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
-                className="w-10 h-10 md:w-12 md:h-12 rounded-xl md:rounded-2xl bg-black/5 dark:bg-white/5 flex items-center justify-center hover:bg-[#0DA5F0] dark:hover:bg-[#FA0001] hover:text-white transition-colors duration-300 shadow-sm"
+                className="w-10 h-10 md:w-12 md:h-12 rounded-xl md:rounded-2xl bg-black/5 dark:bg-white/5 flex items-center justify-center hover:bg-[#0DA5F0] dark:hover:bg-[#FA0001] hover:text-white transition-colors duration-300 shadow-sm cursor-pointer"
               >
                 <AnimatePresence mode="wait">
                   {copied ? (
@@ -207,15 +209,20 @@ const FounderCinematicCard = ({
                   )}
                 </AnimatePresence>
               </motion.button>
+
               <AnimatePresence>
-                {copied && (
+                {(isHovering || copied) && (
                   <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 10 }}
-                    className="absolute -top-8 left-1/2 -translate-x-1/2 text-[10px] font-bold bg-black dark:bg-white text-white dark:text-black px-2 py-1 rounded"
+                    initial={{ opacity: 0, y: 10, x: "-50%", scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, x: "-50%", scale: 1 }}
+                    exit={{ opacity: 0, y: 10, x: "-50%", scale: 0.95 }}
+                    className="absolute -top-12 left-1/2 z-[60] pointer-events-none"
                   >
-                    Copied!
+                    <div className="relative px-3 py-1.5 bg-black dark:bg-white text-white dark:text-black text-[10px] md:text-xs font-bold rounded-lg whitespace-nowrap shadow-xl border border-white/10 dark:border-black/10">
+                      {copied ? "Copied!" : socials.email}
+                      {/* Tooltip Arrow */}
+                      <div className="absolute top-full left-1/2 -translate-x-1/2 -mt-1 border-4 border-transparent border-t-black dark:border-t-white" />
+                    </div>
                   </motion.div>
                 )}
               </AnimatePresence>

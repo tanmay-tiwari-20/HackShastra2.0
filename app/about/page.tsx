@@ -12,13 +12,13 @@ const architects = [
   {
     name: "Tanmay Tiwari",
     story:
-      "Tanmay Tiwari believed that hackathons were more than competitions — they were launchpads for builders. He envisioned a space where raw talent could meet real-world challenges.",
+      "Tanmay Tiwari believed that hackathons were more than competitions, they were launchpads for builders. He envisioned a space where raw talent could meet real-world challenges.",
     image:
       "https://res.cloudinary.com/dunacoujw/image/upload/v1772568692/1_f8hnlw.png",
     socials: {
-      linkedin: "https://linkedin.com/in/tanmay-tiwari-20",
-      instagram: "https://instagram.com/tanmay_tiwari_20",
-      twitter: "https://x.com/tanmay_tiwari20",
+      linkedin: "https://www.linkedin.com/in/tanmay-tiwari20/",
+      instagram: "https://instagram.com/takneekitanmay/",
+      twitter: "https://x.com/takneekitanmay/",
       email: "workwithtakneekitanmay@gmail.com",
     },
   },
