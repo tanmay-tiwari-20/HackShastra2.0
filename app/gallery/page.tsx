@@ -1,5 +1,5 @@
 "use client";
-import React, { useRef, useEffect, useState, memo } from "react";
+import React, { useRef, useEffect, useState, memo, useMemo } from "react";
 import {
   motion,
   useMotionValue,
@@ -11,10 +11,10 @@ import {
 import { useGesture } from "@use-gesture/react";
 import Navbar from "@/components/Navbar";
 import { X } from "lucide-react";
+import { type GalleryImage } from "@/lib/types";
 
-// To add more images in the future, simply place them in the 'public/images' folder
-// and add their paths to this array. Avoid using 'poster.png' as requested.
-const GALLERY_IMAGES = [
+// Base seed images to ensure the gallery is never empty
+const STATIC_GALLERY = [
   "https://res.cloudinary.com/dunacoujw/image/upload/v1772402429/3_ewhcxs.webp",
   "https://res.cloudinary.com/dunacoujw/image/upload/v1772402431/7_c4axuu.webp",
   "https://res.cloudinary.com/dunacoujw/image/upload/v1772402429/11_x88zyt.webp",
@@ -23,7 +23,6 @@ const GALLERY_IMAGES = [
   "https://res.cloudinary.com/dunacoujw/image/upload/v1772402429/13_qqolcu.webp",
   "https://res.cloudinary.com/dunacoujw/image/upload/v1772402431/14_esbxla.webp",
   "https://res.cloudinary.com/dunacoujw/image/upload/v1772402433/16_nhp0kd.webp",
-  "https://res.cloudinary.com/dunacoujw/image/upload/v1772402433/17_kjiyiu.webp",
   "https://res.cloudinary.com/dunacoujw/image/upload/v1772402433/17_kjiyiu.webp",
   "https://res.cloudinary.com/dunacoujw/image/upload/v1772402432/8_v0g0is.webp",
   "https://res.cloudinary.com/dunacoujw/image/upload/v1772402431/5_cibwsm.webp",
@@ -51,9 +50,15 @@ const wrap = (min: number, max: number, v: number) => {
 };
 
 // Extracted and memoized Grid component to prevent 180 images from re-rendering
-// when the user clicks an image and selectedImage state changes.
 const GalleryGrid = memo(
-  ({ scale, wrappedX, wrappedY, wrappedYFast, setSelectedImage }: any) => {
+  ({
+    scale,
+    wrappedX,
+    wrappedY,
+    wrappedYFast,
+    setSelectedImage,
+    images,
+  }: any) => {
     return (
       <motion.div
         style={{ x: wrappedX }}
@@ -108,9 +113,8 @@ const GalleryGrid = memo(
                         {/* Render 4 images per column */}
                         {[0, 1, 2, 3].map((r) => {
                           const top = r * (IMAGE_HEIGHT + GAP) + staggerOffset;
-                          const imgIndex =
-                            (r * COLUMNS + c) % GALLERY_IMAGES.length;
-                          const url = GALLERY_IMAGES[imgIndex];
+                          const imgIndex = (r * COLUMNS + c) % images.length;
+                          const url = images[imgIndex];
 
                           // Unique ID for every instance to ensure correct layout animations
                           const id = `img-${colMultiplier}-${rowMultiplier}-${r}-${c}`;
@@ -125,6 +129,7 @@ const GalleryGrid = memo(
                                 left: 0,
                                 width: IMAGE_WIDTH,
                                 height: IMAGE_HEIGHT,
+                                contain: "layout paint",
                               }}
                               initial="rest"
                               whileHover="hover"
@@ -140,7 +145,6 @@ const GalleryGrid = memo(
                               }}
                               onClick={() => setSelectedImage({ url, id })}
                             >
-                              {/* eslint-disable-next-line @next/next/no-img-element */}
                               <motion.img
                                 layoutId={`image-${id}`}
                                 src={url}
@@ -182,22 +186,20 @@ GalleryGrid.displayName = "GalleryGrid";
 
 const GalleryPage = () => {
   const containerRef = useRef<HTMLDivElement>(null);
+  const [dynamicImages, setDynamicImages] = useState<GalleryImage[]>([]);
+  const [loading, setLoading] = useState(true);
 
   // Unbounded target values
   const targetX = useRef(0);
   const targetY = useRef(0);
 
-  // Motion values tracking the absolute unrestricted distance
   const x = useMotionValue(0);
   const y = useMotionValue(0);
 
-  // Apply spring physics for ultra-smooth buttery feel
   const springConfig = { damping: 40, stiffness: 150, mass: 1 };
   const smoothX = useSpring(x, springConfig);
   const smoothY = useSpring(y, springConfig);
 
-  // Create wrapped versions of the smooth values to safely loop rendering coordinates
-  // We wrap between -GRID_WIDTH/2 and GRID_WIDTH/2 to keep the 3x3 tiles centered beautifully.
   const wrappedX = useTransform(smoothX, (v) =>
     wrap(-GRID_WIDTH / 2, GRID_WIDTH / 2, v),
   );
@@ -214,16 +216,28 @@ const GalleryPage = () => {
   } | null>(null);
   const [scale, setScale] = useState(1);
 
+  const fetchImages = async () => {
+    try {
+      const res = await fetch("/api/gallery");
+      if (res.ok) {
+        const data = await res.json();
+        setDynamicImages(data);
+      }
+    } catch (err) {
+      console.error("Gallery Sync Error:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
+    fetchImages();
+
     const updateScale = () => {
       const width = window.innerWidth;
-      if (width < 768) {
-        setScale(0.5); // Mobile
-      } else if (width < 1024) {
-        setScale(0.75); // Tablet
-      } else {
-        setScale(1); // Desktop
-      }
+      if (width < 768) setScale(0.5);
+      else if (width < 1024) setScale(0.75);
+      else setScale(1);
     };
 
     updateScale();
@@ -231,7 +245,12 @@ const GalleryPage = () => {
     return () => window.removeEventListener("resize", updateScale);
   }, []);
 
-  // Combine Drag and Wheel gestures safely and unboundedly
+  const combinedImages = useMemo(() => {
+    const dynamicUrls = dynamicImages.map((img) => img.url);
+    // Merge dynamic images first, followed by static seeds to ensure volume
+    return [...dynamicUrls, ...STATIC_GALLERY];
+  }, [dynamicImages]);
+
   const bind = useGesture(
     {
       onDrag: ({ offset: [ox, oy] }) => {
@@ -241,13 +260,8 @@ const GalleryPage = () => {
         y.set(targetY.current);
       },
       onWheel: ({ delta: [dx, dy] }) => {
-        // Accumulate wheel delta into our target infinitely
         targetX.current -= dx * 1.0;
         targetY.current -= dy * 1.0;
-
-        // Keep useGesture's internal state synced with our unbounded wheeling
-        // so if you drag AFTER wheeling, it doesn't jump back.
-
         x.set(targetX.current);
         y.set(targetY.current);
       },
@@ -263,8 +277,7 @@ const GalleryPage = () => {
 
   return (
     <LayoutGroup>
-      {/* Theme-aware background */}
-      <div className="relative w-full h-screen overflow-hidden bg-gray-50 dark:bg-[#0a0a0a] text-black dark:text-white transition-colors duration-500">
+      <div className="relative w-full h-screen overflow-hidden bg-gray-50 dark:bg-[#0a0a0a] text-black dark:text-white transition-colors duration-500 font-sans">
         {/* Sticky Header */}
         <div
           className="absolute top-0 left-0 w-full z-50 pointer-events-none transition-opacity duration-300"
@@ -277,20 +290,35 @@ const GalleryPage = () => {
         <div
           ref={containerRef}
           {...bind()}
-          className={`absolute inset-0 w-full h-full touch-none select-none ${selectedImage ? "pointer-events-none blur-sm" : "cursor-grab active:cursor-grabbing"} transition-[filter] duration-500 will-change-[filter]`}
+          className={`absolute inset-0 w-full h-full touch-none select-none ${selectedImage ? "pointer-events-none" : "cursor-grab active:cursor-grabbing"} transition-[filter] duration-500`}
         >
-          <GalleryGrid
-            scale={scale}
-            wrappedX={wrappedX}
-            wrappedY={wrappedY}
-            wrappedYFast={wrappedYFast}
-            setSelectedImage={setSelectedImage}
-          />
+          {!loading && (
+            <GalleryGrid
+              scale={scale}
+              wrappedX={wrappedX}
+              wrappedY={wrappedY}
+              wrappedYFast={wrappedYFast}
+              setSelectedImage={setSelectedImage}
+              images={combinedImages}
+            />
+          )}
         </div>
+
+        {/* Loading Overlay */}
+        {loading && (
+          <div className="absolute inset-0 flex items-center justify-center dark:bg-black/20 bg-white/20 backdrop-blur-sm z-[60]">
+            <div className="flex flex-col items-center gap-4">
+              <div className="w-12 h-12 border-4 border-[#0DA5F0]/20 dark:border-[#FA0001]/20 border-t-[#0DA5F0] dark:border-t-[#FA0001] rounded-full animate-spin" />
+              <div className="text-[10px] font-black uppercase tracking-[0.4em] opacity-40">
+                Synchronizing Gallery
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Decorative prompt */}
         <div
-          className={`absolute bottom-8 left-1/2 -translate-x-1/2 pointer-events-none z-40 text-sm tracking-widest uppercase transition-opacity duration-300 ${selectedImage ? "opacity-0" : "opacity-100"}`}
+          className={`absolute bottom-8 left-1/2 -translate-x-1/2 pointer-events-none z-40 text-sm tracking-widest uppercase transition-opacity duration-300 ${selectedImage || loading ? "opacity-0" : "opacity-100"}`}
         >
           <div className="bg-black/10 dark:bg-black/40 backdrop-blur-sm px-6 py-2 rounded-full border border-black/10 dark:border-white/10 text-black/70 dark:text-white/70 font-medium text-center">
             Drag or Scroll to explore
@@ -305,7 +333,7 @@ const GalleryPage = () => {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.3 }}
-              className="fixed inset-0 z-[100] flex items-center justify-center bg-white/90 dark:bg-black/90 backdrop-blur-xl will-change-opacity"
+              className="fixed inset-0 z-[100] flex items-center justify-center bg-white/40 dark:bg-black/40 backdrop-blur-xl will-change-opacity"
             >
               {/* Close Button */}
               <motion.button
@@ -323,15 +351,14 @@ const GalleryPage = () => {
               <motion.div
                 layoutId={`container-${selectedImage.id}`}
                 transition={{ type: "spring", damping: 25, stiffness: 200 }}
-                className="relative flex max-w-[90vw] max-h-[85vh] overflow-hidden rounded-lg shadow-xl will-change-transform bg-transparent"
+                className="relative flex max-w-[90vw] max-h-[85vh] overflow-hidden rounded-lg shadow-xl bg-transparent"
               >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <motion.img
                   layoutId={`image-${selectedImage.id}`}
                   transition={{ type: "spring", damping: 25, stiffness: 200 }}
                   src={selectedImage.url}
                   alt="Selected Gallery Image"
-                  className="w-auto h-auto max-w-[90vw] max-h-[85vh] object-contain will-change-transform"
+                  className="w-auto h-auto max-w-[90vw] max-h-[85vh] object-contain"
                 />
               </motion.div>
             </motion.div>

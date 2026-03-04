@@ -27,3 +27,9 @@ export interface Chapter {
   logo?: string;
   created_at?: string;
 }
+
+export interface GalleryImage {
+  _id?: string;
+  url: string;
+  created_at?: string;
+}

@@ -2,7 +2,12 @@
 
 import { useEffect, useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { type Event, type TeamMember, type Chapter } from "@/lib/types";
+import {
+  type Event,
+  type TeamMember,
+  type Chapter,
+  type GalleryImage,
+} from "@/lib/types";
 import Image from "next/image";
 import Navbar from "@/components/Navbar";
 import { useTheme } from "next-themes";
@@ -22,6 +27,7 @@ import {
   School,
   Map,
   ShieldCheck,
+  Image as ImageIcon,
 } from "lucide-react";
 
 const ADMIN_PASSWORD = process.env.NEXT_PUBLIC_ADMIN_PASSWORD;
@@ -104,7 +110,6 @@ function PasswordGate({ onUnlock }: { onUnlock: () => void }) {
   );
 }
 
-// ─── Notification Toast ────────────────────────────────────────────────────
 function Toast({
   message,
   type,
@@ -128,13 +133,11 @@ function Toast({
   );
 }
 
-// ─── Shared Styles ────────────────────────────────────────────────────────
 const labelStyle =
   "block text-[10px] uppercase tracking-widest dark:text-white/40 text-black/40 mb-2 font-bold";
 const inputStyle =
   "w-full dark:bg-white/5 bg-black/5 border dark:border-white/10 border-black/10 px-4 py-3 dark:text-white text-black text-sm outline-none focus:border-opacity-100 transition-all duration-300 rounded-lg";
 
-// ─── Event Form ─────────────────────────────────────────────────────────────
 function EventForm({
   initial,
   onSave,
@@ -273,7 +276,6 @@ function EventForm({
   );
 }
 
-// ─── Team Member Form ────────────────────────────────────────────────────────
 function TeamMemberForm({
   initial,
   onSave,
@@ -349,7 +351,6 @@ function TeamMemberForm({
   );
 }
 
-// ─── Chapter Form ────────────────────────────────────────────────────────────
 function ChapterForm({
   initial,
   onSave,
@@ -434,7 +435,56 @@ function ChapterForm({
   );
 }
 
-// ─── Row Components ──────────────────────────────────────────────────────────
+function GalleryForm({
+  onSave,
+  onCancel,
+  saving,
+}: {
+  onSave: (data: any) => void;
+  onCancel: () => void;
+  saving: boolean;
+}) {
+  const [url, setUrl] = useState("");
+  const { resolvedTheme } = useTheme();
+  const accent = resolvedTheme === "dark" ? "#FA0001" : "#0DA5F0";
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 30 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -30 }}
+      className="dark:bg-zinc-900 bg-zinc-50 border dark:border-white/10 border-black/10 p-6 md:p-8 space-y-8 rounded-2xl"
+    >
+      <div>
+        <label className={labelStyle}>Image URL *</label>
+        <input
+          value={url}
+          onChange={(e) => setUrl(e.target.value)}
+          placeholder="Cloudinary or Direct Image URL..."
+          className={inputStyle}
+        />
+      </div>
+
+      <div className="flex flex-col sm:flex-row gap-4">
+        <button
+          onClick={() => onSave({ url })}
+          disabled={saving || !url}
+          className="flex-1 text-white text-[10px] font-black uppercase tracking-[0.2em] py-4 transition-all active:scale-[0.98] disabled:opacity-20 rounded-lg"
+          style={{ backgroundColor: accent }}
+        >
+          {saving ? "Processing..." : "Commit Image"}
+        </button>
+        <button
+          onClick={onCancel}
+          className="px-8 dark:bg-white/5 bg-black/5 dark:text-white text-black text-[10px] font-black uppercase tracking-[0.2em] py-4 hover:opacity-70 transition-all rounded-lg"
+        >
+          Abort
+        </button>
+      </div>
+    </motion.div>
+  );
+}
+
 function DataRow({
   title,
   subtitle,
@@ -447,7 +497,7 @@ function DataRow({
   title: string;
   subtitle: string;
   image?: string;
-  onEdit: () => void;
+  onEdit?: () => void;
   onDelete: () => void;
   badge?: string;
   icon: any;
@@ -493,12 +543,14 @@ function DataRow({
       </div>
 
       <div className="flex gap-1.5">
-        <button
-          onClick={onEdit}
-          className="p-2 dark:bg-white/5 bg-black/5 hover:bg-black/10 dark:hover:bg-white/10 dark:text-white text-black transition-all rounded-lg"
-        >
-          <Edit3 size={12} />
-        </button>
+        {onEdit && (
+          <button
+            onClick={onEdit}
+            className="p-2 dark:bg-white/5 bg-black/5 hover:bg-black/10 dark:hover:bg-white/10 dark:text-white text-black transition-all rounded-lg"
+          >
+            <Edit3 size={12} />
+          </button>
+        )}
         <button
           onClick={onDelete}
           className="p-2 bg-red-500/10 hover:bg-red-500 text-red-500 hover:text-white transition-all rounded-lg"
@@ -510,8 +562,7 @@ function DataRow({
   );
 }
 
-// ─── Main Admin Page ─────────────────────────────────────────────────────────
-type Tab = "events" | "team" | "chapters";
+type Tab = "events" | "team" | "chapters" | "gallery";
 
 export default function AdminPage() {
   const [unlocked, setUnlocked] = useState(false);
@@ -520,7 +571,8 @@ export default function AdminPage() {
     events: Event[];
     team: TeamMember[];
     chapters: Chapter[];
-  }>({ events: [], team: [], chapters: [] });
+    gallery: GalleryImage[];
+  }>({ events: [], team: [], chapters: [], gallery: [] });
   const [loading, setLoading] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [editingItem, setEditingItem] = useState<any>(null);
@@ -544,18 +596,12 @@ export default function AdminPage() {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const endpoints = ["events", "team", "chapters"];
-      const [eventsRes, teamRes, chaptersRes] = await Promise.all(
-        endpoints.map((e) => fetch(`/api/${e}`)),
+      const endpoints = ["events", "team", "chapters", "gallery"];
+      const res = await Promise.all(endpoints.map((e) => fetch(`/api/${e}`)));
+      const [events, team, chapters, gallery] = await Promise.all(
+        res.map((r) => r.json()),
       );
-
-      const [events, team, chapters] = await Promise.all([
-        eventsRes.json(),
-        teamRes.json(),
-        chaptersRes.json(),
-      ]);
-
-      setData({ events, team, chapters });
+      setData({ events, team, chapters, gallery });
     } catch (err) {
       showToast("System Link Failure", "error");
     } finally {
@@ -624,6 +670,7 @@ export default function AdminPage() {
     { id: "events", label: "Events", icon: Calendar },
     { id: "team", label: "Core Team", icon: Users },
     { id: "chapters", label: "Chapters", icon: School },
+    { id: "gallery", label: "Gallery", icon: ImageIcon },
   ];
 
   return (
@@ -634,7 +681,6 @@ export default function AdminPage() {
       </AnimatePresence>
 
       <div className="max-w-7xl mx-auto px-4 pt-32 md:pt-40">
-        {/* Header Section */}
         <div className="flex flex-col md:flex-row items-center justify-between gap-8 mb-12">
           <div>
             <div className="text-[10px] uppercase tracking-[0.4em] font-black opacity-40 mb-2 dark:text-white text-black flex items-center gap-2">
@@ -646,7 +692,7 @@ export default function AdminPage() {
             </h1>
           </div>
 
-          <div className="flex bg-black/5 dark:bg-white/5 p-1.5 rounded-2xl border border-black/5 dark:border-white/5">
+          <div className="flex bg-black/5 dark:bg-white/5 p-1.5 rounded-2xl border border-black/5 dark:border-white/5 overflow-x-auto max-w-full">
             {tabs.map((tab) => {
               const Icon = tab.icon;
               const isActive = activeTab === tab.id;
@@ -658,7 +704,7 @@ export default function AdminPage() {
                     setShowForm(false);
                     setEditingItem(null);
                   }}
-                  className={`flex items-center gap-2 px-4 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${
+                  className={`flex items-center gap-2 px-4 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap ${
                     isActive
                       ? "bg-white dark:bg-zinc-800 shadow-xl scale-105"
                       : "opacity-40 hover:opacity-100"
@@ -673,7 +719,6 @@ export default function AdminPage() {
           </div>
         </div>
 
-        {/* Content Section */}
         <div className="relative">
           <div className="flex justify-between items-center mb-8">
             <h2 className="text-sm font-black uppercase tracking-[0.3em] dark:text-white/40 text-black/40">
@@ -695,7 +740,9 @@ export default function AdminPage() {
                   ? "Member"
                   : activeTab === "chapters"
                     ? "Chapter"
-                    : "Event"}
+                    : activeTab === "gallery"
+                      ? "Image"
+                      : "Event"}
               </motion.button>
             )}
           </div>
@@ -728,6 +775,16 @@ export default function AdminPage() {
                 {activeTab === "chapters" && (
                   <ChapterForm
                     initial={editingItem || {}}
+                    onSave={handleSave}
+                    onCancel={() => {
+                      setShowForm(false);
+                      setEditingItem(null);
+                    }}
+                    saving={saving}
+                  />
+                )}
+                {activeTab === "gallery" && (
+                  <GalleryForm
                     onSave={handleSave}
                     onCancel={() => {
                       setShowForm(false);
@@ -795,6 +852,18 @@ export default function AdminPage() {
                             setShowForm(true);
                           }}
                           onDelete={() => handleDelete(c._id)}
+                        />
+                      ))}
+                    {activeTab === "gallery" &&
+                      data.gallery.map((g: any) => (
+                        <DataRow
+                          key={g._id}
+                          title="Gallery Capture"
+                          subtitle={new Date(g.created_at).toLocaleString()}
+                          image={g.url}
+                          icon={ImageIcon}
+                          onEdit={undefined}
+                          onDelete={() => handleDelete(g._id)}
                         />
                       ))}
                     {data[activeTab].length === 0 && (
