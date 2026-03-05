@@ -28,7 +28,7 @@ const Navbar = ({ isReady = false }: { isReady?: boolean }) => {
   const socialItems = [
     { label: "Instagram", link: "https://instagram.com/hackshastra" },
     { label: "LinkedIn", link: "https://linkedin.com/company/hackshastraa" },
-    { label: "Email", link: "mailto:collab@hackshastra.in" },
+    { label: "Email", link: "mailto:thehackshastra@gmail.com" },
   ];
 
   return (

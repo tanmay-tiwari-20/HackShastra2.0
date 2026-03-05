@@ -33,3 +33,10 @@ export interface GalleryImage {
   url: string;
   created_at?: string;
 }
+
+export interface Sponsor {
+  _id?: string;
+  name: string;
+  logo: string;
+  created_at?: string;
+}

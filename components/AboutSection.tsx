@@ -1,181 +1,131 @@
 "use client";
-
-import { useEffect, useRef } from "react";
-import { motion } from "framer-motion";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import React, { useRef } from "react";
 import {
-  Code2,
-  Rocket,
-  Users,
-  Trophy,
-  Lightbulb,
-  Calendar,
-} from "lucide-react";
+  motion,
+  useScroll,
+  useTransform,
+  useSpring,
+  useInView,
+} from "framer-motion";
+import { ArrowRight, Zap, Target, Cpu } from "lucide-react";
+import { useTheme } from "next-themes";
 
-gsap.registerPlugin(ScrollTrigger);
+const AboutSection = () => {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const { resolvedTheme } = useTheme();
 
-interface FeatureCard {
-  icon: React.ReactNode;
-  title: string;
-  description: string;
-}
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start end", "end start"],
+  });
 
-const features: FeatureCard[] = [
-  {
-    icon: <Code2 className="w-8 h-8" />,
-    title: "Workshops & Masterclasses",
-    description:
-      "Learn cutting-edge technologies from industry experts and experienced developers in interactive sessions.",
-  },
-  {
-    icon: <Rocket className="w-8 h-8" />,
-    title: "Hands-on Training & Projects",
-    description:
-      "Build real-world projects and gain practical experience that goes beyond theoretical knowledge.",
-  },
-  {
-    icon: <Trophy className="w-8 h-8" />,
-    title: "Hackathon Exposure",
-    description:
-      "Compete in hackathons, solve challenges, and get mentorship from seasoned developers.",
-  },
-  {
-    icon: <Users className="w-8 h-8" />,
-    title: "Peer-to-Peer Learning",
-    description:
-      "Collaborate with fellow students, share knowledge, and grow together as a community.",
-  },
-  {
-    icon: <Lightbulb className="w-8 h-8" />,
-    title: "Leadership Opportunities",
-    description:
-      "Develop leadership skills by organizing events, leading teams, and managing tech initiatives.",
-  },
-  {
-    icon: <Calendar className="w-8 h-8" />,
-    title: "Community Events & Meetups",
-    description:
-      "Connect with like-minded developers at regular meetups, tech talks, and networking sessions.",
-  },
-];
-
-export default function AboutSection() {
-  const sectionRef = useRef<HTMLElement>(null);
-  const titleRef = useRef<HTMLHeadingElement>(null);
-  const subtitleRef = useRef<HTMLParagraphElement>(null);
-  const cardsRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      // Title animation
-      gsap.from(titleRef.current, {
-        y: 40,
-        opacity: 0,
-        duration: 0.8,
-        ease: "power3.out",
-        scrollTrigger: {
-          trigger: titleRef.current,
-          start: "top 85%",
-        },
-      });
-
-      // Subtitle animation
-      gsap.from(subtitleRef.current, {
-        y: 30,
-        opacity: 0,
-        duration: 0.8,
-        delay: 0.2,
-        ease: "power3.out",
-        scrollTrigger: {
-          trigger: subtitleRef.current,
-          start: "top 85%",
-        },
-      });
-
-      // Cards stagger animation
-      gsap.from(".feature-card", {
-        y: 60,
-        opacity: 0,
-        duration: 0.7,
-        stagger: 0.1,
-        ease: "power3.out",
-        scrollTrigger: {
-          trigger: cardsRef.current,
-          start: "top 80%",
-        },
-      });
-    }, sectionRef);
-
-    return () => ctx.revert();
-  }, []);
+  const isDark = resolvedTheme === "dark";
+  const opacity = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [0, 1, 1, 0]);
+  const y = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [100, 0, 0, -100]);
 
   return (
-    <section
-      ref={sectionRef}
-      className="relative w-full py-20 md:py-28 px-4 sm:px-6 lg:px-8 overflow-hidden transition-colors duration-300"
+    <motion.section
+      ref={containerRef}
+      style={{ opacity, y }}
+      className="relative w-full py-24 md:py-32 px-6 bg-white dark:bg-black overflow-hidden"
     >
-      <div className="relative max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="text-center mb-16 md:mb-20">
-          <h2
-            ref={titleRef}
-            className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 dark:text-white mb-4 tracking-tight"
-          >
-            Why{" "}
-            <span className="text-[#0DA5F0] dark:text-[#FA0001]">
-              HackShastra
-            </span>
-            ?
-          </h2>
-          <p
-            ref={subtitleRef}
-            className="text-lg md:text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto leading-relaxed"
-          >
-            A student-powered tech community built to inspire, learn, and grow
-            together.
-          </p>
-        </div>
-
-        {/* Feature Cards Grid */}
-        <div
-          ref={cardsRef}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8"
-        >
-          {features.map((feature, index) => (
+      <div className="max-w-7xl mx-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center">
+          {/* Content Column */}
+          <div className="space-y-10">
             <motion.div
-              key={index}
-              className="feature-card group relative"
-              whileHover={{ scale: 1.03, y: -8 }}
-              transition={{ duration: 0.3, ease: "easeOut" }}
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              className="inline-flex items-center gap-3 px-4 py-1.5 rounded-full border border-zinc-100 dark:border-zinc-900 bg-zinc-50 dark:bg-zinc-950"
             >
-              <div className="relative h-full p-8 rounded-2xl border border-gray-200 dark:border-white/10 bg-white/80 dark:bg-zinc-900/50 backdrop-blur-sm overflow-hidden transition-all duration-300 group-hover:border-blue-400 dark:group-hover:border-[#FA0001]/40 group-hover:shadow-2xl group-hover:shadow-[#0DA5F0]/20 dark:group-hover:shadow-[#FA0001]/10">
-                {/* Hover glow effect */}
-                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <div className="absolute top-0 left-0 w-full h-px bg-linear-to-r from-transparent via-blue-400 dark:via-[#FA0001]/50 to-transparent" />
-                  <div className="absolute bottom-0 left-0 w-full h-px bg-linear-to-r from-transparent via-blue-400 dark:via-[#FA0001]/50 to-transparent" />
-                </div>
-
-                {/* Icon */}
-                <div className="mb-6 text-blue-600 dark:text-red-600 group-hover:text-[#0DA5F0] dark:group-hover:text-[#FA0001]">
-                  {feature.icon}
-                </div>
-
-                {/* Content */}
-                <h3 className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white mb-3 tracking-tight">
-                  {feature.title}
-                </h3>
-                <p className="text-gray-600 dark:text-gray-400 leading-relaxed text-sm md:text-base">
-                  {feature.description}
-                </p>
-
-                {/* Corner accent */}
-                <div className="absolute bottom-0 right-0 w-24 h-24 bg-linear-to-tl from-blue-400/10 dark:from-[#FA0001]/5 to-transparent rounded-tl-full opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-              </div>
+              <Zap size={14} className="text-blue-500 dark:text-red-600" />
+              <span className="text-[10px] font-black uppercase tracking-[0.3em] text-zinc-400 dark:text-zinc-600">
+                Institutional Genesis
+              </span>
             </motion.div>
-          ))}
+
+            <div className="space-y-6">
+              <h2 className="text-3xl md:text-5xl font-black tracking-tighter leading-none">
+                WE ARCHITECT THE{" "}
+                <span className="text-[#0DA5F0] dark:text-[#ff2e2e]">
+                  FUTURE
+                </span>{" "}
+                OF ENGINEERING.
+              </h2>
+              <p className="text-lg text-zinc-600 dark:text-zinc-400 font-medium leading-relaxed max-w-xl">
+                HackShastra is a high-octane student collective engineered to
+                bridge the terminal gap between academic theory and
+                architectural reality. We don't just teach code; we build the
+                builders.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-2 gap-8 py-4">
+              <div className="space-y-1">
+                <span className="text-2xl font-black text-zinc-900 dark:text-white">
+                  100%
+                </span>
+                <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-400">
+                  Hands-on Growth
+                </p>
+              </div>
+              <div className="space-y-1">
+                <span className="text-2xl font-black text-zinc-900 dark:text-white">
+                  Active
+                </span>
+                <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-400">
+                  Nationwide Network
+                </p>
+              </div>
+            </div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.2 }}
+            >
+              <motion.a
+                href="/about"
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className="group relative inline-flex items-center gap-4 px-10 py-5 bg-zinc-900 dark:bg-white text-white dark:text-black rounded-2xl font-black text-[10px] sm:text-xs uppercase tracking-[0.3em] overflow-hidden shadow-2xl transition-all duration-500"
+              >
+                {/* Text & Icon Layer */}
+                <span className="relative z-10 group-hover:text-white transition-colors duration-500 flex items-center gap-3">
+                  Explore Our Story
+                  <ArrowRight
+                    size={18}
+                    className="group-hover:translate-x-1 transition-transform duration-500"
+                  />
+                </span>
+
+                {/* Animated Background Reveal */}
+                <div className="absolute inset-0 bg-[#0DA5F0] dark:bg-[#ff2e2e] opacity-0 group-hover:opacity-100 transition-all duration-500 scale-105 group-hover:scale-100" />
+
+                {/* Dynamic Border Glow */}
+                <div className="absolute inset-0 border border-white/10 dark:border-black/5 rounded-2xl pointer-events-none" />
+              </motion.a>
+            </motion.div>
+          </div>
+
+          {/* Visual Column */}
+          <div className="relative group lg:mt-0 mt-8">
+            <div className="absolute -inset-4 border border-zinc-100 dark:border-zinc-900 rounded-3xl -rotate-1 group-hover:rotate-0 transition-transform duration-700" />
+            <div className="relative aspect-video rounded-2xl overflow-hidden bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-xl">
+              <img
+                src="https://res.cloudinary.com/dunacoujw/image/upload/v1772402430/12_ubduyk.webp"
+                alt="HackShastra Lab"
+                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-linear-to-tr from-blue-500/10 via-transparent to-transparent dark:from-red-600/10" />
+            </div>
+          </div>
         </div>
       </div>
-    </section>
+    </motion.section>
   );
-}
+};
+
+export default AboutSection;

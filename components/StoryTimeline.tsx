@@ -110,7 +110,7 @@ const StoryTimeline = () => {
     <div
       id="story-section"
       ref={containerRef}
-      className="relative w-full bg-[#fcfcfc] dark:bg-[#0c0c0c] overflow-hidden transition-colors duration-700 md:min-h-screen py-20 px-0"
+      className="relative w-full bg-white dark:bg-[#0A0A0A] overflow-hidden transition-colors duration-700 md:min-h-screen py-20 px-0"
     >
       {/* Narrative Label */}
       <div className="absolute top-10 md:top-20 left-10 lg:left-20 z-10 flex items-center gap-4">
@@ -164,9 +164,9 @@ const StoryTimeline = () => {
       </div>
 
       {/* Background Decorative Text - Industrial */}
-      <div className="absolute -bottom-5 left-10 opacity-[0.03] dark:opacity-[0.05] pointer-events-none hidden lg:block">
+      <div className="absolute -bottom-10 left-10 opacity-[0.03] dark:opacity-[0.05] pointer-events-none hidden lg:block">
         <span className="text-[10rem] font-black tracking-tighter select-none">
-          ARCHITECTURES
+          THE ARCHITECTS
         </span>
       </div>
     </div>

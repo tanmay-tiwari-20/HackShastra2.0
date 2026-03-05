@@ -5,10 +5,10 @@ import Hero from "@/components/Hero";
 import Navbar from "@/components/Navbar";
 import { Preloader } from "@/components/Preloader";
 import SplitStatsWall from "@/components/SplitStatsWall";
-import Theme from "@/components/Theme";
 import { Skiper28 } from "@/components/ui/skiper-ui/skiper28";
 import { CrowdCanvas } from "@/components/ui/skiper-ui/skiper39";
 import UpcomingEvent from "@/components/UpcomingEvent";
+import Sponsors from "@/components/Sponsors";
 import { useState, useEffect } from "react";
 
 const Page = () => {
@@ -33,15 +33,15 @@ const Page = () => {
         className={
           showPreloader
             ? "opacity-0"
-            : "opacity-100 transition-opacity duration-500"
+            : "opacity-100 transition-opacity duration-500 bg-white dark:bg-black"
         }
       >
         <Navbar isReady={!showPreloader} />
         <Hero isReady={!showPreloader} />
         <UpcomingEvent />
-        <Theme />
         <SplitStatsWall />
         <AboutSection />
+        <Sponsors />
         <Cards />
         <Skiper28 />
         <CrowdCanvas src="all-peeps.png" rows={15} cols={7} />

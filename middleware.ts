@@ -21,7 +21,7 @@ export function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // Allow home, tbd, events, about, contact, gallery, secret-admin and all API routes
+  // Allow home, tbd, events, about, contact, gallery, secret-admin, APIs, and SEO files
   if (
     pathname === "/" ||
     pathname === "/about" ||
@@ -30,6 +30,8 @@ export function middleware(request: NextRequest) {
     pathname === "/contact" ||
     pathname === "/tbd" ||
     pathname === "/secret-admin" ||
+    pathname === "/sitemap.xml" ||
+    pathname === "/robots.txt" ||
     pathname.startsWith("/api")
   ) {
     return NextResponse.next();

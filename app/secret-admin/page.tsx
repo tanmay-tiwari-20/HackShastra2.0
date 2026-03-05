@@ -7,6 +7,7 @@ import {
   type TeamMember,
   type Chapter,
   type GalleryImage,
+  type Sponsor,
 } from "@/lib/types";
 import Image from "next/image";
 import Navbar from "@/components/Navbar";
@@ -435,6 +436,72 @@ function ChapterForm({
   );
 }
 
+function SponsorForm({
+  initial,
+  onSave,
+  onCancel,
+  saving,
+}: {
+  initial: Partial<Sponsor>;
+  onSave: (data: any) => void;
+  onCancel: () => void;
+  saving: boolean;
+}) {
+  const [form, setForm] = useState(initial);
+  const { resolvedTheme } = useTheme();
+  const accent = resolvedTheme === "dark" ? "#FA0001" : "#0DA5F0";
+
+  const set = (key: string, val: any) =>
+    setForm((prev) => ({ ...prev, [key]: val }));
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 30 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -30 }}
+      className="dark:bg-zinc-900 bg-zinc-50 border dark:border-white/10 border-black/10 p-6 md:p-8 space-y-8 rounded-2xl"
+    >
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <label className={labelStyle}>Sponsor Name *</label>
+          <input
+            value={form.name}
+            onChange={(e) => set("name", e.target.value)}
+            placeholder="e.g. Google Cloud"
+            className={inputStyle}
+          />
+        </div>
+        <div>
+          <label className={labelStyle}>Logo URL *</label>
+          <input
+            value={form.logo}
+            onChange={(e) => set("logo", e.target.value)}
+            placeholder="Direct link to logo..."
+            className={inputStyle}
+          />
+        </div>
+      </div>
+
+      <div className="flex flex-col sm:flex-row gap-4">
+        <button
+          onClick={() => onSave(form)}
+          disabled={saving || !form.name || !form.logo}
+          className="flex-1 text-white text-[10px] font-black uppercase tracking-[0.2em] py-4 transition-all active:scale-[0.98] disabled:opacity-20 rounded-lg"
+          style={{ backgroundColor: accent }}
+        >
+          {saving ? "Processing..." : "Commit Sponsor"}
+        </button>
+        <button
+          onClick={onCancel}
+          className="px-8 dark:bg-white/5 bg-black/5 dark:text-white text-black text-[10px] font-black uppercase tracking-[0.2em] py-4 hover:opacity-70 transition-all rounded-lg"
+        >
+          Abort
+        </button>
+      </div>
+    </motion.div>
+  );
+}
+
 function GalleryForm({
   onSave,
   onCancel,
@@ -562,7 +629,7 @@ function DataRow({
   );
 }
 
-type Tab = "events" | "team" | "chapters" | "gallery";
+type Tab = "events" | "team" | "chapters" | "gallery" | "sponsors";
 
 export default function AdminPage() {
   const [unlocked, setUnlocked] = useState(false);
@@ -572,7 +639,8 @@ export default function AdminPage() {
     team: TeamMember[];
     chapters: Chapter[];
     gallery: GalleryImage[];
-  }>({ events: [], team: [], chapters: [], gallery: [] });
+    sponsors: Sponsor[];
+  }>({ events: [], team: [], chapters: [], gallery: [], sponsors: [] });
   const [loading, setLoading] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [editingItem, setEditingItem] = useState<any>(null);
@@ -596,12 +664,12 @@ export default function AdminPage() {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const endpoints = ["events", "team", "chapters", "gallery"];
+      const endpoints = ["events", "team", "chapters", "gallery", "sponsors"];
       const res = await Promise.all(endpoints.map((e) => fetch(`/api/${e}`)));
-      const [events, team, chapters, gallery] = await Promise.all(
+      const [events, team, chapters, gallery, sponsors] = await Promise.all(
         res.map((r) => r.json()),
       );
-      setData({ events, team, chapters, gallery });
+      setData({ events, team, chapters, gallery, sponsors });
     } catch (err) {
       showToast("System Link Failure", "error");
     } finally {
@@ -671,6 +739,7 @@ export default function AdminPage() {
     { id: "team", label: "Core Team", icon: Users },
     { id: "chapters", label: "Chapters", icon: School },
     { id: "gallery", label: "Gallery", icon: ImageIcon },
+    { id: "sponsors", label: "Sponsors", icon: Trophy },
   ];
 
   return (
@@ -742,7 +811,9 @@ export default function AdminPage() {
                     ? "Chapter"
                     : activeTab === "gallery"
                       ? "Image"
-                      : "Event"}
+                      : activeTab === "sponsors"
+                        ? "Sponsor"
+                        : "Event"}
               </motion.button>
             )}
           </div>
@@ -785,6 +856,17 @@ export default function AdminPage() {
                 )}
                 {activeTab === "gallery" && (
                   <GalleryForm
+                    onSave={handleSave}
+                    onCancel={() => {
+                      setShowForm(false);
+                      setEditingItem(null);
+                    }}
+                    saving={saving}
+                  />
+                )}
+                {activeTab === "sponsors" && (
+                  <SponsorForm
+                    initial={editingItem || {}}
                     onSave={handleSave}
                     onCancel={() => {
                       setShowForm(false);
@@ -864,6 +946,21 @@ export default function AdminPage() {
                           icon={ImageIcon}
                           onEdit={undefined}
                           onDelete={() => handleDelete(g._id)}
+                        />
+                      ))}
+                    {activeTab === "sponsors" &&
+                      data.sponsors.map((s) => (
+                        <DataRow
+                          key={s._id}
+                          title={s.name}
+                          subtitle="Official Partner"
+                          image={s.logo}
+                          icon={Trophy}
+                          onEdit={() => {
+                            setEditingItem(s);
+                            setShowForm(true);
+                          }}
+                          onDelete={() => handleDelete(s._id)}
                         />
                       ))}
                     {data[activeTab].length === 0 && (

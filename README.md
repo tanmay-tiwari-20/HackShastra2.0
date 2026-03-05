@@ -1,36 +1,62 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# HackShastra 2.0 🚀
 
-## Getting Started
+Welcome to the official **HackShastra 2.0** repository. This is an interactive, high-performance community platform and event management system built for the HackShastra community.
 
-First, run the development server:
+**Public Landing Page**: A premium, highly animated showcase of our community, events, and vision.
+
+## ✨ Key Features
+
+- **Cinematic Experience**: Heavy use of custom animations (GSAP, Framer Motion) and smooth scrolling (Lenis) for a highly engaging user experience.
+- **Dynamic Content**: Data like events, chapters, core team members, and gallery images are fetched dynamically from MongoDB.
+- **Theme Support**: Seamless Dark/Light mode transitions tailored to the brand's aesthetic.
+
+## 🛠️ Technology Stack
+
+- **Framework**: [Next.js (App Router)](https://nextjs.org) with React 19.
+- **Language**: TypeScript throughout.
+- **Styling**: Tailwind CSS v4.
+- **Database**: MongoDB (via the native Node.js driver).
+- **Animation Libraries**:
+  - `framer-motion` & `motion`
+  - `@gsap/react` & `gsap`
+  - `@use-gesture/react`
+- **Scrolling**: `lenis`
+
+## 🚀 Getting Started
+
+To run this project locally, you will need Node.js and an active MongoDB URI.
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/tanmay-tiwari-20/hackshastra2.0.git
+cd hackshastra2.0
+```
+
+### 2. Install dependencies
+
+```bash
+npm install
+# or yarn install / pnpm install / bun install
+```
+
+### 3. Run the Development Server
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+# or yarn dev / pnpm dev / bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 📂 Project Structure Overview
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- `app/`: Next.js App Router (Pages, Layouts, API Routes).
+  - `api/`: REST endpoints connecting to MongoDB.
+- `components/`: Reusable React components (UI elements, Forms, Animated Sections).
+- `lib/`: Helper functions, database connection (`mongodb.ts`), and Type definitions (`types.ts`).
+- `public/`: Static assets (images, fonts).
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Built with ❤️ by the HackShastra Team.

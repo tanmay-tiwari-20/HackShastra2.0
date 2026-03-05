@@ -338,6 +338,40 @@ function TimelineItem({
           </div>
         </div>
       </div>
+
+      {/* JSON-LD Past Event Schema */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Event",
+            name: event.title,
+            startDate: event.date,
+            eventAttendanceMode:
+              "https://schema.org/OfflineEventAttendanceMode",
+            eventStatus: "https://schema.org/EventScheduled", // Can be updated if needed
+            location: {
+              "@type": "Place",
+              name: event.venue,
+              address: {
+                "@type": "PostalAddress",
+                addressLocality: event.venue.split(",")[0],
+                addressCountry: "IN",
+              },
+            },
+            image: [
+              event.cover_image || "https://hackshastra.in/images/poster.png",
+            ],
+            description: event.description,
+            organizer: {
+              "@type": "Organization",
+              name: "HackShastra",
+              url: "https://hackshastra.in",
+            },
+          }),
+        }}
+      />
     </div>
   );
 }

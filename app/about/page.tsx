@@ -42,10 +42,9 @@ const architects = [
     image:
       "https://res.cloudinary.com/dunacoujw/image/upload/v1772568692/4_snnvr9.png",
     socials: {
-      linkedin: "https://linkedin.com/in/tanmay-tiwari-20",
-      instagram: "https://instagram.com/tanmay_tiwari_20",
-      twitter: "https://x.com/tanmay_tiwari20",
-      email: "sumit@hackshastra.com",
+      linkedin: "https://www.linkedin.com/in/sumit-rathore-48b2a9278",
+      instagram: "https://www.instagram.com/sumitinnovate",
+      email: "srathore132005@gmail.com",
     },
   },
   {
@@ -110,6 +109,33 @@ const AboutPage = () => {
           HACKSHASTRA // ABOUT
         </span>
       </div>
+
+      {/* JSON-LD Person Schema */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            architects.map((architect) => ({
+              "@context": "https://schema.org",
+              "@type": "Person",
+              name: architect.name,
+              image: architect.image,
+              description: architect.story,
+              url: architect.socials.linkedin,
+              sameAs: [
+                architect.socials.linkedin,
+                architect.socials.twitter,
+                architect.socials.instagram,
+              ].filter(Boolean),
+              memberOf: {
+                "@type": "Organization",
+                name: "HackShastra",
+                url: "https://hackshastra.in",
+              },
+            })),
+          ),
+        }}
+      />
     </main>
   );
 };
