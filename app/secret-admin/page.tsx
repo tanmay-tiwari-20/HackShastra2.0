@@ -288,7 +288,10 @@ function TeamMemberForm({
   onCancel: () => void;
   saving: boolean;
 }) {
-  const [form, setForm] = useState(initial);
+  const [form, setForm] = useState({
+    ...initial,
+    socials: initial.socials || {},
+  });
   const { resolvedTheme } = useTheme();
   const accent = resolvedTheme === "dark" ? "#FA0001" : "#0DA5F0";
 
@@ -324,11 +327,75 @@ function TeamMemberForm({
         <div className="md:col-span-2">
           <label className={labelStyle}>Avatar URL</label>
           <input
-            value={form.image}
+            value={form.image || ""}
             onChange={(e) => set("image", e.target.value)}
             placeholder="Direct link to portrait..."
             className={inputStyle}
           />
+        </div>
+
+        {/* Social Links Section */}
+        <div className="md:col-span-2 pt-4 border-t border-black/5 dark:border-white/5 space-y-4">
+          <h4 className="text-[10px] font-black uppercase tracking-widest text-black/40 dark:text-white/40 mb-4">
+            Social Profiles (Optional)
+          </h4>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className={labelStyle}>GitHub</label>
+              <input
+                value={form.socials?.github || ""}
+                onChange={(e) =>
+                  set("socials", { ...form.socials, github: e.target.value })
+                }
+                placeholder="github.com/..."
+                className={inputStyle}
+              />
+            </div>
+            <div>
+              <label className={labelStyle}>LinkedIn</label>
+              <input
+                value={form.socials?.linkedin || ""}
+                onChange={(e) =>
+                  set("socials", { ...form.socials, linkedin: e.target.value })
+                }
+                placeholder="linkedin.com/in/..."
+                className={inputStyle}
+              />
+            </div>
+            <div>
+              <label className={labelStyle}>Twitter / X</label>
+              <input
+                value={form.socials?.twitter || ""}
+                onChange={(e) =>
+                  set("socials", { ...form.socials, twitter: e.target.value })
+                }
+                placeholder="twitter.com/..."
+                className={inputStyle}
+              />
+            </div>
+            <div>
+              <label className={labelStyle}>Instagram</label>
+              <input
+                value={form.socials?.instagram || ""}
+                onChange={(e) =>
+                  set("socials", { ...form.socials, instagram: e.target.value })
+                }
+                placeholder="instagram.com/..."
+                className={inputStyle}
+              />
+            </div>
+            <div className="md:col-span-2">
+              <label className={labelStyle}>Portfolio / Website</label>
+              <input
+                value={form.socials?.portfolio || ""}
+                onChange={(e) =>
+                  set("socials", { ...form.socials, portfolio: e.target.value })
+                }
+                placeholder="https://..."
+                className={inputStyle}
+              />
+            </div>
+          </div>
         </div>
       </div>
 

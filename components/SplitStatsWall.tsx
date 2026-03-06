@@ -160,13 +160,23 @@ export default function SplitStatsWall() {
               ))}
 
               {/* Decorative Tech Card */}
-              <div className="hidden sm:flex relative p-8 rounded-3xl border border-dashed border-zinc-200 dark:border-zinc-800 items-center justify-center text-center opacity-40">
-                <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-zinc-400 dark:text-zinc-600 italic">
-                  &bull; Data Syncing with Core &bull;
-                </p>
-                <div className="absolute -top-1 -right-1 w-2 h-2 rounded-full border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-black" />
-                <div className="absolute -bottom-1 -left-1 w-2 h-2 rounded-full border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-black" />
-              </div>
+              <motion.div
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.6 }}
+                className="hidden sm:flex relative p-8 rounded-[1.75rem] border border-dashed border-zinc-200/60 dark:border-zinc-800/60 items-center justify-center text-center"
+              >
+                <div className="flex items-center gap-2">
+                  <span className="relative flex h-2 w-2">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 dark:bg-red-400 opacity-75" />
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-500 dark:bg-red-500" />
+                  </span>
+                  <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-zinc-400 dark:text-zinc-600">
+                    Data Syncing with Core
+                  </p>
+                </div>
+              </motion.div>
             </div>
           </div>
         </div>
@@ -177,28 +187,28 @@ export default function SplitStatsWall() {
 
 function StatCard({ stat, index }: { stat: Stat; index: number }) {
   const cardRef = useRef(null);
-  const isInView = useInView(cardRef, { once: true, margin: "-100px" });
+  const isInView = useInView(cardRef, { once: true, margin: "-80px" });
 
   // Counting animation logic
   const [count, setCount] = useState(0);
   const target = parseFloat(stat.value.replace(/[^\d.]/g, ""));
-  const isK = stat.id === "reach"; // Reach is currently the only 'k' unit
+  const isK = stat.id === "reach";
 
   useEffect(() => {
     if (isInView && target > 0) {
       let startTime: number;
-      const duration = 2000;
+      const duration = 2200;
 
       const animate = (timestamp: number) => {
         if (!startTime) startTime = timestamp;
         const progress = Math.min((timestamp - startTime) / duration, 1);
-        const easeOutExpo = 1 - Math.pow(2, -10 * progress);
+        // Smoother cubic ease-out
+        const ease = 1 - Math.pow(1 - progress, 3);
 
-        // Ensure we hit the exact target at the end
         if (progress === 1) {
           setCount(target);
         } else {
-          setCount(Math.floor(easeOutExpo * target));
+          setCount(Math.floor(ease * target));
         }
 
         if (progress < 1) {
@@ -212,41 +222,93 @@ function StatCard({ stat, index }: { stat: Stat; index: number }) {
   return (
     <motion.div
       ref={cardRef}
-      initial={{ opacity: 0, y: 20 }}
-      animate={isInView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.6, delay: index * 0.1 }}
-      whileHover={{ y: -5 }}
-      className="group relative p-8 rounded-3xl border border-zinc-100 dark:border-zinc-900 bg-zinc-50/50 dark:bg-zinc-900/30 backdrop-blur-sm shadow-sm hover:shadow-2xl hover:border-zinc-200 dark:hover:border-zinc-800 transition-all duration-300"
+      initial={{ opacity: 0, y: 30, scale: 0.97 }}
+      animate={isInView ? { opacity: 1, y: 0, scale: 1 } : {}}
+      transition={{
+        type: "spring",
+        stiffness: 120,
+        damping: 18,
+        delay: index * 0.12,
+      }}
+      whileHover={{
+        y: -6,
+        scale: 1.02,
+        transition: { type: "spring", stiffness: 300, damping: 20 },
+      }}
+      className="group relative rounded-[1.75rem] overflow-hidden"
     >
-      {/* Glow Effect */}
-      <div className="absolute -right-12 -top-12 w-24 h-24 rounded-full opacity-0 group-hover:opacity-10 transition-opacity duration-500 blur-2xl bg-blue-500 dark:bg-red-600" />
+      {/* Animated gradient border */}
+      <div
+        className="absolute -inset-px rounded-[1.75rem] opacity-0 group-hover:opacity-100 transition-opacity duration-700 z-0"
+        style={{
+          background:
+            "conic-gradient(from 180deg, #3b82f6, #8b5cf6, #ec4899, #ef4444, #f97316, #3b82f6)",
+        }}
+      />
 
-      <div className="relative z-10 space-y-4">
-        <div className="flex items-center justify-between">
-          <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-white dark:bg-zinc-950 shadow-sm border border-zinc-100 dark:border-zinc-800 group-hover:scale-110 transition-transform duration-500 text-blue-500 dark:text-red-500">
-            {stat.icon}
-          </div>
-          <div className="h-px flex-1 mx-4 bg-zinc-100 dark:bg-zinc-800 group-hover:bg-zinc-200 dark:group-hover:bg-zinc-700 transition-colors" />
-        </div>
+      {/* Card body */}
+      <div className="relative z-[1] m-px rounded-[calc(1.75rem-1px)] bg-white/80 dark:bg-zinc-950/80 backdrop-blur-xl p-7 sm:p-8 border border-zinc-100/80 dark:border-zinc-800/60 shadow-[0_2px_24px_-4px_rgba(0,0,0,0.06)] group-hover:shadow-[0_8px_40px_-8px_rgba(59,130,246,0.12)] dark:group-hover:shadow-[0_8px_40px_-8px_rgba(239,68,68,0.12)] transition-shadow duration-500">
+        {/* Ambient glow */}
+        <div className="absolute -right-16 -top-16 w-32 h-32 rounded-full opacity-0 group-hover:opacity-[0.08] transition-opacity duration-700 blur-3xl bg-blue-500 dark:bg-red-500 pointer-events-none" />
+        <div className="absolute -left-8 -bottom-8 w-24 h-24 rounded-full opacity-0 group-hover:opacity-[0.05] transition-opacity duration-700 blur-2xl bg-violet-500 dark:bg-orange-500 pointer-events-none" />
 
-        <div className="space-y-1">
-          <div className="flex items-baseline gap-1">
-            <span className="text-4xl md:text-5xl font-black tracking-tighter text-zinc-900 dark:text-zinc-100">
-              {count}
-              {isK ? "k" : ""}
-            </span>
-            <span className="text-xl font-black text-blue-500 dark:text-red-500">
-              +
-            </span>
+        <div className="relative z-10 space-y-5">
+          {/* Icon + Line */}
+          <div className="flex items-center gap-4">
+            <motion.div
+              whileHover={{ rotate: [0, -8, 8, 0] }}
+              transition={{ duration: 0.5, ease: "easeInOut" }}
+              className="w-11 h-11 rounded-xl flex items-center justify-center bg-gradient-to-br from-zinc-50 to-zinc-100 dark:from-zinc-900 dark:to-zinc-800 shadow-sm border border-zinc-200/60 dark:border-zinc-700/50 group-hover:border-blue-200/60 dark:group-hover:border-red-800/50 group-hover:shadow-md transition-all duration-500 text-blue-500 dark:text-red-500"
+            >
+              {stat.icon}
+            </motion.div>
+            <div className="h-px flex-1 bg-gradient-to-r from-zinc-200/80 via-zinc-100/40 to-transparent dark:from-zinc-700/60 dark:via-zinc-800/30 dark:to-transparent group-hover:from-blue-200/60 dark:group-hover:from-red-800/40 transition-colors duration-500" />
           </div>
-          <p className="text-xs font-black uppercase tracking-widest text-zinc-400 dark:text-zinc-500">
-            {stat.label}
+
+          {/* Number */}
+          <div className="space-y-1.5">
+            <div className="flex items-baseline gap-1.5">
+              <span className="text-4xl md:text-5xl font-black tracking-tighter text-zinc-900 dark:text-zinc-50 tabular-nums">
+                {count}
+                {isK ? "k" : ""}
+              </span>
+              <motion.span
+                initial={{ opacity: 0, scale: 0 }}
+                animate={isInView ? { opacity: 1, scale: 1 } : {}}
+                transition={{
+                  type: "spring",
+                  stiffness: 200,
+                  delay: index * 0.12 + 0.6,
+                }}
+                className="text-xl font-black text-blue-500 dark:text-red-500"
+              >
+                +
+              </motion.span>
+            </div>
+            <p className="text-[11px] font-extrabold uppercase tracking-[0.18em] text-zinc-400 dark:text-zinc-500">
+              {stat.label}
+            </p>
+          </div>
+
+          {/* Description */}
+          <p className="text-sm font-medium text-zinc-500 dark:text-zinc-400 leading-relaxed">
+            {stat.description}
           </p>
-        </div>
 
-        <p className="text-sm font-medium text-zinc-500 dark:text-zinc-400 leading-tight">
-          {stat.description}
-        </p>
+          {/* Accent progress bar */}
+          <div className="h-0.5 w-full rounded-full bg-zinc-100 dark:bg-zinc-800 overflow-hidden">
+            <motion.div
+              initial={{ width: "0%" }}
+              animate={isInView ? { width: "100%" } : {}}
+              transition={{
+                duration: 2.2,
+                delay: index * 0.12 + 0.3,
+                ease: [0.22, 1, 0.36, 1],
+              }}
+              className="h-full rounded-full bg-gradient-to-r from-blue-500 to-violet-500 dark:from-red-500 dark:to-orange-500"
+            />
+          </div>
+        </div>
       </div>
     </motion.div>
   );

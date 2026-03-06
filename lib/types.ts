@@ -16,6 +16,13 @@ export interface TeamMember {
   name: string;
   role: string;
   image?: string;
+  socials?: {
+    github?: string;
+    linkedin?: string;
+    twitter?: string;
+    instagram?: string;
+    portfolio?: string;
+  };
   created_at?: string;
 }
 

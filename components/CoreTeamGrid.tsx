@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import Image from "next/image";
 import { type TeamMember } from "@/lib/types";
+import { Github, Linkedin, Twitter, Instagram, Globe } from "lucide-react";
 
 const CoreTeamGrid = () => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -51,6 +52,14 @@ const CoreTeamGrid = () => {
     return () => ctx.revert();
   }, [loading, team]);
 
+  const socialIcons = {
+    github: Github,
+    linkedin: Linkedin,
+    twitter: Twitter,
+    instagram: Instagram,
+    portfolio: Globe,
+  };
+
   return (
     <section
       ref={containerRef}
@@ -85,19 +94,18 @@ const CoreTeamGrid = () => {
             ? [1, 2, 3, 4].map((i) => (
                 <div
                   key={i}
-                  className="h-64 rounded-3xl bg-black/5 dark:bg-white/5 animate-pulse"
+                  className="h-72 rounded-3xl bg-black/5 dark:bg-white/5 animate-pulse"
                 />
               ))
             : team.map((member, i) => (
                 <motion.div
                   key={member._id || i}
                   whileHover={{ scale: 1.02, y: -5 }}
-                  whileTap={{ scale: 0.98 }}
                   className="team-card relative group"
                 >
-                  <div className="relative p-6 rounded-3xl border border-black/5 dark:border-white/10 bg-white/50 dark:bg-zinc-900/40 backdrop-blur-xl overflow-hidden transition-all duration-500 group-hover:border-[#0DA5F0]/40 dark:group-hover:border-[#FA0001]/40 group-hover:shadow-2xl group-hover:shadow-[#0DA5F0]/10 dark:group-hover:shadow-[#FA0001]/10">
+                  <div className="relative p-6 pt-8 rounded-3xl border border-black/5 dark:border-white/10 bg-white/50 dark:bg-zinc-900/40 backdrop-blur-xl overflow-hidden transition-all duration-500 group-hover:border-[#0DA5F0]/40 dark:group-hover:border-[#FA0001]/40 group-hover:shadow-2xl group-hover:shadow-[#0DA5F0]/10 dark:group-hover:shadow-[#FA0001]/10 flex flex-col items-center">
                     {/* Image Wrap */}
-                    <div className="relative w-24 h-24 mx-auto mb-6 rounded-full overflow-hidden border-2 border-black/5 dark:border-white/5 transition-transform duration-500 group-hover:scale-110">
+                    <div className="relative w-28 h-28 mb-5 rounded-full overflow-hidden border-4 border-white dark:border-zinc-800 shadow-xl transition-transform duration-500 group-hover:scale-105 z-10">
                       <Image
                         src={
                           member.image ||
@@ -110,17 +118,52 @@ const CoreTeamGrid = () => {
                     </div>
 
                     {/* Info */}
-                    <div className="text-center">
-                      <h3 className="text-xl font-bold text-black dark:text-white tracking-tight">
+                    <div className="text-center z-10 mb-5">
+                      <h3 className="text-xl font-black text-black dark:text-white tracking-tight">
                         {member.name}
                       </h3>
-                      <p className="text-sm opacity-50 font-medium mt-1">
+                      <p className="text-xs font-bold uppercase tracking-widest text-[#0DA5F0] dark:text-[#FA0001] mt-1.5 opacity-80">
                         {member.role}
                       </p>
                     </div>
 
-                    {/* Corner Accent */}
-                    <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-bl from-[#0DA5F0]/5 dark:from-[#FA0001]/5 to-transparent rounded-bl-full opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                    {/* Socials */}
+                    {member.socials &&
+                      Object.values(member.socials).some(Boolean) && (
+                        <div className="flex items-center gap-3 z-10 pt-4 border-t border-black/5 dark:border-white/10 w-full justify-center">
+                          {Object.entries(member.socials).map(
+                            ([platform, url]) => {
+                              if (!url) return null;
+                              const Icon =
+                                socialIcons[
+                                  platform as keyof typeof socialIcons
+                                ];
+                              if (!Icon) return null;
+
+                              return (
+                                <a
+                                  key={platform}
+                                  href={
+                                    url.startsWith("http")
+                                      ? url
+                                      : `https://${url}`
+                                  }
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="p-2 rounded-full bg-black/5 dark:bg-white/5 text-black/40 dark:text-white/40 hover:text-[#0DA5F0] dark:hover:text-[#FA0001] hover:bg-[#0DA5F0]/10 dark:hover:bg-[#FA0001]/10 transition-all duration-300 transform hover:scale-110"
+                                >
+                                  <Icon size={16} strokeWidth={2.5} />
+                                  <span className="sr-only">{platform}</span>
+                                </a>
+                              );
+                            },
+                          )}
+                        </div>
+                      )}
+
+                    {/* Background Accents */}
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-[#0DA5F0]/10 dark:from-[#FA0001]/10 to-transparent rounded-bl-full opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+                    <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-[#0DA5F0]/5 dark:from-[#FA0001]/5 to-transparent rounded-tr-full opacity-0 group-hover:opacity-100 transition-opacity duration-700 delay-100" />
                   </div>
                 </motion.div>
               ))}
