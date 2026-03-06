@@ -4,6 +4,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import SmoothScrollProvider from "@/SmoothScrollProvider";
 import ScrollProgress from "@/components/ScrollProgress";
+import { Analytics } from "@vercel/analytics/next"
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -120,6 +121,7 @@ export default function RootLayout({
           <SmoothScrollProvider>
             <ScrollProgress />
             {children}
+            <Analytics />
           </SmoothScrollProvider>
         </ThemeProvider>
       </body>
