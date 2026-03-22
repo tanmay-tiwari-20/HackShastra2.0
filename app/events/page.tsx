@@ -13,7 +13,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Navbar from "@/components/Navbar";
 import { type Event } from "@/lib/types";
 import Image from "next/image";
-import { Calendar, MapPin, Zap, Users, ArrowRight } from "lucide-react";
+import { Calendar, MapPin, Zap, Users, ArrowRight, Trophy } from "lucide-react";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -94,14 +94,22 @@ function UpcomingEventBanner({ event }: { event: Event }) {
               "Get ready for an extraordinary experience at our flagship event. Join the community and innovate with the best."}
           </p>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 pt-4">
             {[
               {
                 label: "Date",
-                value: eventDate.toLocaleDateString("en-IN", {
-                  day: "numeric",
-                  month: "short",
-                }),
+                value: event.end_date
+                  ? `${eventDate.toLocaleDateString("en-IN", {
+                      day: "numeric",
+                      month: "short",
+                    })} - ${new Date(event.end_date).toLocaleDateString("en-IN", {
+                      day: "numeric",
+                      month: "short",
+                    })}`
+                  : eventDate.toLocaleDateString("en-IN", {
+                      day: "numeric",
+                      month: "short",
+                    }),
                 icon: Calendar,
               },
               {
@@ -110,6 +118,11 @@ function UpcomingEventBanner({ event }: { event: Event }) {
                 icon: MapPin,
               },
               { label: "Format", value: event.format, icon: Zap },
+              {
+                label: "Prize Pool",
+                value: event.prize_pool ? (event.prize_pool.includes("₹") ? event.prize_pool : `₹${event.prize_pool}`) : "Exciting Rewards",
+                icon: Trophy,
+              },
             ].map((item) => (
               <div
                 key={item.label}
@@ -136,7 +149,7 @@ function UpcomingEventBanner({ event }: { event: Event }) {
                     {item.label}
                   </span>
                 </div>
-                <span className="text-sm font-black dark:text-white text-black truncate z-10">
+                <span className="text-sm font-black dark:text-white text-black break-words z-10">
                   {item.value}
                 </span>
               </div>
@@ -164,21 +177,10 @@ function UpcomingEventBanner({ event }: { event: Event }) {
               src={event.cover_image || "/images/poster.png"}
               alt={event.title}
               fill
-              className="object-cover transition-transform duration-1000 group-hover:scale-110"
+              className="object-cover transition-transform duration-1000 group-hover:scale-105"
               priority
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60" />
-            <div className="absolute bottom-10 left-10">
-              <div className="text-white font-black text-4xl tracking-tighter">
-                {eventDate.getDate()}
-                <span
-                  className="text-xl uppercase ml-1 opacity-50"
-                  style={{ color: accent }}
-                >
-                  {eventDate.toLocaleString("default", { month: "short" })}
-                </span>
-              </div>
-            </div>
           </div>
         </div>
       </div>
@@ -263,7 +265,7 @@ function TimelineItem({
             </div>
 
             {event.description && (
-              <p className="text-sm dark:text-white/40 text-black/40 line-clamp-2 leading-relaxed font-medium">
+              <p className="text-sm dark:text-white/40 text-black/40 leading-relaxed font-medium">
                 {event.description}
               </p>
             )}
@@ -301,6 +303,22 @@ function TimelineItem({
                   </span>
                 </div>
               </div>
+              <div className="flex items-center gap-3 transition-all duration-300 hover:translate-x-1">
+                <div
+                  className="p-2.5 rounded-xl bg-white/5 backdrop-blur-md border border-white/10 shadow-lg"
+                  style={{ boxShadow: `0 0 20px ${accent}15` }}
+                >
+                  <Trophy className="w-3.5 h-3.5" style={{ color: accent }} />
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-[10px] dark:text-white/40 text-black/40 font-black uppercase tracking-widest">
+                    Prize Pool
+                  </span>
+                  <span className="text-xs dark:text-white/80 text-black/80 font-black tracking-tight break-words max-w-[150px]">
+                    {event.prize_pool ? (event.prize_pool.includes("₹") ? event.prize_pool : `₹${event.prize_pool}`) : "Exciting Rewards"}
+                  </span>
+                </div>
+              </div>
             </div>
           </div>
         </motion.div>
@@ -325,13 +343,17 @@ function TimelineItem({
       >
         <div className={`space-y-1 ${isEven ? "text-left" : "text-right"}`}>
           <div className="text-5xl font-black dark:text-white text-black tracking-tighter leading-none transition-colors duration-500 group-hover:text-current">
-            {eventDate.getDate()}
+            {event.end_date 
+              ? `${eventDate.getDate()}-${new Date(event.end_date).getDate()}` 
+              : eventDate.getDate()}
           </div>
           <div
             className="text-3xl font-extrabold uppercase tracking-[0.2em]"
             style={{ color: accent }}
           >
-            {eventDate.toLocaleString("default", { month: "long" })}
+            {event.end_date && eventDate.getMonth() !== new Date(event.end_date).getMonth()
+              ? `${eventDate.toLocaleString("default", { month: "short" })}-${new Date(event.end_date).toLocaleString("default", { month: "short" })}`
+              : eventDate.toLocaleString("default", { month: "long" })}
           </div>
           <div className="text-xl font-black uppercase tracking-[0.2em] dark:text-white text-black">
             {eventDate.getFullYear()}

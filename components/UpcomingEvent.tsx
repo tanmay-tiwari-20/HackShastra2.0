@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion } from "framer-motion";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Image from "next/image";
@@ -19,13 +19,6 @@ const UpcomingEvent: React.FC = () => {
   const [loading, setLoading] = useState(true);
 
   const isDark = resolvedTheme === "dark";
-
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ["start end", "end start"],
-  });
-
-  const imageY = useTransform(scrollYProgress, [0, 1], [-50, 50]);
 
   useEffect(() => {
     async function fetchUpcoming() {
@@ -77,13 +70,27 @@ const UpcomingEvent: React.FC = () => {
 
   if (!loading && !event) return null;
 
-  const formattedDate = event
-    ? new Date(event.date).toLocaleDateString("en-IN", {
+  let formattedDate = "31 January – 1 February";
+  if (event) {
+    if (event.end_date) {
+      const startStr = new Date(event.date).toLocaleDateString("en-IN", {
+        day: "numeric",
+        month: "short",
+      });
+      const endStr = new Date(event.end_date).toLocaleDateString("en-IN", {
+        day: "numeric",
+        month: "short",
+        year: "numeric",
+      });
+      formattedDate = `${startStr} - ${endStr}`;
+    } else {
+      formattedDate = new Date(event.date).toLocaleDateString("en-IN", {
         day: "numeric",
         month: "long",
         year: "numeric",
-      })
-    : "31 January – 1 February";
+      });
+    }
+  }
 
   const details = [
     { icon: <Calendar size={18} />, label: "Timeline", value: formattedDate },
@@ -95,7 +102,7 @@ const UpcomingEvent: React.FC = () => {
     {
       icon: <Trophy size={18} />,
       label: "Prize Pool",
-      value: "Exciting Rewards",
+      value: event?.prize_pool ? (event.prize_pool.includes("₹") ? event.prize_pool : `₹${event.prize_pool}`) : "Exciting Rewards",
     },
   ];
 
@@ -178,41 +185,20 @@ const UpcomingEvent: React.FC = () => {
 
           {/* IMAGE COLUMN */}
           <div className="lg:col-span-5 order-1 lg:order-2">
-            <div className="reveal-card relative aspect-3/4 group">
-              {/* Decorative Frame */}
-              <div className="absolute -inset-4 border border-zinc-100 dark:border-zinc-900 rounded-[2.5rem] pointer-events-none" />
-              <div className="absolute -inset-2 border border-zinc-200 dark:border-zinc-800 rounded-[2.2rem] pointer-events-none" />
+            <div className="reveal-card relative aspect-[4/5] rounded-[2.5rem] overflow-hidden group shadow-2xl border dark:border-white/10 border-black/10">
+              <Image
+                src={event?.cover_image || "/images/poster.png"}
+                alt={event?.title || "Upcoming Event"}
+                fill
+                className="object-cover transition-transform duration-1000 group-hover:scale-105"
+                priority
+              />
+              {/* Overlay */}
+              <div className="absolute inset-0 bg-linear-to-t from-black/60 via-transparent to-transparent opacity-60" />
 
-              {/* Image Wrapper */}
-              <div className="relative w-full h-full rounded-3xl overflow-hidden shadow-2xl">
-                <motion.div
-                  style={{ y: imageY }}
-                  className="absolute inset-0 w-full h-[120%]"
-                >
-                  <Image
-                    src={event?.cover_image || "/images/poster.png"}
-                    alt={event?.title || "Upcoming Event"}
-                    fill
-                    className="object-cover scale-110 group-hover:scale-105 transition-transform duration-700"
-                    priority
-                  />
-                  {/* Overlay */}
-                  <div className="absolute inset-0 bg-linear-to-t from-black/60 via-transparent to-transparent opacity-60" />
-                </motion.div>
-
-                {/* Image Label */}
-                <div className="absolute bottom-6 left-6 right-6">
-                  <div className="flex items-center justify-between">
-                    <div className="px-3 py-1 bg-white/10 backdrop-blur-md rounded-full border border-white/20">
-                      <span className="text-[9px] font-black text-white uppercase tracking-[0.2em]">
-                        Live Status
-                      </span>
-                    </div>
-                    <div className="w-8 h-8 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center border border-white/20">
-                      <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-                    </div>
-                  </div>
-                </div>
+              {/* Image Label */}
+              <div className="absolute bottom-6 left-6 right-6">
+                <div className="flex items-center justify-between"></div>
               </div>
             </div>
           </div>

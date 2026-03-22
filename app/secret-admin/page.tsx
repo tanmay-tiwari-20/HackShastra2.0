@@ -187,6 +187,15 @@ function EventForm({
           />
         </div>
         <div>
+          <label className={labelStyle}>End Date (Optional)</label>
+          <input
+            type="date"
+            value={form.end_date || ""}
+            onChange={(e) => set("end_date", e.target.value)}
+            className={inputStyle}
+          />
+        </div>
+        <div>
           <label className={labelStyle}>Venue / Location *</label>
           <input
             value={form.venue}
@@ -201,6 +210,15 @@ function EventForm({
             value={form.format}
             onChange={(e) => set("format", e.target.value)}
             placeholder="e.g. Physical Hackathon"
+            className={inputStyle}
+          />
+        </div>
+        <div>
+          <label className={labelStyle}>Prize Pool</label>
+          <input
+            value={form.prize_pool || ""}
+            onChange={(e) => set("prize_pool", e.target.value)}
+            placeholder="e.g. Exciting Rewards"
             className={inputStyle}
           />
         </div>

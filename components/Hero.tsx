@@ -4,9 +4,6 @@ import Image from "next/image";
 import { useTheme } from "next-themes";
 import {
   motion,
-  useScroll,
-  useTransform,
-  useSpring,
   AnimatePresence,
 } from "framer-motion";
 import gsap from "gsap";
@@ -15,19 +12,6 @@ import { Terminal, Users, ShieldCheck, ChevronRight } from "lucide-react";
 const Hero = ({ isReady = false }: { isReady?: boolean }) => {
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // Scroll parallax for content depth
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start start", "end start"],
-  });
-
-  const y = useTransform(scrollYProgress, [0, 1], [0, 300]);
-  const opacity = useTransform(scrollYProgress, [0, 0.4], [1, 0]);
-  const scale = useTransform(scrollYProgress, [0, 0.4], [1, 0.9]);
-  const rotateX = useTransform(scrollYProgress, [0, 0.4], [0, 5]);
-
-  const springY = useSpring(y, { stiffness: 100, damping: 30 });
-  const springScale = useSpring(scale, { stiffness: 100, damping: 30 });
 
   // Floating background motion
   useEffect(() => {
@@ -101,7 +85,6 @@ const Hero = ({ isReady = false }: { isReady?: boolean }) => {
       </div>
 
       <motion.div
-        style={{ y: springY, opacity, scale: springScale, rotateX }}
         className="relative z-10 w-full max-w-7xl mx-auto flex flex-col items-center"
       >
         <motion.div

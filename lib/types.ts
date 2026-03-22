@@ -2,12 +2,14 @@ export interface Event {
   _id?: string;
   title: string;
   date: string;
+  end_date?: string;
   venue: string;
   format: string;
   cover_image?: string;
   registration_link?: string;
   is_upcoming: boolean;
   description?: string;
+  prize_pool?: string;
   created_at?: string;
 }
 
