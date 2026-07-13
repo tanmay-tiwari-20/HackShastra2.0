@@ -71,7 +71,7 @@ const AboutHero = () => {
             className="flex items-center gap-3 mb-4"
           >
             <span className="text-[10px] font-black uppercase tracking-[0.4em] text-[#0DA5F0] dark:text-[#FA0001]">
-              ESTABLISHED 2023
+              ESTABLISHED 2024
             </span>
             <div className="h-px w-12 bg-black/10 dark:bg-white/10" />
           </motion.div>

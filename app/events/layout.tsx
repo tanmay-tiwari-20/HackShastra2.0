@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Events & Hackathons | HackShastra",
+  title: "Hackathons & Tech Events | HackShastra",
   description:
     "Explore upcoming tech events, meetups, and hackathons hosted by the HackShastra community. Join us to build and innovate.",
   openGraph: {
-    title: "Events & Hackathons | HackShastra",
+    title: "Hackathons & Tech Events | HackShastra",
     description:
       "Explore upcoming tech events, meetups, and hackathons hosted by the HackShastra community.",
     url: "https://hackshastra.in/events",

@@ -4,7 +4,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import SmoothScrollProvider from "@/SmoothScrollProvider";
 import ScrollProgress from "@/components/ScrollProgress";
-import { Analytics } from "@vercel/analytics/next"
+import { Analytics } from "@vercel/analytics/next";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -18,7 +18,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://hackshastra.in"),
-  title: "HackShastra | Unleash Your Divine Potential",
+  title: "HackShastra | India's Creator-Led Tech & Hackathon Community",
   description:
     "The official website of HackShastra Community. We are a technical community focused on building, innovating, and driving the hacker culture forward through hackathons and meetups.",
   keywords: [
@@ -36,7 +36,7 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_US",
     url: "https://hackshastra.in",
-    title: "HackShastra | Unleash Your Divine Potential",
+    title: "HackShastra | India's Creator-Led Tech & Hackathon Community",
     description:
       "The official website of HackShastra Community. Join us in building and innovating.",
     siteName: "HackShastra",
@@ -51,7 +51,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "HackShastra | Unleash Your Divine Potential",
+    title: "HackShastra | India's Creator-Led Tech & Hackathon Community",
     description:
       "The official website of HackShastra Community. Join us in building and innovating.",
     images: ["/images/HackShastra.png"],
