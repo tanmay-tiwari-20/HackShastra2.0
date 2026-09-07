@@ -87,14 +87,13 @@ const Hero = ({ isReady = false }: { isReady?: boolean }) => {
           <motion.div variants={itemVariants} className="space-y-2 sm:space-y-3 max-w-4xl mx-auto">
             <h1 className="text-[clamp(3.5rem,13vw,9.5rem)] font-black tracking-tighter leading-[0.85] flex flex-col items-center">
               <span className="text-zinc-900 dark:text-white">HACK</span>
-              <span className="text-transparent bg-clip-text bg-linear-to-r from-[#0DA5F0] via-blue-700 to-[#0DA5F0] dark:from-[#ff2e2e] dark:via-red-800 dark:to-[#ff2e2e] animate-gradient bg-[length:200%_auto]">
+              <span className="text-transparent bg-clip-text bg-linear-to-r from-[#0DA5F0] via-blue-700 to-[#0DA5F0] dark:from-[#ff2e2e] dark:via-red-800 dark:to-[#ff2e2e] animate-gradient bg-size-[200%_auto]">
                 SHASTRA
               </span>
             </h1>
 
             <p className="max-w-xl sm:max-w-2xl mx-auto text-sm sm:text-base md:text-lg text-zinc-600 dark:text-zinc-400 font-medium leading-relaxed tracking-tight px-4 mt-2 sm:mt-3">
-              A high-octane engineering collective architecting the next era of
-              technical dominance through hands-on innovation.
+              Empowering the next generation of engineers to turn bold ideas into technology that shapes tomorrow.
             </p>
           </motion.div>
 

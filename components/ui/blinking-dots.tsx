@@ -25,6 +25,8 @@ export interface BlinkingDotsProps {
   /** Optional custom dot colors override [from, to] */
   colorFrom?: string;
   colorTo?: string;
+  /** Optional custom color palette override (array of "r, g, b" strings) */
+  colorPalette?: string[];
   /** Mouse cursor reaction radius */
   cursorRadius?: number;
   /** Mouse cursor displacement strength */
@@ -47,17 +49,18 @@ interface Dot {
 }
 
 export const BlinkingDots: React.FC<BlinkingDotsProps> = ({
-  density = 42,
-  coverage = 0.48,
+  density = 52,
+  coverage = 0.62,
   twinkleSpeed = 0.035,
-  twinkleDepth = 0.85,
-  dotRadius = 1.4,
-  sizeVariation = 0.9,
-  jitter = 0.18,
-  driftSpeed = 0.08,
+  twinkleDepth = 0.82,
+  dotRadius = 1.45,
+  sizeVariation = 0.85,
+  jitter = 0.16,
+  driftSpeed = 0.06,
   driftAngle = Math.PI / 4,
   colorFrom,
   colorTo,
+  colorPalette,
   cursorRadius = 160,
   cursorStrength = 18,
   className = "",
@@ -81,12 +84,34 @@ export const BlinkingDots: React.FC<BlinkingDotsProps> = ({
 
     const isDark = resolvedTheme === "dark";
 
-    // Theme color sets:
-    // Dark: Cyber Red & Neon Ember (#ff2e2e, #ff6b4a)
-    // Light: Electric Cyan & Tech Blue (#0DA5F0, #3b82f6)
+    // Theme color sets derived directly from the SHASTRA brand gradient:
+    // Light Mode: from-[#0DA5F0] via-blue-700 (#1d4ed8) to-[#0DA5F0]
+    // Dark Mode:  dark:from-[#ff2e2e] dark:via-red-800 (#991b1b) dark:to-[#ff2e2e]
     const primaryRgb = colorFrom || (isDark ? "255, 46, 46" : "13, 165, 240");
-    const secondaryRgb = colorTo || (isDark ? "255, 120, 50" : "59, 130, 246");
-    const neutralRgb = isDark ? "220, 225, 235" : "71, 85, 105";
+    const secondaryRgb = colorTo || (isDark ? "153, 27, 27" : "29, 78, 216");
+
+    // Colors sampled directly along the SHASTRA text gradients
+    const themePalettes = isDark
+      ? [
+          primaryRgb, // #ff2e2e (Shastra from/to)
+          "239, 68, 68", // red-500
+          "220, 38, 38", // red-600
+          "185, 28, 28", // red-700
+          secondaryRgb, // #991b1b (Shastra via red-800)
+          "127, 29, 29", // red-900
+        ]
+      : [
+          primaryRgb, // #0DA5F0 (Shastra from/to)
+          "14, 142, 233", // intermediate cyan-blue
+          "37, 99, 235", // blue-600
+          secondaryRgb, // #1d4ed8 (Shastra via blue-700)
+          "30, 64, 175", // blue-800
+          "2, 132, 199", // sky-600
+        ];
+
+    const activePalette =
+      colorPalette && colorPalette.length > 0 ? colorPalette : themePalettes;
+    const neutralRgb = isDark ? "215, 220, 230" : "100, 116, 139";
 
     let dots: Dot[] = [];
     let driftX = 0;
@@ -108,7 +133,7 @@ export const BlinkingDots: React.FC<BlinkingDotsProps> = ({
       ctx.scale(dpr, dpr);
 
       const shortestAxis = Math.min(width, height);
-      const cellSize = Math.max(18, Math.floor(shortestAxis / density));
+      const cellSize = Math.max(16, Math.floor(shortestAxis / density));
 
       const cols = Math.ceil(width / cellSize) + 2;
       const rows = Math.ceil(height / cellSize) + 2;
@@ -117,19 +142,31 @@ export const BlinkingDots: React.FC<BlinkingDotsProps> = ({
 
       for (let c = -1; c < cols; c++) {
         for (let r = -1; r < rows; r++) {
-          // Determine if this cell has a dot based on coverage
+          // Identical dot coverage across both light and dark mode
           if (Math.random() > coverage) continue;
 
-          const isAccent = Math.random() < 0.38;
-          const isSecondary = isAccent && Math.random() < 0.45;
-          const chosenColor = isAccent
-            ? isSecondary
-              ? secondaryRgb
-              : primaryRgb
-            : neutralRgb;
+          // Equal colorful accent dot proportion across both themes
+          const isAccent = Math.random() < 0.72;
+
+          let chosenColor = neutralRgb;
+          if (isAccent) {
+            const paletteIndex = Math.floor(
+              Math.random() * activePalette.length
+            );
+            chosenColor = activePalette[paletteIndex];
+          }
 
           const sizeFactor = 1 + (Math.random() - 0.5) * sizeVariation;
-          const radius = Math.max(0.7, dotRadius * (isAccent ? sizeFactor * 1.3 : sizeFactor));
+          // Identical dot radius across both themes
+          const radius = Math.max(
+            0.75,
+            dotRadius * (isAccent ? sizeFactor * 1.3 : sizeFactor * 0.9)
+          );
+
+          // Equal base alpha across both themes for identical perceived dot density
+          const baseAlpha = isAccent
+            ? 0.78 + Math.random() * 0.22
+            : 0.35 + Math.random() * 0.18;
 
           dots.push({
             gridX: c * cellSize,
@@ -139,7 +176,7 @@ export const BlinkingDots: React.FC<BlinkingDotsProps> = ({
             radius,
             phase: Math.random() * Math.PI * 2,
             speed: (0.6 + Math.random() * 0.8) * twinkleSpeed,
-            baseAlpha: isAccent ? (isDark ? 0.85 : 0.8) : isDark ? 0.3 : 0.22,
+            baseAlpha,
             isAccent,
             color: chosenColor,
           });
@@ -194,7 +231,10 @@ export const BlinkingDots: React.FC<BlinkingDotsProps> = ({
         // Twinkle factor using smooth sine wave
         const wave = Math.sin(dot.phase);
         const twinkleFactor = 1 - Math.max(0, wave) * twinkleDepth;
-        const currentAlpha = Math.max(0.04, dot.baseAlpha * twinkleFactor);
+
+        // Consistent floor across both themes so dot density is visually balanced
+        const minAlphaFloor = 0.12;
+        const currentAlpha = Math.max(minAlphaFloor, dot.baseAlpha * twinkleFactor);
 
         let posX = dot.gridX + dot.jitterX + driftX;
         let posY = dot.gridY + dot.jitterY + driftY;
@@ -236,11 +276,17 @@ export const BlinkingDots: React.FC<BlinkingDotsProps> = ({
         ctx.fillStyle = `rgba(${dot.color}, ${finalAlpha})`;
         ctx.fill();
 
-        // High-impact glow for accent dots
-        if (dot.isAccent && finalAlpha > 0.35) {
+        // High-impact glow halo for accent dots
+        if (dot.isAccent && finalAlpha > 0.28) {
           ctx.beginPath();
-          ctx.arc(posX, posY, drawRadius * 2.8, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(${dot.color}, ${finalAlpha * (isDark ? 0.22 : 0.15)})`;
+          ctx.arc(
+            posX,
+            posY,
+            drawRadius * 2.6,
+            0,
+            Math.PI * 2
+          );
+          ctx.fillStyle = `rgba(${dot.color}, ${finalAlpha * (isDark ? 0.22 : 0.25)})`;
           ctx.fill();
         }
       }
@@ -268,6 +314,7 @@ export const BlinkingDots: React.FC<BlinkingDotsProps> = ({
     driftAngle,
     colorFrom,
     colorTo,
+    colorPalette,
     cursorRadius,
     cursorStrength,
     resolvedTheme,

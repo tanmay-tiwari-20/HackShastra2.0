@@ -160,17 +160,17 @@ export const HeroBackground = () => {
 
       {/* 3. React Bits Pro - Blinking Dots on Fixed Grid */}
       <BlinkingDots
-        density={42}
-        coverage={0.46}
+        density={52}
+        coverage={0.62}
         dotRadius={1.5}
-        sizeVariation={0.7}
-        jitter={0.06}
+        sizeVariation={0.8}
+        jitter={0.12}
         twinkleSpeed={0.032}
-        twinkleDepth={0.82}
+        twinkleDepth={0.8}
         driftSpeed={0.04}
         cursorRadius={180}
-        cursorStrength={14}
-        className="opacity-90 dark:opacity-95"
+        cursorStrength={16}
+        className="opacity-95 dark:opacity-95"
       />
 
       {/* 4. Interactive Ambient Particle & Constellation Canvas */}
