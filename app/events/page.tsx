@@ -14,6 +14,7 @@ import Navbar from "@/components/Navbar";
 import { type Event } from "@/lib/types";
 import Image from "next/image";
 import { Calendar, MapPin, Zap, Users, ArrowRight, Trophy } from "lucide-react";
+import LiveRegistrationBadge from "@/components/LiveRegistrationBadge";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -62,23 +63,26 @@ function UpcomingEventBanner({ event }: { event: Event }) {
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
         <div className="lg:col-span-7 order-2 lg:order-1 space-y-8 upcoming-content">
-          <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full border dark:border-white/10 border-black/10 bg-white/5 backdrop-blur-md">
-            <span className="relative flex h-2 w-2">
+          <div className="flex flex-wrap items-center gap-3">
+            <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full border dark:border-white/10 border-black/10 bg-white/5 backdrop-blur-md">
+              <span className="relative flex h-2 w-2">
+                <span
+                  className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75"
+                  style={{ background: accent }}
+                ></span>
+                <span
+                  className="relative inline-flex rounded-full h-2 w-2"
+                  style={{ background: accent }}
+                ></span>
+              </span>
               <span
-                className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75"
-                style={{ background: accent }}
-              ></span>
-              <span
-                className="relative inline-flex rounded-full h-2 w-2"
-                style={{ background: accent }}
-              ></span>
-            </span>
-            <span
-              className="text-[10px] uppercase tracking-[0.3em] font-black"
-              style={{ color: accent }}
-            >
-              Spotlight · Upcoming
-            </span>
+                className="text-[10px] uppercase tracking-[0.3em] font-black"
+                style={{ color: accent }}
+              >
+                Spotlight · Upcoming
+              </span>
+            </div>
+            <LiveRegistrationBadge unstopUrl={event.registration_link} />
           </div>
 
           <h2 className="text-5xl lg:text-7xl font-black tracking-tighter dark:text-white text-black leading-[0.9] flex flex-wrap upcoming-chars">
@@ -93,6 +97,12 @@ function UpcomingEventBanner({ event }: { event: Event }) {
             {event.description ||
               "Get ready for an extraordinary experience at our flagship event. Join the community and innovate with the best."}
           </p>
+
+          {/* Highlighted Live Registration Pulse */}
+          <LiveRegistrationBadge
+            variant="highlight"
+            unstopUrl={event.registration_link}
+          />
 
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 pt-4">
             {[
@@ -180,7 +190,7 @@ function UpcomingEventBanner({ event }: { event: Event }) {
               className="object-cover transition-transform duration-1000 group-hover:scale-105"
               priority
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60" />
+            
           </div>
         </div>
       </div>

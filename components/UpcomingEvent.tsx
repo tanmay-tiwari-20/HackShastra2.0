@@ -8,6 +8,7 @@ import Image from "next/image";
 import { useTheme } from "next-themes";
 import { ArrowRight, Calendar, MapPin, Trophy } from "lucide-react";
 import { type Event } from "@/lib/types";
+import LiveRegistrationBadge from "@/components/LiveRegistrationBadge";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -122,18 +123,26 @@ const UpcomingEvent: React.FC = () => {
               <div className="reveal-text inline-flex items-center gap-2 px-3 py-1 rounded-full border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900 shadow-sm">
                 <div className="w-2 h-2 rounded-full animate-pulse bg-blue-500 dark:bg-red-600" />
                 <span className="text-[10px] font-black uppercase tracking-widest text-zinc-500 dark:text-zinc-400">
-                  Mission Intel: Upcoming Event
+                  Upcoming Event
                 </span>
               </div>
 
               <h2 className="reveal-text text-5xl sm:text-6xl md:text-7xl font-black tracking-tighter leading-[0.9]">
-                {event?.title || "SnowHackIPEC"}
+                {event?.title || "Grand Hack IPEC"}
               </h2>
 
               <p className="reveal-text text-lg md:text-xl text-zinc-600 dark:text-zinc-400 max-w-xl font-medium leading-relaxed">
                 {event?.description ||
                   "Push the boundaries of innovation in our annual 24-hour flagship hackathon at IPEC."}
               </p>
+            </div>
+
+            {/* HIGHLIGHTED LIVE REGISTRATION CARD */}
+            <div className="reveal-text">
+              <LiveRegistrationBadge
+                variant="highlight"
+                unstopUrl={event?.registration_link}
+              />
             </div>
 
             {/* DETAILS GRID */}
@@ -158,7 +167,7 @@ const UpcomingEvent: React.FC = () => {
               <motion.a
                 href={
                   event?.registration_link ||
-                  "https://unstop.com/hackathons/snowhackipec-hackshastra-1613746"
+                  "https://unstop.com/p/grand-hack-ipec-hackshastra-1704703"
                 }
                 target="_blank"
                 whileHover={{ scale: 1.02 }}
@@ -195,11 +204,6 @@ const UpcomingEvent: React.FC = () => {
               />
               {/* Overlay */}
               <div className="absolute inset-0 bg-linear-to-t from-black/60 via-transparent to-transparent opacity-60" />
-
-              {/* Image Label */}
-              <div className="absolute bottom-6 left-6 right-6">
-                <div className="flex items-center justify-between"></div>
-              </div>
             </div>
           </div>
         </div>
