@@ -2,6 +2,7 @@
 
 import React, { useEffect, useRef } from "react";
 import { useTheme } from "next-themes";
+import { BlinkingDots } from "@/components/ui/blinking-dots";
 
 interface Particle {
   x: number;
@@ -157,10 +158,25 @@ export const HeroBackground = () => {
         }
       `}</style>
 
-      {/* 3. Interactive Ambient Particle & Constellation Canvas */}
+      {/* 3. React Bits Pro - Blinking Dots on Fixed Grid */}
+      <BlinkingDots
+        density={42}
+        coverage={0.46}
+        dotRadius={1.5}
+        sizeVariation={0.7}
+        jitter={0.06}
+        twinkleSpeed={0.032}
+        twinkleDepth={0.82}
+        driftSpeed={0.04}
+        cursorRadius={180}
+        cursorStrength={14}
+        className="opacity-90 dark:opacity-95"
+      />
+
+      {/* 4. Interactive Ambient Particle & Constellation Canvas */}
       <canvas
         ref={canvasRef}
-        className="absolute inset-0 w-full h-full opacity-75 dark:opacity-85"
+        className="absolute inset-0 w-full h-full opacity-60 dark:opacity-75"
       />
       {/* Bottom fade into next section */}
       <div className="absolute inset-x-0 bottom-0 h-32 bg-linear-to-t from-white dark:from-black to-transparent" />
