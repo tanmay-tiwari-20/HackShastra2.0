@@ -212,7 +212,7 @@ const AboutSection = () => {
               {/* Sub-links to About page anchors */}
               <div className="flex flex-wrap items-center gap-2">
                 <Link
-                  href="/about"
+                  href="/about#architects"
                   className="px-3.5 py-1.5 rounded-full border border-zinc-200 dark:border-zinc-800 text-[11px] font-semibold text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors inline-flex items-center gap-1.5"
                 >
                   Architects
@@ -266,37 +266,44 @@ const AboutSection = () => {
                 initial={{ opacity: 0, y: 15 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ delay: 0.2 }}
-                className="absolute -bottom-5 -left-2 sm:-left-5 p-3 sm:p-3.5 rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white/95 dark:bg-zinc-900/95 backdrop-blur-md shadow-xl flex items-center gap-3.5 z-20"
+                transition={{ duration: 0.4, delay: 0.2 }}
+                className="absolute -bottom-5 -left-2 sm:-left-5 z-20"
               >
-                {/* Founder Avatars */}
-                <div className="flex items-center -space-x-2 overflow-hidden">
-                  {FOUNDER_AVATARS.map((f, idx) => (
-                    <div
-                      key={idx}
-                      className="relative w-8 h-8 rounded-full border-2 border-white dark:border-zinc-900 overflow-hidden bg-zinc-200 dark:bg-zinc-800 shadow-xs"
-                    >
-                      <img
-                        src={f.image}
-                        alt={f.name}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                  ))}
-                </div>
-
-                <div>
-                  <div className="text-[10px] font-black uppercase tracking-wider text-zinc-900 dark:text-white leading-none">
-                    5 Architects
+                <Link
+                  href="/about#architects"
+                  className="group flex items-center gap-3.5 px-4 py-2.5 sm:py-3 rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white/95 dark:bg-zinc-900/95 backdrop-blur-md shadow-xl hover:border-zinc-300 dark:hover:border-zinc-700 hover:shadow-2xl hover:-translate-y-0.5 transition-all duration-300"
+                >
+                  {/* Founder Avatars */}
+                  <div className="flex items-center -space-x-2">
+                    {FOUNDER_AVATARS.map((f, idx) => (
+                      <div
+                        key={idx}
+                        className="relative w-8 h-8 rounded-full border-2 border-white dark:border-zinc-900 overflow-hidden bg-zinc-200 dark:bg-zinc-800 shadow-xs transition-transform duration-200 group-hover:scale-105"
+                      >
+                        <img
+                          src={f.image}
+                          alt={f.name}
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                    ))}
                   </div>
-                  <Link
-                    href="/about"
-                    className="text-[9px] font-bold text-[#0DA5F0] dark:text-[#FA0001] hover:underline flex items-center gap-1 mt-0.5"
-                  >
-                    Meet the founders
-                    <ArrowRight size={10} />
-                  </Link>
-                </div>
+
+                  {/* Text Details */}
+                  <div className="flex flex-col">
+                    <span className="text-[11px] font-black uppercase tracking-wider text-zinc-900 dark:text-white leading-tight">
+                      5 Architects
+                    </span>
+                    <span className="text-[10px] font-semibold text-[#0DA5F0] dark:text-[#FA0001] flex items-center gap-1 mt-0.5">
+                      Meet the founders
+                    </span>
+                  </div>
+
+                  {/* Subtle right accent arrow pill */}
+                  <div className="ml-1 w-6 h-6 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-zinc-500 dark:text-white group-hover:bg-[#0DA5F0] dark:group-hover:bg-[#FA0001] group-hover:text-white transition-colors duration-200">
+                    <ArrowUpRight size={12} />
+                  </div>
+                </Link>
               </motion.div>
             </div>
           </div>

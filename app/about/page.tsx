@@ -84,7 +84,7 @@ const AboutPage = () => {
 
       <StoryTimeline />
 
-      <div className="py-20 lg:py-0">
+      <div id="architects" className="py-20 lg:py-0">
         {architects.map((architect, i) => (
           <FounderCinematicCard
             key={i}
@@ -104,7 +104,7 @@ const AboutPage = () => {
       <ChapterCTA />
 
       {/* Global Cinematic Accents */}
-      <div className="fixed left-6 bottom-6 z-[60] pointer-events-none hidden lg:block">
+      <div className="fixed left-6 bottom-6 z-60 pointer-events-none hidden lg:block">
         <span className="text-[10px] font-black uppercase tracking-[1em] opacity-20 [writing-mode:vertical-lr] rotate-180">
           HACKSHASTRA // ABOUT
         </span>
