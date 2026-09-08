@@ -12,27 +12,7 @@ import { useGesture } from "@use-gesture/react";
 import Navbar from "@/components/Navbar";
 import { X } from "lucide-react";
 import { type GalleryImage } from "@/lib/types";
-
-// Base seed images to ensure the gallery is never empty
-const STATIC_GALLERY = [
-  "https://res.cloudinary.com/dunacoujw/image/upload/v1772402429/3_ewhcxs.webp",
-  "https://res.cloudinary.com/dunacoujw/image/upload/v1772402431/7_c4axuu.webp",
-  "https://res.cloudinary.com/dunacoujw/image/upload/v1772402429/11_x88zyt.webp",
-  "https://res.cloudinary.com/dunacoujw/image/upload/v1772402429/1_gaiwhl.webp",
-  "https://res.cloudinary.com/dunacoujw/image/upload/v1772402430/4_mbd5ak.webp",
-  "https://res.cloudinary.com/dunacoujw/image/upload/v1772402429/13_qqolcu.webp",
-  "https://res.cloudinary.com/dunacoujw/image/upload/v1772402431/14_esbxla.webp",
-  "https://res.cloudinary.com/dunacoujw/image/upload/v1772402433/16_nhp0kd.webp",
-  "https://res.cloudinary.com/dunacoujw/image/upload/v1772402433/17_kjiyiu.webp",
-  "https://res.cloudinary.com/dunacoujw/image/upload/v1772402432/8_v0g0is.webp",
-  "https://res.cloudinary.com/dunacoujw/image/upload/v1772402431/5_cibwsm.webp",
-  "https://res.cloudinary.com/dunacoujw/image/upload/v1772402430/12_ubduyk.webp",
-  "https://res.cloudinary.com/dunacoujw/image/upload/v1772402432/9_dige7e.webp",
-  "https://res.cloudinary.com/dunacoujw/image/upload/v1772402431/6_bep8ex.webp",
-  "https://res.cloudinary.com/dunacoujw/image/upload/v1772402432/15_bopebl.webp",
-  "https://res.cloudinary.com/dunacoujw/image/upload/v1772402434/2_holzer.webp",
-  "https://res.cloudinary.com/dunacoujw/image/upload/v1772402433/reach_xhdfbp.webp",
-];
+import { STATIC_GALLERY } from "@/lib/galleryData";
 
 const COLUMNS = 5;
 const ROWS = 4;
@@ -306,7 +286,7 @@ const GalleryPage = () => {
 
         {/* Loading Overlay */}
         {loading && (
-          <div className="absolute inset-0 flex items-center justify-center dark:bg-black/20 bg-white/20 backdrop-blur-sm z-[60]">
+          <div className="absolute inset-0 flex items-center justify-center dark:bg-black/20 bg-white/20 backdrop-blur-sm z-60">
             <div className="flex flex-col items-center gap-4">
               <div className="w-12 h-12 border-4 border-[#0DA5F0]/20 dark:border-[#FA0001]/20 border-t-[#0DA5F0] dark:border-t-[#FA0001] rounded-full animate-spin" />
               <div className="text-[10px] font-black uppercase tracking-[0.4em] opacity-40">
@@ -333,7 +313,7 @@ const GalleryPage = () => {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.3 }}
-              className="fixed inset-0 z-[100] flex items-center justify-center bg-white/40 dark:bg-black/40 backdrop-blur-xl will-change-opacity"
+              className="fixed inset-0 z-100 flex items-center justify-center bg-white/40 dark:bg-black/40 backdrop-blur-xl will-change-opacity"
             >
               {/* Close Button */}
               <motion.button
@@ -342,7 +322,7 @@ const GalleryPage = () => {
                 exit={{ opacity: 0, y: -20 }}
                 transition={{ delay: 0.2 }}
                 onClick={() => setSelectedImage(null)}
-                className="absolute top-8 right-8 z-[110] p-3 rounded-full bg-black/10 dark:bg-white/10 hover:bg-black/20 dark:hover:bg-white/20 text-black dark:text-white transition-colors cursor-pointer"
+                className="absolute top-8 right-8 z-110 p-3 rounded-full bg-black/10 dark:bg-white/10 hover:bg-black/20 dark:hover:bg-white/20 text-black dark:text-white transition-colors cursor-pointer"
               >
                 <X size={24} />
               </motion.button>

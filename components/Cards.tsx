@@ -1,44 +1,58 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import StickyCard002 from "@/components/ui/skiper-ui/skiper17";
+import {
+  STATIC_GALLERY,
+  getDailyRandomImages,
+  fetchGalleryImages,
+} from "@/lib/galleryData";
 
-const Cards = () => {
-  const cards = [
-    {
-      id: 1,
-      image:
-        "https://res.cloudinary.com/dunacoujw/image/upload/v1772402433/reach_xhdfbp.webp",
-      alt: "HackShastra developers collaborating at a large tech event",
-    },
-    {
-      id: 2,
-      image:
-        "https://res.cloudinary.com/dunacoujw/image/upload/v1772402429/3_ewhcxs.webp",
-      alt: "HackShastra core team members at a meetup",
-    },
-    {
-      id: 3,
-      image:
-        "https://res.cloudinary.com/dunacoujw/image/upload/v1772402430/12_ubduyk.webp",
-      alt: "Participants coding during a HackShastra hackathon",
-    },
-    {
-      id: 4,
-      image:
-        "https://res.cloudinary.com/dunacoujw/image/upload/v1772402429/13_qqolcu.webp",
-      alt: "A speaker addressing the audience at a HackShastra conference",
-    },
-    {
-      id: 5,
-      image:
-        "https://res.cloudinary.com/dunacoujw/image/upload/v1772402432/8_v0g0is.webp",
-      alt: "Group photo of the HackShastra student community",
-    },
-  ];
+interface CardsProps {
+  count?: number;
+}
+
+const Cards = ({ count = 5 }: CardsProps) => {
+  // Initial daily random selection from gallery images
+  const [cards, setCards] = useState(() => {
+    const dailyUrls = getDailyRandomImages(STATIC_GALLERY, count);
+    return dailyUrls.map((url, index) => ({
+      id: index + 1,
+      image: url,
+      alt: `HackShastra moment ${index + 1}`,
+    }));
+  });
+
+  useEffect(() => {
+    let isMounted = true;
+
+    async function loadGallery() {
+      const all = await fetchGalleryImages();
+      if (isMounted && all && all.length > 0) {
+        const dailyUrls = getDailyRandomImages(all, count);
+        setCards(
+          dailyUrls.map((url, index) => ({
+            id: index + 1,
+            image: url,
+            alt: `HackShastra moment ${index + 1}`,
+          })),
+        );
+      }
+    }
+
+    loadGallery();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [count]);
 
   return (
     <div className="w-full">
-      <StickyCard002 cards={cards} />
+      <StickyCard002
+        key={cards.map((c) => c.image).join(",")}
+        cards={cards}
+      />
     </div>
   );
 };

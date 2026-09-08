@@ -4,6 +4,8 @@ import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useRef } from "react";
+import Link from "next/link";
+import { ArrowUpRight, Images } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 
@@ -20,6 +22,7 @@ interface StickyCard002Props {
   className?: string;
   containerClassName?: string;
   imageClassName?: string;
+  showGalleryCta?: boolean;
 }
 
 const StickyCard002 = ({
@@ -27,6 +30,7 @@ const StickyCard002 = ({
   className,
   containerClassName,
   imageClassName,
+  showGalleryCta = true,
 }: StickyCard002Props) => {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const imageRefs = useRef<HTMLDivElement[]>([]);
@@ -138,6 +142,7 @@ const StickyCard002 = ({
             max-w-[clamp(280px,85vw,520px)]
             sm:max-w-[clamp(320px,70vw,600px)]
             lg:max-w-[clamp(380px,45vw,720px)]
+            aspect-16/10
             rounded-3xl 
             `,
             containerClassName,
@@ -150,8 +155,8 @@ const StickyCard002 = ({
                 if (el) imageRefs.current[i] = el;
               }}
               className={cn(
-                i === 0 ? "relative" : "absolute inset-0 h-full",
-                "w-full flex items-center justify-center shadow-2xl rounded-3xl overflow-hidden",
+                "absolute inset-0 w-full h-full",
+                "flex items-center justify-center shadow-2xl rounded-3xl overflow-hidden",
                 imageClassName,
               )}
               style={{
@@ -167,8 +172,8 @@ const StickyCard002 = ({
                 loading={i < 2 ? "eager" : "lazy"}
                 className="
                   w-full
-                  h-auto
-                  object-contain
+                  h-full
+                  object-cover
                   select-none
                   rounded-3xl
                 "
@@ -177,6 +182,26 @@ const StickyCard002 = ({
           ))}
         </div>
       </div>
+
+      {showGalleryCta && (
+        <div className="absolute bottom-6 sm:bottom-10 left-1/2 -translate-x-1/2 z-30 pointer-events-auto">
+          <Link
+            href="/gallery"
+            className="group relative flex items-center gap-3 px-4 py-2 sm:px-5 sm:py-2.5 rounded-full border border-zinc-200/80 dark:border-zinc-800/80 bg-white/90 dark:bg-zinc-900/90 backdrop-blur-md shadow-lg hover:shadow-xl hover:border-zinc-400/80 dark:hover:border-zinc-600/80 hover:-translate-y-0.5 transition-all duration-300"
+          >
+            <div className="w-7 h-7 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-[#0DA5F0] dark:text-[#FA0001] transition-transform duration-300 group-hover:scale-110">
+              <Images size={14} />
+            </div>
+            <span className="text-xs sm:text-sm font-semibold tracking-wide text-zinc-900 dark:text-zinc-100">
+              Explore Gallery
+            </span>
+            <ArrowUpRight
+              size={14}
+              className="text-zinc-400 dark:text-zinc-500 group-hover:text-zinc-900 dark:group-hover:text-white transition-all duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+            />
+          </Link>
+        </div>
+      )}
     </section>
   );
 };
