@@ -194,7 +194,7 @@ const UpcomingEvent: React.FC = () => {
 
           {/* IMAGE COLUMN */}
           <div className="lg:col-span-5 order-1 lg:order-2">
-            <div className="reveal-card relative aspect-[4/5] rounded-[2.5rem] overflow-hidden group shadow-2xl border dark:border-white/10 border-black/10">
+            <div className="reveal-card relative aspect-4/5 rounded-[2.5rem] overflow-hidden group shadow-2xl border dark:border-white/10 border-black/10">
               <Image
                 src={event?.cover_image || "/images/poster.png"}
                 alt={event?.title || "Upcoming Event"}

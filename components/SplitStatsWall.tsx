@@ -251,7 +251,7 @@ function StatCard({
       />
 
       {/* Card body */}
-      <div className="relative z-[1] m-px rounded-[calc(1.75rem-1px)] bg-white/80 dark:bg-zinc-950/80 backdrop-blur-xl p-5 sm:p-6 border border-zinc-100/80 dark:border-zinc-800/60 shadow-[0_2px_24px_-4px_rgba(0,0,0,0.06)] group-hover:shadow-[0_8px_40px_-8px_rgba(59,130,246,0.12)] dark:group-hover:shadow-[0_8px_40px_-8px_rgba(239,68,68,0.12)] transition-shadow duration-500 h-full flex flex-col justify-between">
+      <div className="relative z-1 m-px rounded-[calc(1.75rem-1px)] bg-white/80 dark:bg-zinc-950/80 backdrop-blur-xl p-5 sm:p-6 border border-zinc-100/80 dark:border-zinc-800/60 shadow-[0_2px_24px_-4px_rgba(0,0,0,0.06)] group-hover:shadow-[0_8px_40px_-8px_rgba(59,130,246,0.12)] dark:group-hover:shadow-[0_8px_40px_-8px_rgba(239,68,68,0.12)] transition-shadow duration-500 h-full flex flex-col justify-between">
         {/* Ambient glow */}
         <div className="absolute -right-16 -top-16 w-32 h-32 rounded-full opacity-0 group-hover:opacity-[0.08] transition-opacity duration-700 blur-3xl bg-blue-500 dark:bg-red-500 pointer-events-none" />
         <div className="absolute -left-8 -bottom-8 w-24 h-24 rounded-full opacity-0 group-hover:opacity-[0.05] transition-opacity duration-700 blur-2xl bg-violet-500 dark:bg-orange-500 pointer-events-none" />
@@ -264,7 +264,7 @@ function StatCard({
                 <motion.div
                   whileHover={{ rotate: [0, -8, 8, 0] }}
                   transition={{ duration: 0.5, ease: "easeInOut" }}
-                  className="w-10 h-10 rounded-xl flex items-center justify-center bg-gradient-to-br from-blue-500/10 to-violet-500/10 dark:from-red-500/10 dark:to-orange-500/10 shadow-sm border border-blue-500/20 dark:border-red-500/20 text-blue-500 dark:text-red-500 shrink-0"
+                  className="w-10 h-10 rounded-xl flex items-center justify-center bg-linear-to-br from-blue-500/10 to-violet-500/10 dark:from-red-500/10 dark:to-orange-500/10 shadow-sm border border-blue-500/20 dark:border-red-500/20 text-blue-500 dark:text-red-500 shrink-0"
                 >
                   {stat.icon}
                 </motion.div>
@@ -380,7 +380,7 @@ function StatCard({
                   delay: index * 0.1 + 0.2,
                   ease: [0.22, 1, 0.36, 1],
                 }}
-                className="h-full rounded-full bg-gradient-to-r from-blue-500 to-violet-500 dark:from-red-500 dark:to-orange-500"
+                className="h-full rounded-full bg-linear-to-r from-blue-500 to-violet-500 dark:from-red-500 dark:to-orange-500"
               />
             </div>
           </div>
@@ -391,11 +391,11 @@ function StatCard({
               <motion.div
                 whileHover={{ rotate: [0, -8, 8, 0] }}
                 transition={{ duration: 0.5, ease: "easeInOut" }}
-                className="w-10 h-10 rounded-xl flex items-center justify-center bg-gradient-to-br from-zinc-50 to-zinc-100 dark:from-zinc-900 dark:to-zinc-800 shadow-sm border border-zinc-200/60 dark:border-zinc-700/50 group-hover:border-blue-200/60 dark:group-hover:border-red-800/50 group-hover:shadow-md transition-all duration-500 text-blue-500 dark:text-red-500 shrink-0"
+                className="w-10 h-10 rounded-xl flex items-center justify-center bg-linear-to-br from-zinc-50 to-zinc-100 dark:from-zinc-900 dark:to-zinc-800 shadow-sm border border-zinc-200/60 dark:border-zinc-700/50 group-hover:border-blue-200/60 dark:group-hover:border-red-800/50 group-hover:shadow-md transition-all duration-500 text-blue-500 dark:text-red-500 shrink-0"
               >
                 {stat.icon}
               </motion.div>
-              <div className="h-px flex-1 bg-gradient-to-r from-zinc-200/80 via-zinc-100/40 to-transparent dark:from-zinc-700/60 dark:via-zinc-800/30 dark:to-transparent group-hover:from-blue-200/60 dark:group-hover:from-red-800/40 transition-colors duration-500" />
+              <div className="h-px flex-1 bg-linear-to-r from-zinc-200/80 via-zinc-100/40 to-transparent dark:from-zinc-700/60 dark:via-zinc-800/30 dark:to-transparent group-hover:from-blue-200/60 dark:group-hover:from-red-800/40 transition-colors duration-500" />
             </div>
 
             {/* Middle: Number + Label + Description */}
@@ -436,7 +436,7 @@ function StatCard({
                   delay: index * 0.1 + 0.2,
                   ease: [0.22, 1, 0.36, 1],
                 }}
-                className="h-full rounded-full bg-gradient-to-r from-blue-500 to-violet-500 dark:from-red-500 dark:to-orange-500"
+                className="h-full rounded-full bg-linear-to-r from-blue-500 to-violet-500 dark:from-red-500 dark:to-orange-500"
               />
             </div>
           </div>
