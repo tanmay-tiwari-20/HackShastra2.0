@@ -22,7 +22,7 @@ const Skiper28 = () => {
    * Smaller translate values to prevent overflow
    */
   const rotateX = useTransform(scrollYProgress, [0, 0.6], [28, 0]);
-  const translateY = useTransform(scrollYProgress, [0, 0.6], [220, 0]);
+  const translateY = useTransform(scrollYProgress, [0, 0.6], [60, 0]);
   const translateZ = useTransform(scrollYProgress, [0, 0.6], [-80, 0]);
   const opacity = useTransform(scrollYProgress, [0, 0.2], [0.4, 1]);
 
@@ -35,10 +35,10 @@ const Skiper28 = () => {
   return (
     <section
       ref={targetRef}
-      className="relative h-[140vh] w-full overflow-hidden"
+      className="relative h-[120vh] w-full overflow-hidden z-10"
     >
       <div
-        className="sticky top-0 flex h-screen items-center justify-center overflow-hidden"
+        className="sticky top-0 flex h-screen items-center justify-center -translate-y-16 sm:-translate-y-24 md:-translate-y-28 overflow-hidden z-20"
         style={{
           perspective: "800px",
           transformStyle: "preserve-3d",
@@ -50,7 +50,7 @@ const Skiper28 = () => {
             opacity,
             transformStyle: "preserve-3d",
           }}
-          className="relative px-6 text-center"
+          className="relative px-6 text-center z-30"
         >
           <div
             className="pointer-events-none absolute inset-0 translate-y-4 font-extrabold tracking-tight text-black/10 dark:text-gray-300/10 blur-sm"

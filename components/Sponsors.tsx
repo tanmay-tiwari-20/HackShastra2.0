@@ -64,7 +64,7 @@ const Sponsors = () => {
   ];
 
   return (
-    <section className="relative w-full py-24 md:py-32 bg-white dark:bg-black overflow-hidden border-y border-zinc-100 dark:border-zinc-900">
+    <section className="relative w-full py-14 md:py-18 bg-white dark:bg-black overflow-hidden border-y border-zinc-100 dark:border-zinc-900">
       {/* Premium Background System */}
       <div
         className="absolute inset-0 opacity-[0.03] dark:opacity-[0.07] pointer-events-none"
@@ -77,7 +77,7 @@ const Sponsors = () => {
 
       <div className="absolute inset-0 bg-linear-to-b from-white dark:from-black via-transparent to-white dark:to-black opacity-60" />
 
-      <div className="max-w-7xl mx-auto px-6 relative z-10 mb-20 text-center">
+      <div className="max-w-7xl mx-auto px-6 relative z-10 mb-10 md:mb-12 text-center">
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -109,7 +109,7 @@ const Sponsors = () => {
         <div className="absolute inset-y-0 left-0 w-32 md:w-64 bg-linear-to-r from-white dark:from-black via-white/80 dark:via-black/80 to-transparent z-10 pointer-events-none" />
         <div className="absolute inset-y-0 right-0 w-32 md:w-64 bg-linear-to-l from-white dark:from-black via-white/80 dark:via-black/80 to-transparent z-10 pointer-events-none" />
 
-        <div className="relative flex overflow-hidden py-14">
+        <div className="relative flex overflow-hidden py-6 md:py-8">
           <motion.div
             className="flex whitespace-nowrap gap-20 md:gap-40"
             animate={{ x: ["0%", "-50%"] }}

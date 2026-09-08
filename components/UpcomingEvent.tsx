@@ -110,7 +110,7 @@ const UpcomingEvent: React.FC = () => {
   return (
     <section
       ref={sectionRef}
-      className="relative w-full py-24 sm:py-32 overflow-hidden bg-white dark:bg-black"
+      className="relative w-full py-14 sm:py-18 md:py-20 overflow-hidden bg-white dark:bg-black"
     >
       {/* Background Accents */}
       <div className="absolute top-0 right-0 w-1/2 h-full bg-linear-to-l from-zinc-50 dark:from-zinc-900/20 to-transparent pointer-events-none" />

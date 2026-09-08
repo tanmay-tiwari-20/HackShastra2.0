@@ -87,7 +87,7 @@ export default function SplitStatsWall() {
   return (
     <section
       ref={containerRef}
-      className="relative w-full py-32 md:py-48 px-6 bg-white dark:bg-black overflow-hidden"
+      className="relative w-full py-16 md:py-24 px-6 bg-white dark:bg-black overflow-hidden"
     >
       {/* Background Tech elements */}
       <div className="absolute inset-0 pointer-events-none opacity-20 dark:opacity-40">

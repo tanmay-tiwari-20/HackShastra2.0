@@ -7,9 +7,15 @@ interface CrowdCanvasProps {
   src: string;
   rows?: number;
   cols?: number;
+  className?: string;
 }
 
-const CrowdCanvas = ({ src, rows = 15, cols = 7 }: CrowdCanvasProps) => {
+const CrowdCanvas = ({
+  src,
+  rows = 15,
+  cols = 7,
+  className,
+}: CrowdCanvasProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -39,18 +45,19 @@ const CrowdCanvas = ({ src, rows = 15, cols = 7 }: CrowdCanvasProps) => {
     // TWEEN FACTORIES
     const resetPeep = ({ stage, peep }: { stage: any; peep: any }) => {
       const direction = Math.random() > 0.5 ? 1 : -1;
-      const offsetY = 100 - 250 * gsap.parseEase("power2.in")(Math.random());
-      const startY = stage.height - peep.height + offsetY;
+      const offsetY = 60 - 200 * gsap.parseEase("power2.in")(Math.random());
+      const calculatedY = stage.height - peep.height + offsetY;
+      const startY = Math.max(25, calculatedY);
       let startX: number;
       let endX: number;
 
       if (direction === 1) {
         startX = -peep.width;
-        endX = stage.width;
+        endX = stage.width + peep.width;
         peep.scaleX = 1;
       } else {
         startX = stage.width + peep.width;
-        endX = 0;
+        endX = -peep.width;
         peep.scaleX = -1;
       }
 
@@ -278,7 +285,12 @@ const CrowdCanvas = ({ src, rows = 15, cols = 7 }: CrowdCanvasProps) => {
     };
   }, []);
   return (
-    <canvas ref={canvasRef} className="absolute bottom-0 h-[90vh] w-full" />
+    <canvas
+      ref={canvasRef}
+      className={`absolute bottom-0 h-[80vh] sm:h-[85vh] w-full pointer-events-none z-0 ${
+        className ?? ""
+      }`}
+    />
   );
 };
 
