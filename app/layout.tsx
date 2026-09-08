@@ -4,6 +4,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import SmoothScrollProvider from "@/SmoothScrollProvider";
 import ScrollProgress from "@/components/ScrollProgress";
+import DynamicFavicon from "@/components/DynamicFavicon";
 import { Analytics } from "@vercel/analytics/next";
 
 const geistSans = Geist({
@@ -32,6 +33,19 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: "HackShastra Team" }],
   creator: "HackShastra",
+  icons: {
+    icon: [
+      {
+        url: "/logo2.svg",
+        media: "(prefers-color-scheme: light)",
+      },
+      {
+        url: "/logo1.svg",
+        media: "(prefers-color-scheme: dark)",
+      },
+    ],
+    apple: "/logo1.svg",
+  },
   openGraph: {
     type: "website",
     locale: "en_US",
@@ -118,6 +132,7 @@ export default function RootLayout({
           defaultTheme="light"
           enableSystem={false}
         >
+          <DynamicFavicon />
           <SmoothScrollProvider>
             <ScrollProgress />
             {children}
