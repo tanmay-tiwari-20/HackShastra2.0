@@ -546,20 +546,29 @@ function SponsorForm({
       exit={{ opacity: 0, y: -30 }}
       className="dark:bg-zinc-900 bg-zinc-50 border dark:border-white/10 border-black/10 p-6 md:p-8 space-y-8 rounded-2xl"
     >
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div>
           <label className={labelStyle}>Sponsor Name *</label>
           <input
-            value={form.name}
+            value={form.name || ""}
             onChange={(e) => set("name", e.target.value)}
             placeholder="e.g. Google Cloud"
             className={inputStyle}
           />
         </div>
         <div>
+          <label className={labelStyle}>Category / Track</label>
+          <input
+            value={form.category || ""}
+            onChange={(e) => set("category", e.target.value)}
+            placeholder="e.g. Cloud, EdTech, Web3..."
+            className={inputStyle}
+          />
+        </div>
+        <div>
           <label className={labelStyle}>Logo URL *</label>
           <input
-            value={form.logo}
+            value={form.logo || ""}
             onChange={(e) => set("logo", e.target.value)}
             placeholder="Direct link to logo..."
             className={inputStyle}
@@ -1038,7 +1047,7 @@ export default function AdminPage() {
                         <DataRow
                           key={s._id}
                           title={s.name}
-                          subtitle="Official Partner"
+                          subtitle={s.category ? `Category: ${s.category}` : "Tech Ecosystem"}
                           image={s.logo}
                           icon={Trophy}
                           onEdit={() => {

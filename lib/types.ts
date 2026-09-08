@@ -47,5 +47,6 @@ export interface Sponsor {
   _id?: string;
   name: string;
   logo: string;
+  category?: string;
   created_at?: string;
 }
