@@ -6,24 +6,28 @@ import {
   useScroll,
   useTransform,
 } from "framer-motion";
-import ReactLenis from "lenis/react";
 import React, { useRef } from "react";
+import { CrowdCanvas } from "@/components/ui/skiper-ui/skiper39";
 
-const Skiper28 = () => {
+interface Skiper28Props {
+  showPeeps?: boolean;
+}
+
+const Skiper28: React.FC<Skiper28Props> = ({ showPeeps = true }) => {
   const targetRef = useRef<HTMLDivElement | null>(null);
 
   const { scrollYProgress } = useScroll({
     target: targetRef,
-    offset: ["start start", "end start"],
+    offset: ["start start", "end end"],
   });
 
   /**
    * RESPONSIVE MOTION
-   * Smaller translate values to prevent overflow
+   * Rotate into place while scrolling through the sticky section
    */
-  const rotateX = useTransform(scrollYProgress, [0, 0.6], [28, 0]);
-  const translateY = useTransform(scrollYProgress, [0, 0.6], [60, 0]);
-  const translateZ = useTransform(scrollYProgress, [0, 0.6], [-80, 0]);
+  const rotateX = useTransform(scrollYProgress, [0, 0.45], [28, 0]);
+  const translateY = useTransform(scrollYProgress, [0, 0.45], [60, 0]);
+  const translateZ = useTransform(scrollYProgress, [0, 0.45], [-80, 0]);
   const opacity = useTransform(scrollYProgress, [0, 0.2], [0.4, 1]);
 
   const transform = useMotionTemplate`
@@ -35,10 +39,10 @@ const Skiper28 = () => {
   return (
     <section
       ref={targetRef}
-      className="relative h-[120vh] w-full overflow-hidden z-10"
+      className="relative min-h-screen h-[135vh] sm:h-[145vh] w-full overflow-hidden z-10"
     >
       <div
-        className="sticky top-0 flex h-screen items-center justify-center -translate-y-16 sm:-translate-y-24 md:-translate-y-28 overflow-hidden z-20"
+        className="sticky top-0 flex h-screen items-center justify-center translate-y-16 sm:translate-y-24 md:translate-y-32 overflow-hidden z-20 pointer-events-none"
         style={{
           perspective: "800px",
           transformStyle: "preserve-3d",
@@ -50,7 +54,7 @@ const Skiper28 = () => {
             opacity,
             transformStyle: "preserve-3d",
           }}
-          className="relative px-6 text-center z-30"
+          className="relative px-6 text-center z-30 pointer-events-auto"
         >
           <div
             className="pointer-events-none absolute inset-0 translate-y-4 font-extrabold tracking-tight text-black/10 dark:text-gray-300/10 blur-sm"
@@ -75,9 +79,13 @@ const Skiper28 = () => {
           >
             HackShastra Events Be Like....
           </h1>
-          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-linear-to-b " />
+          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-linear-to-b" />
         </motion.div>
       </div>
+
+      {showPeeps && (
+        <CrowdCanvas src="/all-peeps.png" rows={15} cols={7} className="z-10" />
+      )}
     </section>
   );
 };

@@ -2,6 +2,7 @@
 
 import { gsap } from "gsap";
 import React, { useEffect, useRef } from "react";
+import { cn } from "@/lib/utils";
 
 interface CrowdCanvasProps {
   src: string;
@@ -248,8 +249,12 @@ const CrowdCanvas = ({
 
     const resize = () => {
       if (!canvas) return;
-      stage.width = canvas.clientWidth;
-      stage.height = canvas.clientHeight;
+      const width = canvas.clientWidth;
+      const height = canvas.clientHeight;
+      if (!width || !height) return;
+
+      stage.width = width;
+      stage.height = height;
       canvas.width = stage.width * devicePixelRatio;
       canvas.height = stage.height * devicePixelRatio;
 
@@ -264,21 +269,57 @@ const CrowdCanvas = ({
       initCrowd();
     };
 
+    let initialized = false;
+    let tickerAdded = false;
+
     const init = () => {
+      if (initialized) {
+        resize();
+        return;
+      }
+      if (img.naturalWidth === 0 || img.naturalHeight === 0) return;
+      initialized = true;
       createPeeps();
       resize();
-      gsap.ticker.add(render);
+      if (!tickerAdded) {
+        gsap.ticker.add(render);
+        tickerAdded = true;
+      }
     };
 
-    img.onload = init;
-    img.src = config.src;
+    const imageSrc = config.src.startsWith("/") || config.src.startsWith("http")
+      ? config.src
+      : `/${config.src}`;
+    img.src = imageSrc;
+
+    if (img.complete && img.naturalWidth > 0) {
+      init();
+    } else {
+      img.onload = init;
+    }
+
+    const resizeObserver = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        if (entry.contentRect.width > 0 && entry.contentRect.height > 0) {
+          if (!initialized && img.complete && img.naturalWidth > 0) {
+            init();
+          } else if (initialized) {
+            resize();
+          }
+        }
+      }
+    });
+    resizeObserver.observe(canvas);
 
     const handleResize = () => resize();
     window.addEventListener("resize", handleResize);
 
     return () => {
+      resizeObserver.disconnect();
       window.removeEventListener("resize", handleResize);
-      gsap.ticker.remove(render);
+      if (tickerAdded) {
+        gsap.ticker.remove(render);
+      }
       crowd.forEach((peep) => {
         if (peep.walk) peep.walk.kill();
       });
@@ -287,9 +328,10 @@ const CrowdCanvas = ({
   return (
     <canvas
       ref={canvasRef}
-      className={`absolute bottom-0 h-[80vh] sm:h-[85vh] w-full pointer-events-none z-0 ${
-        className ?? ""
-      }`}
+      className={cn(
+        "absolute bottom-0 h-[80vh] sm:h-[85vh] w-full pointer-events-none z-0",
+        className,
+      )}
     />
   );
 };

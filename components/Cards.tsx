@@ -49,10 +49,7 @@ const Cards = ({ count = 5 }: CardsProps) => {
 
   return (
     <div className="w-full">
-      <StickyCard002
-        key={cards.map((c) => c.image).join(",")}
-        cards={cards}
-      />
+      <StickyCard002 cards={cards} />
     </div>
   );
 };

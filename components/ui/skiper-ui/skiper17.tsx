@@ -118,11 +118,11 @@ const StickyCard002 = ({
       }
 
       return () => {
+        tl.scrollTrigger?.kill();
         tl.kill();
-        ScrollTrigger.getAll().forEach((t) => t.kill());
       };
     },
-    { scope: containerRef },
+    { scope: containerRef, dependencies: [cards.length] },
   );
 
   return (

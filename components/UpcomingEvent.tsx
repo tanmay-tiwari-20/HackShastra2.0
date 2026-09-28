@@ -12,34 +12,47 @@ import LiveRegistrationBadge from "@/components/LiveRegistrationBadge";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const UpcomingEvent: React.FC = () => {
+interface UpcomingEventProps {
+  initialEvent?: Event | null;
+}
+
+const UpcomingEvent: React.FC<UpcomingEventProps> = ({ initialEvent }) => {
   const sectionRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const { resolvedTheme } = useTheme();
-  const [event, setEvent] = useState<Event | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [event, setEvent] = useState<Event | null>(initialEvent ?? null);
+  const [loading, setLoading] = useState(initialEvent === undefined);
 
   const isDark = resolvedTheme === "dark";
 
   useEffect(() => {
+    if (initialEvent !== undefined) {
+      setEvent(initialEvent);
+      setLoading(false);
+      return;
+    }
+
     async function fetchUpcoming() {
       try {
         const res = await fetch("/api/events?upcoming=true&single=true");
         if (res.ok) {
           const data = await res.json();
           setEvent(data);
+        } else {
+          setEvent(null);
         }
       } catch (err) {
         console.error("Failed to fetch upcoming event:", err);
+        setEvent(null);
       } finally {
         setLoading(false);
       }
     }
     fetchUpcoming();
-  }, []);
+  }, [initialEvent]);
 
   useEffect(() => {
-    if (!resolvedTheme || loading) return;
+    if (!resolvedTheme || loading || !event) return;
 
     const ctx = gsap.context(() => {
       gsap.from(".reveal-text", {
@@ -66,12 +79,20 @@ const UpcomingEvent: React.FC = () => {
       });
     }, sectionRef);
 
-    return () => ctx.revert();
-  }, [resolvedTheme, loading]);
+    // Refresh ScrollTrigger to ensure downstream animations (Cards, etc.) have accurate trigger positions
+    const timeout = setTimeout(() => {
+      ScrollTrigger.refresh();
+    }, 100);
 
-  if (!loading && !event) return null;
+    return () => {
+      clearTimeout(timeout);
+      ctx.revert();
+    };
+  }, [resolvedTheme, loading, event]);
 
-  let formattedDate = "31 January – 1 February";
+  if (!event) return null;
+
+  let formattedDate = "";
   if (event) {
     if (event.end_date) {
       const startStr = new Date(event.date).toLocaleDateString("en-IN", {
@@ -98,12 +119,12 @@ const UpcomingEvent: React.FC = () => {
     {
       icon: <MapPin size={18} />,
       label: "Location",
-      value: event?.venue || "IPEC, Ghaziabad",
+      value: event.venue || "IPEC, Ghaziabad",
     },
     {
       icon: <Trophy size={18} />,
       label: "Prize Pool",
-      value: event?.prize_pool ? (event.prize_pool.includes("₹") ? event.prize_pool : `₹${event.prize_pool}`) : "Exciting Rewards",
+      value: event.prize_pool ? (event.prize_pool.includes("₹") ? event.prize_pool : `₹${event.prize_pool}`) : "Exciting Rewards",
     },
   ];
 
@@ -128,12 +149,12 @@ const UpcomingEvent: React.FC = () => {
               </div>
 
               <h2 className="reveal-text text-5xl sm:text-6xl md:text-7xl font-black tracking-tighter leading-[0.9]">
-                {event?.title || "Grand Hack IPEC"}
+                {event.title}
               </h2>
 
               <p className="reveal-text text-lg md:text-xl text-zinc-600 dark:text-zinc-400 max-w-xl font-medium leading-relaxed">
-                {event?.description ||
-                  "Push the boundaries of innovation in our annual 24-hour flagship hackathon at IPEC."}
+                {event.description ||
+                  "Push the boundaries of innovation in our annual flagship hackathon."}
               </p>
             </div>
 
@@ -141,7 +162,7 @@ const UpcomingEvent: React.FC = () => {
             <div className="reveal-text">
               <LiveRegistrationBadge
                 variant="highlight"
-                unstopUrl={event?.registration_link}
+                unstopUrl={event.registration_link}
               />
             </div>
 
@@ -166,10 +187,11 @@ const UpcomingEvent: React.FC = () => {
             <div className="reveal-text flex flex-wrap gap-4 pt-6">
               <motion.a
                 href={
-                  event?.registration_link ||
-                  "https://unstop.com/p/grand-hack-ipec-hackshastra-1704703"
+                  event.registration_link ||
+                  "/events"
                 }
-                target="_blank"
+                target={event.registration_link ? "_blank" : "_self"}
+                rel={event.registration_link ? "noopener noreferrer" : undefined}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 className="group relative px-8 py-4 bg-black dark:bg-white text-white dark:text-black rounded-full font-black text-sm uppercase tracking-widest overflow-hidden flex items-center gap-3 transition-shadow hover:shadow-2xl hover:shadow-blue-500/20 dark:hover:shadow-red-600/30"
@@ -196,8 +218,8 @@ const UpcomingEvent: React.FC = () => {
           <div className="lg:col-span-5 order-1 lg:order-2">
             <div className="reveal-card relative aspect-4/5 rounded-[2.5rem] overflow-hidden group shadow-2xl border dark:border-white/10 border-black/10">
               <Image
-                src={event?.cover_image || "/images/poster.png"}
-                alt={event?.title || "Upcoming Event"}
+                src={event.cover_image || "/images/poster.png"}
+                alt={event.title || "Upcoming Event"}
                 fill
                 className="object-cover transition-transform duration-1000 group-hover:scale-105"
                 priority
